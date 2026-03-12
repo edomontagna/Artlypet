@@ -13,15 +13,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**', // This allows any path under the hostname
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'maas-log-prod.cn-wlcb.ufileos.com',
-        port: '',
-        pathname: '/**', // This allows any path under the hostname
+        hostname: 'picsum.photos',
+        pathname: '/**',
       },
     ],
   },

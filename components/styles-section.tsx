@@ -6,44 +6,15 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { STYLE_IMAGES } from "@/lib/images";
 
 const styles = [
-  {
-    id: "watercolor",
-    name: "Watercolor",
-    description: "Soft, fluid colors perfect for gentle pets.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/11df905c0481ee4777378ccda14e8d53.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=BUMdElojPVxh1Dc4Gdn3iJ6mHr0=",
-  },
-  {
-    id: "oil-painting",
-    name: "Oil Painting",
-    description: "Rich textures and deep colors for a classic look.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/2a252c27b54eaf33e353a9665ee4e67f.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=hPHHYMghU9ojsV5PP1o6qes8TCU=",
-  },
-  {
-    id: "renaissance",
-    name: "Renaissance",
-    description: "Noble and majestic portraits from the 16th century.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/be2b3b61eeed3ddcb6783df61f522ca5.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=ZrXoOfErc0aldP6y3LtczYbPwqY=",
-  },
-  {
-    id: "pop-art",
-    name: "Pop Art",
-    description: "Vibrant, bold, and modern colors.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/fb53e57b7f68e12383d396589c7954bb.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=gqadLtXxlNIwtC2Y9sMVw8e3vpk=",
-  },
-  {
-    id: "art-nouveau",
-    name: "Art Nouveau",
-    description: "Elegant curves and natural forms.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/f713ef32ea0d54e322f7e455282bf082.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=cEhnB7sNpQ7z/E3ZNzGw/AtAyWw=",
-  },
-  {
-    id: "impressionist",
-    name: "Impressionist",
-    description: "Capturing the light and feeling of the moment.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/3979c646714ab13e36bed746536f1659.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=0lD3Er/8+jFeJx7vQ5i5d5Gd5mY=",
-  },
+  { id: "watercolor", name: "Watercolor", description: "Soft, fluid colors perfect for gentle pets." },
+  { id: "oil-painting", name: "Oil Painting", description: "Rich textures and deep colors for a classic look." },
+  { id: "renaissance", name: "Renaissance", description: "Noble and majestic portraits from the 16th century." },
+  { id: "pop-art", name: "Pop Art", description: "Vibrant, bold, and modern colors." },
+  { id: "art-nouveau", name: "Art Nouveau", description: "Elegant curves and natural forms." },
+  { id: "impressionist", name: "Impressionist", description: "Capturing the light and feeling of the moment." },
 ];
 
 export function StylesSection() {
@@ -79,11 +50,10 @@ export function StylesSection() {
             >
               <div className="relative aspect-[4/5] w-full max-w-sm mx-auto rounded-xl overflow-hidden mb-4 bg-muted shadow-lg">
                 <Image
-                  src={style.image}
+                  src={STYLE_IMAGES[style.id]}
                   alt={style.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <Button variant="secondary" className="rounded-full bg-white/90 text-black hover:bg-white backdrop-blur-sm">

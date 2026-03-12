@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { WatermarkOverlay } from "@/components/watermark-overlay";
 import { ShareButtons } from "@/components/share-buttons";
 import { Download, Printer, ArrowRight, Lock, Sparkles } from "lucide-react";
+import { RESULT_PLACEHOLDER } from "@/lib/images";
 
 export default function ResultPage() {
   const [revealed, setRevealed] = React.useState(false);
@@ -19,7 +20,7 @@ export default function ResultPage() {
     id: "demo",
     style: "Renaissance",
     mode: "pets",
-    outputUrl: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/be2b3b61eeed3ddcb6783df61f522ca5.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=ZrXoOfErc0aldP6y3LtczYbPwqY=",
+    outputUrl: RESULT_PLACEHOLDER,
     isWatermarked: true,
     resolution: "hd" as string,
     date: new Date().toLocaleDateString(),

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { HERO_IMAGE } from "@/lib/images";
 
 export function HeroSection() {
   return (
@@ -54,19 +55,18 @@ export function HeroSection() {
           >
             <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/b5bf59cf4fc0496638d7ce3900622efa.jpg?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773051316&Signature=0Lfc10TzC7O5NALJKW4+O3ultvM="
-                alt="AI generated portrait new style"
+                src={HERO_IMAGE}
+                alt="Beautiful pet portrait"
                 fill
                 className="object-cover"
-                referrerPolicy="no-referrer"
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <p className="font-serif text-2xl font-medium">New Style</p>
+                <p className="font-serif text-2xl font-medium">Your pet, reimagined</p>
               </div>
             </div>
-            
+
             {/* Decorative elements */}
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/5 rounded-full blur-3xl" />
           </motion.div>

@@ -4,28 +4,29 @@ import * as React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Cat, User, Users } from "lucide-react";
+import { MODE_IMAGES } from "@/lib/images";
 
 const modes = [
   {
-    id: "pets",
+    id: "pets" as const,
     title: "Pets",
     icon: Cat,
     description: "Immortalize your furry friends in stunning artistic styles. From dogs and cats to birds and reptiles.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/74ad56f081a14c09ad9f743df9f8b9d5.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773049728&Signature=mNNBc3UvkQm61hUnNnwv2YQd1tQ=",
+    image: MODE_IMAGES.pets,
   },
   {
-    id: "humans",
+    id: "humans" as const,
     title: "Humans",
     icon: User,
     description: "Turn your own photos or pictures of loved ones into timeless masterpieces fit for a gallery.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/c5df8f822f8b6cac055bb1cb6552d753.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773049728&Signature=Q2sK5KG/xXOcyUqpiF+55jD7sh8=",
+    image: MODE_IMAGES.humans,
   },
   {
-    id: "mix",
+    id: "mix" as const,
     title: "Mix (Pet + Human)",
     icon: Users,
     description: "Upload a photo of you and a photo of your pet. Our AI will seamlessly blend them into one beautiful portrait.",
-    image: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/d444e4afd00e06beaf827e0d4c17a731.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773056375&Signature=dbn4sBOvkOv2GKMGAaDTgzmgvFA=",
+    image: MODE_IMAGES.mix,
   },
 ];
 
@@ -58,7 +59,6 @@ export function ModesSection() {
                   alt={mode.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
                 <div className="absolute bottom-6 left-6 right-6 flex items-center gap-4">

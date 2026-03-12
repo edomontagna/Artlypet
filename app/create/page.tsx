@@ -10,15 +10,7 @@ import { Cat, User, Users, ArrowRight, Wand2, Lock, Sparkles } from "lucide-reac
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { STYLES } from "@/lib/constants";
-
-const styleImages: Record<string, string> = {
-  watercolor: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/11df905c0481ee4777378ccda14e8d53.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=BUMdElojPVxh1Dc4Gdn3iJ6mHr0=",
-  "oil-painting": "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/2a252c27b54eaf33e353a9665ee4e67f.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=hPHHYMghU9ojsV5PP1o6qes8TCU=",
-  renaissance: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/be2b3b61eeed3ddcb6783df61f522ca5.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=ZrXoOfErc0aldP6y3LtczYbPwqY=",
-  "pop-art": "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/fb53e57b7f68e12383d396589c7954bb.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=gqadLtXxlNIwtC2Y9sMVw8e3vpk=",
-  "art-nouveau": "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/f713ef32ea0d54e322f7e455282bf082.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=cEhnB7sNpQ7z/E3ZNzGw/AtAyWw=",
-  impressionist: "https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/feb347d6-156c-4795-8e20-6e8adea7ed89/3979c646714ab13e36bed746536f1659.png?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1773050881&Signature=0lD3Er/8+jFeJx7vQ5i5d5Gd5mY=",
-};
+import { STYLE_IMAGES } from "@/lib/images";
 
 const progressSteps = [
   "Analyzing your photo...",
@@ -193,7 +185,7 @@ export default function CreatePage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
               {STYLES.map((s) => {
-                const img = styleImages[s.id];
+                const img = STYLE_IMAGES[s.id];
                 const isLocked = s.tier === "pro" && userTier !== "pro";
                 const isSelected = selectedStyle === s.id;
 

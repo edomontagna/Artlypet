@@ -2,42 +2,42 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 const tiers = [
   {
-    name: "Free",
-    price: 0,
-    originalPrice: null,
-    period: "forever",
-    features: ["3 credits/month", "HD (1080 × 1527)", "Watermarked preview"],
-    cta: "Start Free",
-    href: "/auth",
+    name: "Starter",
+    price: 9,
+    originalPrice: 19,
+    credits: 5,
+    features: ["5 portraits", "HD quality", "No watermark"],
+    cta: "Get Starter",
+    href: "/pricing",
     highlight: false,
   },
   {
     name: "Creator",
     price: 19,
     originalPrice: 39,
-    period: "one-time",
-    features: ["15 credits", "HD, no watermark", "All styles + Mix mode"],
+    credits: 20,
+    badge: "Most Popular",
+    features: ["20 portraits", "All styles + Mix", "Print ordering"],
     cta: "Get Creator",
     href: "/pricing",
-    highlight: false,
+    highlight: true,
   },
   {
     name: "Pro",
     price: 39,
     originalPrice: 79,
-    period: "one-time",
-    badge: "Most Popular",
-    features: ["40 credits", "4K Ultra HD", "1 free print included"],
+    credits: 50,
+    features: ["50 portraits", "4K Ultra HD", "1 free print"],
     cta: "Get Pro",
     href: "/pricing",
-    highlight: true,
+    highlight: false,
   },
 ];
 
@@ -45,7 +45,7 @@ export function PricingTeaser() {
   return (
     <section id="pricing" className="py-32 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary mb-6">
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-medium">Simple Pricing</span>
@@ -57,6 +57,18 @@ export function PricingTeaser() {
             One-time payment. No subscriptions. No hidden fees.
           </p>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-sm mx-auto mb-10"
+        >
+          <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-destructive/10 text-destructive text-sm font-medium">
+            <Clock className="w-4 h-4" />
+            Limited time — up to 53% off
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto mb-12">
           {tiers.map((tier, index) => (
@@ -80,13 +92,13 @@ export function PricingTeaser() {
 
               <h3 className="font-serif text-2xl font-bold mb-4">{tier.name}</h3>
 
-              <div className="flex items-baseline gap-2 mb-6">
-                {tier.originalPrice && (
-                  <span className="text-xl text-muted-foreground line-through">${tier.originalPrice}</span>
-                )}
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-xl text-muted-foreground line-through decoration-destructive/60 decoration-2">${tier.originalPrice}</span>
                 <span className="font-serif text-4xl font-bold">${tier.price}</span>
-                <span className="text-sm text-muted-foreground">{tier.period}</span>
               </div>
+              <p className="text-xs text-primary font-medium mb-6">
+                ${(tier.price / tier.credits).toFixed(2)}/portrait &middot; {tier.credits} credits
+              </p>
 
               <ul className="space-y-3 mb-8">
                 {tier.features.map((f) => (
@@ -100,21 +112,24 @@ export function PricingTeaser() {
               <Link href={tier.href}>
                 <Button
                   variant={tier.highlight ? "default" : "outline"}
-                  className={`w-full rounded-full h-12 ${
+                  className={`w-full rounded-full h-12 font-semibold ${
                     tier.highlight ? "shadow-lg shadow-primary/25" : ""
                   }`}
                 >
-                  {tier.cta}
+                  {tier.cta} — ${tier.price}
                 </Button>
               </Link>
             </motion.div>
           ))}
         </div>
 
-        <div className="text-center">
+        <div className="text-center space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Or <Link href="/auth" className="text-primary underline underline-offset-4">start free</Link> with 3 watermarked portraits/month
+          </p>
           <Link href="/pricing">
             <Button variant="ghost" className="rounded-full group">
-              View full pricing & FAQ
+              Compare all plans & FAQ
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
