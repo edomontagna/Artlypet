@@ -91,7 +91,8 @@ const GallerySection = () => {
                     <img
                       src={item.preview_url}
                       alt={`${item.name} pet portrait`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform ease-out group-hover:scale-105"
+                      style={{ transitionDuration: "1.2s" }}
                       loading="lazy"
                     />
                   ) : (
