@@ -13,8 +13,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { getServedImage, purchaseHdImage } from "@/services/generations";
+import { getSignedUrl } from "@/services/storage";
 import { useTranslation } from "react-i18next";
 import { CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
+
+// Thumbnail component that loads signed URL from storage path
+const PortraitThumbnail = ({ storagePath, alt }: { storagePath: string; alt: string }) => {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    getSignedUrl("generated-images", storagePath, 3600)
+      .then(setUrl)
+      .catch(() => setUrl(null));
+  }, [storagePath]);
+  if (!url) return <Skeleton className="w-full h-full" />;
+  return <img src={url} alt={alt} className="w-full h-full object-cover" loading="lazy" />;
+};
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -264,12 +277,7 @@ const Dashboard = () => {
                     {generations.slice(0, 6).map((gen) => (
                       <div key={gen.id} className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group">
                         {gen.storage_path ? (
-                          <img
-                            src={gen.storage_path}
-                            alt="Generated portrait"
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
+                          <PortraitThumbnail storagePath={gen.storage_path} alt="Generated portrait" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             {gen.status === "failed" ? (
@@ -364,7 +372,7 @@ const Dashboard = () => {
                     <div key={gen.id} className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
                       <div className="aspect-square relative group">
                         {gen.storage_path ? (
-                          <img src={gen.storage_path} alt="Portrait" className="w-full h-full object-cover" loading="lazy" />
+                          <PortraitThumbnail storagePath={gen.storage_path} alt="Portrait" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted/50">
                             {gen.status === "failed" ? (

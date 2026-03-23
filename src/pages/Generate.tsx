@@ -18,6 +18,7 @@ import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/consta
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { SharePanel } from "@/components/SharePanel";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
 
 const Generate = () => {
@@ -186,38 +187,27 @@ const Generate = () => {
               </p>
             </div>
 
-            {/* Before / After — side by side, crystal clear */}
-            <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
-              {previewUrl && (
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground text-center mb-2 uppercase tracking-wider">
-                    {t("generate.originalPhoto", "Original")}
-                  </p>
-                  <div className="aspect-square rounded-2xl overflow-hidden border border-border shadow-sm">
-                    <img src={previewUrl} alt="Original photo" className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              )}
-              <div>
-                <p className="text-xs font-medium text-primary text-center mb-2 uppercase tracking-wider">
-                  {t("generate.aiPortrait", "AI Portrait")}
-                </p>
-                <div className="aspect-square rounded-2xl overflow-hidden border-2 border-primary shadow-xl relative">
-                  <img src={resultUrl} alt="Generated portrait" className="w-full h-full object-cover" />
-                  {resultMode === "watermarked" && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="rotate-[-30deg] opacity-25">
-                        {[0, 1, 2].map((i) => (
-                          <p key={i} className="text-white font-serif text-3xl font-bold tracking-widest mb-12 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
-                            Artlypet &nbsp; Artlypet
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+            {/* Before / After — interactive drag slider */}
+            {previewUrl ? (
+              <div className="max-w-xl mx-auto">
+                <BeforeAfterSlider beforeUrl={previewUrl} afterUrl={resultUrl} />
               </div>
-            </div>
+            ) : (
+              <div className="max-w-xl mx-auto rounded-2xl overflow-hidden shadow-xl border-2 border-primary relative">
+                <img src={resultUrl} alt="Generated portrait" className="w-full" />
+                {resultMode === "watermarked" && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="rotate-[-30deg] opacity-25">
+                      {[0, 1, 2].map((i) => (
+                        <p key={i} className="text-white font-serif text-3xl font-bold tracking-widest mb-12 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
+                          Artlypet &nbsp; Artlypet
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
             <div className="space-y-4 max-w-2xl mx-auto">
@@ -333,7 +323,7 @@ const Generate = () => {
                           {t("generate.downloadDesc", "Full 2K HD resolution, no watermark. Ready to print or share.")}
                         </p>
                         <Button asChild size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
-                          <a href={resultUrl} download="artlypet-portrait-HD.png">
+                          <a href={resultUrl} target="_blank" rel="noopener noreferrer" download="artlypet-portrait-HD.png">
                             <Download className="h-4 w-4" />
                             {t("generate.downloadHd", "Download HD")}
                           </a>
@@ -348,9 +338,9 @@ const Generate = () => {
               {resultMode === "watermarked" && (
                 <div className="text-center">
                   <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground text-sm">
-                    <a href={resultUrl} download="artlypet-preview.jpg">
+                    <a href={resultUrl} target="_blank" rel="noopener noreferrer">
                       <Download className="h-3 w-3" />
-                      {t("generate.downloadPreview", "Download watermarked preview")}
+                      {t("generate.downloadPreview", "View watermarked preview")}
                     </a>
                   </Button>
                 </div>
