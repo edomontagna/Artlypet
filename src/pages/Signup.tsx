@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -42,7 +42,14 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signUp, signInWithGoogle } = useAuth();
+
+  // Capture referral code from URL (?ref=ABC123) and persist in localStorage
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) localStorage.setItem("artlypet_ref", ref);
+  }, [searchParams]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -54,7 +61,8 @@ const Signup = () => {
 
   const onSubmit = async (values: FormData) => {
     setLoading(true);
-    const { error } = await signUp(values.email, values.password, values.displayName);
+    const refCode = localStorage.getItem("artlypet_ref") || undefined;
+    const { error } = await signUp(values.email, values.password, values.displayName, refCode);
     if (error) {
       toast.error(error.message);
     } else {

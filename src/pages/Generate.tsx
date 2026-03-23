@@ -17,6 +17,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
+import { SharePanel } from "@/components/SharePanel";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const Generate = () => {
   const { t } = useTranslation();
@@ -226,43 +228,49 @@ const Generate = () => {
               </motion.div>
             )}
 
-            {/* Download/Share for HD images */}
+            {/* Download + Share for HD images */}
             {resultMode === "hd" && (
-              <div className="flex items-center justify-center gap-3 mt-6">
-                <Button asChild className="rounded-full gap-2 shadow-md">
-                  <a href={resultUrl} download="artlypet-portrait.png">
-                    <Download className="h-4 w-4" />
-                    {t("generate.downloadHd", "Download HD")}
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full gap-2"
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({ title: "My Artlypet Portrait", url: resultUrl });
-                    } else {
-                      navigator.clipboard.writeText(resultUrl);
-                      toast.success("Link copied to clipboard");
-                    }
-                  }}
-                >
-                  <Share2 className="h-4 w-4" />
-                  {t("generate.share", "Share")}
-                </Button>
+              <div className="space-y-4 mt-6">
+                <div className="flex items-center justify-center gap-3">
+                  <Button asChild className="rounded-full gap-2 shadow-md">
+                    <a href={resultUrl} download="artlypet-portrait.png">
+                      <Download className="h-4 w-4" />
+                      {t("generate.downloadHd", "Download HD")}
+                    </a>
+                  </Button>
+                </div>
+                <SharePanel imageUrl={resultUrl} />
               </div>
             )}
 
-            {/* Download watermarked version for free users */}
+            {/* Download + Share watermarked version for free users */}
             {resultMode === "watermarked" && (
-              <div className="flex items-center justify-center gap-3 mt-4">
-                <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground">
-                  <a href={resultUrl} download="artlypet-preview.jpg">
-                    <Download className="h-4 w-4" />
-                    {t("generate.downloadPreview", "Download Preview")}
-                  </a>
-                </Button>
+              <div className="space-y-4 mt-4">
+                <div className="flex items-center justify-center">
+                  <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground">
+                    <a href={resultUrl} download="artlypet-preview.jpg">
+                      <Download className="h-4 w-4" />
+                      {t("generate.downloadPreview", "Download Preview")}
+                    </a>
+                  </Button>
+                </div>
+                <SharePanel imageUrl={resultUrl} />
               </div>
+            )}
+
+            {/* Before/After comparison slider */}
+            {resultUrl && previewUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-10 max-w-lg mx-auto"
+              >
+                <h3 className="font-serif text-lg font-semibold text-foreground text-center mb-4">
+                  {t("share.compareTitle", "The Transformation")}
+                </h3>
+                <BeforeAfterSlider beforeUrl={previewUrl} afterUrl={resultUrl} />
+              </motion.div>
             )}
           </motion.div>
         )}

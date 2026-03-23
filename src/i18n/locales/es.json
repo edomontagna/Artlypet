@@ -11,7 +11,8 @@
     "title": "Tu Mascota, Inmortalizada en Arte",
     "subtitle": "Transforma la foto de tu querida mascota en un impresionante retrato artístico de calidad museo con IA de vanguardia. Elige entre una colección curada de estilos artísticos de clase mundial.",
     "cta": "Transforma Tu Mascota",
-    "viewGallery": "Ver Galería"
+    "viewGallery": "Ver Galería",
+    "portraitsCreated": "retratos creados"
   },
   "howItWorks": {
     "title": "Cómo Funciona",
@@ -250,5 +251,23 @@
     "accept": "Aceptar",
     "decline": "Rechazar",
     "learnMore": "Saber más"
+  },
+  "share": {
+    "share": "Compartir",
+    "caption": "¡Mi mascota se convirtió en una obra de arte! Crea la tuya gratis",
+    "captionWithStyle": "¡Mi mascota se convirtió en una obra maestra {{style}}! Crea la tuya gratis",
+    "title": "Mi Retrato Artlypet",
+    "copied": "¡Enlace copiado!",
+    "copyLink": "Copiar enlace",
+    "shareOn": "Compartir en",
+    "before": "Antes",
+    "after": "Después",
+    "compareTitle": "La Transformación"
+  },
+  "referral": {
+    "title": "Invita Amigos, Gana Créditos",
+    "desc": "Comparte tu enlace. ¡Tú y tu amigo recibirán 150 créditos de bonus!",
+    "copied": "¡Enlace de invitación copiado!",
+    "copyLink": "Copiar Enlace"
   }
 }

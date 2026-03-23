@@ -7,13 +7,17 @@ export const signUpWithEmail = (
   email: string,
   password: string,
   displayName: string,
+  referralCode?: string,
 ) =>
   supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${window.location.origin}/auth/callback`,
-      data: { display_name: displayName },
+      data: {
+        display_name: displayName,
+        ...(referralCode ? { referral_code: referralCode } : {}),
+      },
     },
   });
 

@@ -11,7 +11,8 @@
     "title": "Dein Haustier, Verewigt in Kunst",
     "subtitle": "Verwandle das Foto deines geliebten Haustieres in ein atemberaubendes, museumsreifes Kunstporträt mit modernster KI. Wähle aus einer kuratierten Sammlung erstklassiger Kunststile.",
     "cta": "Verwandle Dein Haustier",
-    "viewGallery": "Galerie Ansehen"
+    "viewGallery": "Galerie Ansehen",
+    "portraitsCreated": "erstellte Porträts"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -250,5 +251,23 @@
     "accept": "Akzeptieren",
     "decline": "Ablehnen",
     "learnMore": "Mehr erfahren"
+  },
+  "share": {
+    "share": "Teilen",
+    "caption": "Mein Haustier ist jetzt ein Kunstwerk! Erstelle deins kostenlos",
+    "captionWithStyle": "Mein Haustier ist jetzt ein {{style}}-Meisterwerk! Erstelle deins kostenlos",
+    "title": "Mein Artlypet-Porträt",
+    "copied": "Link kopiert!",
+    "copyLink": "Link kopieren",
+    "shareOn": "Teilen auf",
+    "before": "Vorher",
+    "after": "Nachher",
+    "compareTitle": "Die Verwandlung"
+  },
+  "referral": {
+    "title": "Freunde einladen, Credits verdienen",
+    "desc": "Teile deinen Link. Ihr beide erhaltet 150 Bonus-Credits!",
+    "copied": "Empfehlungslink kopiert!",
+    "copyLink": "Link Kopieren"
   }
 }

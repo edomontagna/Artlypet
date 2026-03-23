@@ -11,7 +11,8 @@
     "title": "Votre Animal, Immortalisé dans l'Art",
     "subtitle": "Transformez la photo de votre animal bien-aimé en un superbe portrait artistique de qualité muséale grâce à l'IA de pointe. Choisissez parmi une collection soignée de styles artistiques de renommée mondiale.",
     "cta": "Transformez Votre Animal",
-    "viewGallery": "Voir la Galerie"
+    "viewGallery": "Voir la Galerie",
+    "portraitsCreated": "portraits créés"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -250,5 +251,23 @@
     "accept": "Accepter",
     "decline": "Refuser",
     "learnMore": "En savoir plus"
+  },
+  "share": {
+    "share": "Partager",
+    "caption": "Mon animal est devenu une oeuvre d'art ! Créez le vôtre gratuitement",
+    "captionWithStyle": "Mon animal est devenu un chef-d'oeuvre {{style}} ! Créez le vôtre gratuitement",
+    "title": "Mon Portrait Artlypet",
+    "copied": "Lien copié !",
+    "copyLink": "Copier le lien",
+    "shareOn": "Partager sur",
+    "before": "Avant",
+    "after": "Après",
+    "compareTitle": "La Transformation"
+  },
+  "referral": {
+    "title": "Invitez vos Amis, Gagnez des Crédits",
+    "desc": "Partagez votre lien. Vous et votre ami recevez 150 crédits bonus !",
+    "copied": "Lien de parrainage copié !",
+    "copyLink": "Copier le Lien"
   }
 }

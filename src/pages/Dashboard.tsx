@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Image as ImageIcon } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Image as ImageIcon, Copy } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -213,6 +213,37 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
+
+              {/* Referral card */}
+              {profile?.referral_code && (
+                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 mb-8">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
+                        {t("referral.title", "Invite Friends, Earn Credits")}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="rounded-full gap-2"
+                      onClick={() => {
+                        const link = `${window.location.origin}/signup?ref=${profile.referral_code}`;
+                        navigator.clipboard.writeText(link);
+                        toast.success(t("referral.copied", "Referral link copied!"));
+                      }}
+                    >
+                      <Copy className="h-4 w-4" />
+                      {t("referral.copyLink", "Copy Link")}
+                    </Button>
+                  </div>
+                  <div className="mt-3 p-3 bg-muted rounded-lg text-sm font-mono text-muted-foreground select-all">
+                    {window.location.origin}/signup?ref={profile.referral_code}
+                  </div>
+                </div>
+              )}
 
               {/* Recent generations */}
               {generationsLoading ? (

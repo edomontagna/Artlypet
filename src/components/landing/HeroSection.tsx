@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { usePortraitCount } from "@/hooks/usePortraitCount";
 
 const ease = [0.16, 1, 0.3, 1];
 
 const HeroSection = () => {
   const { t } = useTranslation();
+  const { data: portraitCount } = usePortraitCount();
 
   return (
     <section className="relative bg-background overflow-hidden">
@@ -70,6 +72,22 @@ const HeroSection = () => {
                 </a>
               </Button>
             </motion.div>
+
+            {/* Portrait counter — social proof */}
+            {portraitCount != null && portraitCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4, duration: 0.6, ease }}
+                className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
+              >
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span>
+                  <strong className="text-foreground font-semibold">{portraitCount.toLocaleString()}</strong>{" "}
+                  {t("hero.portraitsCreated", "portraits created")}
+                </span>
+              </motion.div>
+            )}
           </div>
 
           {/* Right — Image */}

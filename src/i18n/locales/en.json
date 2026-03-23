@@ -11,7 +11,8 @@
     "title": "Your Pet, Immortalised in Art",
     "subtitle": "Transform your beloved pet's photo into a stunning, museum-quality artistic portrait using cutting-edge AI. Choose from a curated collection of world-class art styles.",
     "cta": "Transform Your Pet",
-    "viewGallery": "View Gallery"
+    "viewGallery": "View Gallery",
+    "portraitsCreated": "portraits created"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -250,5 +251,23 @@
     "accept": "Accept",
     "decline": "Decline",
     "learnMore": "Learn more"
+  },
+  "share": {
+    "share": "Share",
+    "caption": "My pet just became a work of art! Create yours free",
+    "captionWithStyle": "My pet just became a {{style}} masterpiece! Create yours free",
+    "title": "My Artlypet Portrait",
+    "copied": "Link copied!",
+    "copyLink": "Copy link",
+    "shareOn": "Share on",
+    "before": "Before",
+    "after": "After",
+    "compareTitle": "The Transformation"
+  },
+  "referral": {
+    "title": "Invite Friends, Earn Credits",
+    "desc": "Share your link. Both you and your friend get 150 bonus credits!",
+    "copied": "Referral link copied!",
+    "copyLink": "Copy Link"
   }
 }
