@@ -119,9 +119,15 @@ serve(async (req) => {
 
         if (!style) throw new Error("Style not found");
 
-        // Convert image to base64
+        // Convert image to base64 (chunk-safe for large files)
         const arrayBuffer = await imageData.arrayBuffer();
-        const base64Image = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = "";
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        }
+        const base64Image = btoa(binary);
 
         // Call Gemini API
         const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
