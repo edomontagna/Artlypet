@@ -30,16 +30,19 @@ const TestimonialsSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-28 lg:py-36 bg-background relative" aria-labelledby="testimonials-heading">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-
+    <section
+      className="sec-on-surface py-28 lg:py-36 relative"
+      style={{ backgroundColor: "var(--surface)" }}
+      aria-labelledby="testimonials-heading"
+    >
       <div className="container px-6 lg:px-8">
-        <div className="text-center mb-20">
+        {/* Header */}
+        <div className="mb-20">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-xs font-semibold tracking-[0.3em] uppercase text-gold mb-4"
+            className="sec-label mb-4"
           >
             Testimonials
           </motion.p>
@@ -48,13 +51,18 @@ const TestimonialsSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-display-sm font-light text-foreground"
+            className="font-serif text-4xl lg:text-5xl font-light"
+            style={{ color: "var(--text)" }}
           >
             {t("testimonials.title")}
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        {/* Grid with border gaps */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
+          style={{ gap: "1.5px", backgroundColor: "var(--border)" }}
+        >
           {testimonials.map((item, i) => (
             <motion.div
               key={item.name}
@@ -62,27 +70,49 @@ const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
-              className="group relative p-8 rounded-2xl bg-card border border-border hover:border-gold/20 shadow-luxury hover:shadow-luxury-lg transition-all duration-500"
+              className="group relative"
+              style={{ backgroundColor: "var(--surface)" }}
             >
-              <Quote className="h-8 w-8 text-gold/15 mb-6" strokeWidth={1} />
+              <div className="relative p-8 lg:p-10">
+                {/* Card-bar on left */}
+                <div
+                  className="card-bar absolute left-0 top-0 w-[3px] transition-all duration-500 ease-out h-0 group-hover:h-full"
+                  style={{ backgroundColor: "var(--accent)" }}
+                />
 
-              <div className="flex gap-0.5 mb-5">
-                {Array.from({ length: item.rating }).map((_, j) => (
-                  <Star key={j} className="h-3.5 w-3.5 fill-gold text-gold" />
-                ))}
-              </div>
-
-              <p className="text-sm text-foreground/70 leading-relaxed mb-8 font-light italic">
-                "{item.text}"
-              </p>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/15 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-gold">{item.initials}</span>
+                {/* Stars */}
+                <div className="flex gap-0.5 mb-6">
+                  {Array.from({ length: item.rating }).map((_, j) => (
+                    <Star
+                      key={j}
+                      className="h-3 w-3"
+                      style={{ fill: "var(--accent)", color: "var(--accent)" }}
+                    />
+                  ))}
                 </div>
+
+                {/* Quote */}
+                <p
+                  className="font-serif text-lg font-light italic leading-relaxed mb-8"
+                  style={{ color: "var(--text)" }}
+                >
+                  &ldquo;{item.text}&rdquo;
+                </p>
+
+                {/* Attribution */}
                 <div>
-                  <p className="text-sm font-medium text-foreground">{item.name}</p>
-                  <p className="text-xs text-muted-foreground">{item.location}</p>
+                  <p
+                    className="text-sm font-medium"
+                    style={{ color: "var(--text)", fontFamily: "var(--font-sans, Jost, sans-serif)" }}
+                  >
+                    {item.name}
+                  </p>
+                  <p
+                    className="text-xs mt-0.5"
+                    style={{ color: "var(--muted)", fontFamily: "var(--font-sans, Jost, sans-serif)" }}
+                  >
+                    {item.location}
+                  </p>
                 </div>
               </div>
             </motion.div>

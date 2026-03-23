@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const COOKIE_KEY = "rexpet-cookie-consent";
+const COOKIE_KEY = "artlypet-cookie-consent";
 
 export const CookieBanner = () => {
   const { t } = useTranslation();

@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://rexpet.com/sitemap.xml
+Sitemap: https://artlypet.com/sitemap.xml

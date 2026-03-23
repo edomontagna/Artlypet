@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 
 const DEMO_USER = {
   displayName: "Alex Demo",
-  email: "alex@demo.rexpet.com",
+  email: "alex@demo.artlypet.com",
   creditBalance: 7,
 };
 
@@ -41,7 +41,7 @@ const Demo = () => {
       {/* Left sidebar */}
       <aside className="hidden lg:flex w-56 border-r border-border flex-col mt-7">
         <div className="p-4 border-b border-border">
-          <Link to="/" className="font-serif text-xl font-bold text-gradient-gold">RexPet</Link>
+          <Link to="/" className="font-serif text-xl font-bold text-gradient-gold">Artlypet</Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {tabs.map((tab) => (
@@ -82,7 +82,7 @@ const Demo = () => {
       <div className="flex-1 flex flex-col mt-7">
         {/* Top bar */}
         <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-8">
-          <h1 className="font-serif text-xl font-bold text-gradient-gold lg:hidden">RexPet</h1>
+          <h1 className="font-serif text-xl font-bold text-gradient-gold lg:hidden">Artlypet</h1>
           <div className="flex items-center gap-3 ml-auto">
             <div className="flex items-center gap-1.5 text-sm">
               <Sparkles className="h-4 w-4 text-primary" />

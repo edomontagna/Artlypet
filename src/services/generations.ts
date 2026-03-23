@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { GenerationType } from "@/lib/constants";
 
 export const getGenerations = (
   userId: string,
@@ -22,12 +23,13 @@ export const getGeneration = (id: string) =>
 export const requestGeneration = async (
   originalId: string,
   styleId: string,
+  generationType: GenerationType = "single",
 ) => {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error("Not authenticated");
 
   const res = await supabase.functions.invoke("generate-portrait", {
-    body: { original_id: originalId, style_id: styleId },
+    body: { original_id: originalId, style_id: styleId, generation_type: generationType },
   });
 
   if (res.error) throw res.error;
@@ -40,4 +42,20 @@ export const checkGenerationStatus = async (generationId: string) => {
   });
   if (res.error) throw res.error;
   return res.data;
+};
+
+export const getServedImage = async (generationId: string) => {
+  const res = await supabase.functions.invoke("serve-image", {
+    body: { generation_id: generationId },
+  });
+  if (res.error) throw res.error;
+  return res.data as { mode: "hd" | "watermarked"; url: string; watermark?: string; maxDisplaySize?: number };
+};
+
+export const purchaseHdImage = async (generationId: string) => {
+  const res = await supabase.functions.invoke("purchase-hd-image", {
+    body: { generation_id: generationId },
+  });
+  if (res.error) throw res.error;
+  return res.data as { url: string };
 };

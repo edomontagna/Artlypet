@@ -1,4 +1,4 @@
-# Constraints — RexPet
+# Constraints — Artlypet
 
 ## Infrastructure
 - **Hosting**: Supabase (free tier initially, upgrade as needed)

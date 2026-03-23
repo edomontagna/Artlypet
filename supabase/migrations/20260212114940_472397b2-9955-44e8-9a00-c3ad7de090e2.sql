@@ -1,6 +1,6 @@
 
 -- ============================================
--- RexPet Database Schema — Phase 1
+-- Artlypet Database Schema — Phase 1
 -- ============================================
 
 -- 1. ENUM TYPES

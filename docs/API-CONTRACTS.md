@@ -1,4 +1,4 @@
-# API Contracts — RexPet Edge Functions
+# API Contracts — Artlypet Edge Functions
 
 ## POST /functions/v1/create-checkout-session
 **Auth**: Bearer token (Supabase JWT)

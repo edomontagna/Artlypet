@@ -3,30 +3,41 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2 } from "lucide-react";
+import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
+import { useProfile } from "@/hooks/useProfile";
 import { useStyles } from "@/hooks/useStyles";
 import { useGenerationStatus } from "@/hooks/useGenerations";
-import { uploadOriginalImage, getSignedUrl } from "@/services/storage";
-import { requestGeneration } from "@/services/generations";
+import { uploadOriginalImage } from "@/services/storage";
+import { requestGeneration, getServedImage, purchaseHdImage } from "@/services/generations";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
+import type { GenerationType } from "@/lib/constants";
+import { useTranslation } from "react-i18next";
 
 const Generate = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data: creditBalance, isLoading: creditsLoading } = useCreditBalance();
+  const { data: profile } = useProfile();
   const { data: styles, isLoading: stylesLoading } = useStyles();
   const queryClient = useQueryClient();
 
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
+  const [generationType, setGenerationType] = useState<GenerationType>("single");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generationId, setGenerationId] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [resultMode, setResultMode] = useState<"hd" | "watermarked" | null>(null);
+
+  const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
+  const creditCost = getCreditCost(generationType);
 
   const { data: generationStatus } = useGenerationStatus(generationId, generating);
 
@@ -37,22 +48,25 @@ const Generate = () => {
     };
   }, [previewUrl]);
 
-  // Handle generation completion
+  // Handle generation completion — use serve-image to get correct quality
   useEffect(() => {
-    if (generationStatus?.status === "completed" && generationStatus.storage_path) {
-      getSignedUrl("generated-images", generationStatus.storage_path)
-        .then(setResultUrl)
+    if (generationStatus?.status === "completed" && generationId) {
+      getServedImage(generationId)
+        .then((data) => {
+          setResultUrl(data.url);
+          setResultMode(data.mode);
+        })
         .catch(() => toast.error("Failed to load result"));
       setGenerating(false);
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
     } else if (generationStatus?.status === "failed") {
-      toast.error(generationStatus.error_message || "Generation failed. Credit has been refunded.");
+      toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
       setGenerating(false);
       setGenerationId(null);
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }
-  }, [generationStatus, queryClient]);
+  }, [generationStatus, generationId, queryClient]);
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -67,6 +81,7 @@ const Generate = () => {
     setUploadedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setResultUrl(null);
+    setResultMode(null);
     setGenerationId(null);
   }, [previewUrl]);
 
@@ -97,24 +112,32 @@ const Generate = () => {
     setUploadedFile(null);
     setPreviewUrl(null);
     setResultUrl(null);
+    setResultMode(null);
     setGenerationId(null);
   };
 
   const handleGenerate = async () => {
-    if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < 1) return;
+    if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
 
     setGenerating(true);
     try {
-      // Upload original image
       const original = await uploadOriginalImage(user.id, uploadedFile);
-
-      // Request generation
-      const result = await requestGeneration(original.id, selectedStyleId);
+      const result = await requestGeneration(original.id, selectedStyleId, generationType);
       setGenerationId(result.generation_id);
-      toast.success("Generation started! This may take up to 60 seconds.");
+      toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to start generation");
       setGenerating(false);
+    }
+  };
+
+  const handleUnlockHd = async () => {
+    if (!generationId) return;
+    try {
+      const { url } = await purchaseHdImage(generationId);
+      if (url) window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to start HD unlock");
     }
   };
 
@@ -126,13 +149,20 @@ const Generate = () => {
           <Button variant="ghost" size="icon" asChild>
             <Link to="/dashboard"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
-          <h1 className="font-serif text-xl font-bold text-gradient-gold">Create Portrait</h1>
+          <h1 className="font-serif text-xl font-bold text-gradient-gold">{t("generate.title", "Create Portrait")}</h1>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Sparkles className="h-4 w-4 text-primary" />
-          <span className="font-medium text-foreground">
-            {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : (creditBalance ?? 0)} credits
-          </span>
+        <div className="flex items-center gap-3 text-sm">
+          {isPremium && (
+            <span className="flex items-center gap-1 text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded-full">
+              <Crown className="h-3 w-3" /> Premium
+            </span>
+          )}
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="font-medium text-foreground">
+              {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : (creditBalance ?? 0)} {t("generate.credits", "credits")}
+            </span>
+          </div>
         </div>
       </header>
 
@@ -144,33 +174,94 @@ const Generate = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-12 text-center"
           >
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-6">Your Portrait is Ready!</h2>
-            <div className="max-w-lg mx-auto rounded-xl overflow-hidden shadow-luxury border border-border">
-              <img src={resultUrl} alt="Generated portrait" className="w-full" />
+            <h2 className="font-serif text-2xl font-bold text-foreground mb-6">
+              {t("generate.portraitReady", "Your Portrait is Ready!")}
+            </h2>
+
+            {/* Image with optional watermark overlay */}
+            <div className="max-w-lg mx-auto rounded-xl overflow-hidden shadow-luxury border border-border relative">
+              <img
+                src={resultUrl}
+                alt="Generated portrait"
+                className="w-full"
+                style={resultMode === "watermarked" ? { maxWidth: "768px" } : undefined}
+              />
+              {resultMode === "watermarked" && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="rotate-[-30deg] opacity-30">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <p key={i} className="text-white font-serif text-4xl font-bold tracking-widest mb-16 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
+                        Artlypet &nbsp; Artlypet &nbsp; Artlypet
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex items-center justify-center gap-3 mt-6">
-              <Button asChild className="rounded-full gap-2">
-                <a href={resultUrl} download="rexpet-portrait.png">
-                  <Download className="h-4 w-4" />
-                  Download
-                </a>
-              </Button>
-              <Button
-                variant="outline"
-                className="rounded-full gap-2"
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({ title: "My RexPet Portrait", url: resultUrl });
-                  } else {
-                    navigator.clipboard.writeText(resultUrl);
-                    toast.success("Link copied to clipboard");
-                  }
-                }}
+
+            {/* Watermark notice + Unlock HD */}
+            {resultMode === "watermarked" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 p-4 rounded-xl border border-primary/20 bg-primary/5"
               >
-                <Share2 className="h-4 w-4" />
-                Share
-              </Button>
-            </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {t("generate.watermarkedPreview", "Preview with watermark — Unlock HD for full resolution without watermark")}
+                </p>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <Button onClick={handleUnlockHd} className="rounded-full gap-2">
+                    <Lock className="h-4 w-4" />
+                    {t("generate.unlockHd", "Unlock HD — €4.90")}
+                  </Button>
+                  <Button variant="outline" asChild className="rounded-full gap-2">
+                    <Link to="/dashboard?upgrade=true">
+                      <Crown className="h-4 w-4" />
+                      {t("generate.goPremium", "Go Premium — €15")}
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Download/Share for HD images */}
+            {resultMode === "hd" && (
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <Button asChild className="rounded-full gap-2">
+                  <a href={resultUrl} download="artlypet-portrait.png">
+                    <Download className="h-4 w-4" />
+                    {t("generate.downloadHd", "Download HD")}
+                  </a>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full gap-2"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({ title: "My Artlypet Portrait", url: resultUrl });
+                    } else {
+                      navigator.clipboard.writeText(resultUrl);
+                      toast.success("Link copied to clipboard");
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4" />
+                  {t("generate.share", "Share")}
+                </Button>
+              </div>
+            )}
+
+            {/* Download watermarked version for free users */}
+            {resultMode === "watermarked" && (
+              <div className="flex items-center justify-center gap-3 mt-4">
+                <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground">
+                  <a href={resultUrl} download="artlypet-preview.jpg">
+                    <Download className="h-4 w-4" />
+                    {t("generate.downloadPreview", "Download Preview")}
+                  </a>
+                </Button>
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -182,8 +273,12 @@ const Generate = () => {
             className="mb-12 text-center py-16"
           >
             <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-6" />
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-2">Creating Your Portrait...</h2>
-            <p className="text-muted-foreground">This usually takes 30-60 seconds. Please don't close this page.</p>
+            <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+              {t("generate.creating", "Creating Your Portrait...")}
+            </h2>
+            <p className="text-muted-foreground">
+              {t("generate.creatingDesc", "This usually takes 30-60 seconds. Please don't close this page.")}
+            </p>
           </motion.div>
         )}
 
@@ -196,12 +291,16 @@ const Generate = () => {
               animate={{ opacity: 1, y: 0 }}
               className="mb-12"
             >
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">1. Upload your pet's photo</h2>
-              <p className="text-muted-foreground mb-6">Choose a clear, well-lit photo of your pet</p>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                {t("generate.step1Title", "1. Upload your photo")}
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                {t("generate.step1Desc", "Choose a clear, well-lit photo of your pet or person")}
+              </p>
 
               {previewUrl ? (
                 <div className="relative inline-block">
-                  <img src={previewUrl} alt="Pet preview" className="max-h-64 rounded-lg object-contain" />
+                  <img src={previewUrl} alt="Preview" className="max-h-64 rounded-lg object-contain" />
                   <button
                     onClick={removeFile}
                     className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90"
@@ -221,8 +320,8 @@ const Generate = () => {
                   }`}
                 >
                   <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
-                  <span className="text-sm text-muted-foreground">Click to upload or drag & drop</span>
-                  <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP up to 10MB</span>
+                  <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
+                  <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -233,15 +332,68 @@ const Generate = () => {
               )}
             </motion.div>
 
-            {/* Step 2: Choose Style */}
+            {/* Step 2: Generation Type */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="mb-12"
+            >
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                {t("generate.step2Title", "2. Choose generation type")}
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                {t("generate.step2Desc", "Single subject or a mix of pet and person")}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
+                <Card
+                  onClick={() => setGenerationType("single")}
+                  className={`p-5 cursor-pointer transition-all ${
+                    generationType === "single"
+                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                      : "hover:shadow-luxury"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <ImageIcon className="h-5 w-5 text-primary" />
+                    <span className="font-serif font-semibold">{t("generate.single", "Single")}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{t("generate.singleDesc", "One pet or one person")}</p>
+                  <p className="text-sm font-medium text-primary mt-2">{CREDIT_COST_SINGLE} {t("generate.credits", "credits")}</p>
+                </Card>
+
+                <Card
+                  onClick={() => setGenerationType("mix")}
+                  className={`p-5 cursor-pointer transition-all ${
+                    generationType === "mix"
+                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                      : "hover:shadow-luxury"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    <span className="font-serif font-semibold">{t("generate.mix", "Mix")}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{t("generate.mixDesc", "Pet + person together")}</p>
+                  <p className="text-sm font-medium text-primary mt-2">{CREDIT_COST_MIX} {t("generate.credits", "credits")}</p>
+                </Card>
+              </div>
+            </motion.div>
+
+            {/* Step 3: Choose Style */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="mb-12"
             >
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">2. Choose your style</h2>
-              <p className="text-muted-foreground mb-6">Select the artistic style for your portrait</p>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                {t("generate.step3Title", "3. Choose your style")}
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                {t("generate.step3Desc", "Select the artistic style for your portrait")}
+              </p>
 
               {stylesLoading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -284,19 +436,25 @@ const Generate = () => {
               )}
             </motion.div>
 
-            {/* Step 3: Generate */}
+            {/* Step 4: Generate */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="text-center"
             >
-              {(creditBalance ?? 0) < 1 ? (
+              {(creditBalance ?? 0) < creditCost ? (
                 <div className="p-6 rounded-xl border border-border bg-card mb-4">
-                  <p className="text-muted-foreground mb-3">You need at least 1 credit to generate a portrait</p>
-                  <Button asChild className="rounded-full">
-                    <Link to="/dashboard">Buy Credits</Link>
-                  </Button>
+                  <p className="text-muted-foreground mb-3">
+                    {t("generate.needCredits", "You need at least {{cost}} credits to generate this portrait", { cost: creditCost })}
+                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <Button asChild className="rounded-full">
+                      <Link to="/dashboard?upgrade=true">
+                        {t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <Button
@@ -306,8 +464,14 @@ const Generate = () => {
                   className="rounded-full px-10 h-13 text-base shadow-luxury"
                 >
                   <ImageIcon className="mr-2 h-5 w-5" />
-                  Generate Portrait (1 credit)
+                  {t("generate.generateBtn", "Generate Portrait ({{cost}} credits)", { cost: creditCost })}
                 </Button>
+              )}
+
+              {!isPremium && (creditBalance ?? 0) >= creditCost && (
+                <p className="text-xs text-muted-foreground mt-3">
+                  {t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}
+                </p>
               )}
             </motion.div>
           </>
@@ -321,11 +485,12 @@ const Generate = () => {
               className="rounded-full"
               onClick={() => {
                 setResultUrl(null);
+                setResultMode(null);
                 setGenerationId(null);
                 removeFile();
               }}
             >
-              Create Another Portrait
+              {t("generate.createAnother", "Create Another Portrait")}
             </Button>
           </div>
         )}

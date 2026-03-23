@@ -1,6 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const CREDIT_COSTS: Record<string, number> = {
+  single: 100,
+  mix: 150,
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -22,8 +27,10 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { original_id, style_id } = await req.json();
+    const { original_id, style_id, generation_type = "single" } = await req.json();
     if (!original_id || !style_id) return new Response(JSON.stringify({ error: "Missing original_id or style_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const creditCost = CREDIT_COSTS[generation_type] || CREDIT_COSTS.single;
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -37,12 +44,12 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .single();
 
-    if (!profile || profile.credit_balance < 1) {
-      return new Response(JSON.stringify({ error: "Insufficient credits" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!profile || profile.credit_balance < creditCost) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", required: creditCost, current: profile?.credit_balance || 0 }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Deduct 1 credit
-    const newBalance = profile.credit_balance - 1;
+    // Deduct credits
+    const newBalance = profile.credit_balance - creditCost;
     await supabase
       .from("profiles")
       .update({ credit_balance: newBalance, updated_at: new Date().toISOString() })
@@ -52,9 +59,9 @@ serve(async (req) => {
     await supabase.from("credit_transactions").insert({
       user_id: user.id,
       type: "deduction",
-      amount: -1,
+      amount: -creditCost,
       balance_after: newBalance,
-      description: "Portrait generation",
+      description: `Portrait generation (${generation_type}) — ${creditCost} credits`,
     });
 
     // Create generation record
@@ -65,6 +72,7 @@ serve(async (req) => {
         style_id,
         original_id,
         status: "pending",
+        generation_type,
       })
       .select()
       .single();
@@ -75,7 +83,7 @@ serve(async (req) => {
     await supabase.from("audit_log").insert({
       user_id: user.id,
       event_type: "generation_requested",
-      metadata: { generation_id: generation.id, style_id, original_id },
+      metadata: { generation_id: generation.id, style_id, original_id, generation_type, credit_cost: creditCost },
     });
 
     // Start async generation (non-blocking)
@@ -199,14 +207,14 @@ serve(async (req) => {
           .update({ status: "failed", error_message: err.message })
           .eq("id", generation.id);
 
-        // Refund credit
+        // Refund credits
         const { data: currentProfile } = await supabase
           .from("profiles")
           .select("credit_balance")
           .eq("user_id", user.id)
           .single();
 
-        const refundBalance = (currentProfile?.credit_balance || 0) + 1;
+        const refundBalance = (currentProfile?.credit_balance || 0) + creditCost;
         await supabase
           .from("profiles")
           .update({ credit_balance: refundBalance, updated_at: new Date().toISOString() })
@@ -215,9 +223,9 @@ serve(async (req) => {
         await supabase.from("credit_transactions").insert({
           user_id: user.id,
           type: "refund",
-          amount: 1,
+          amount: creditCost,
           balance_after: refundBalance,
-          description: "Generation failed — automatic refund",
+          description: `Generation failed — automatic refund (${creditCost} credits)`,
         });
 
         await supabase.from("audit_log").insert({

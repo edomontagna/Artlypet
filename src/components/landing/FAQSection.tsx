@@ -8,16 +8,19 @@ const FAQSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="faq" className="py-28 lg:py-36 bg-background relative" aria-labelledby="faq-heading">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-
+    <section
+      id="faq"
+      className="py-28 lg:py-36 relative"
+      style={{ background: "var(--bg)" }}
+      aria-labelledby="faq-heading"
+    >
       <div className="container px-6 lg:px-8 max-w-3xl mx-auto">
         <div className="text-center mb-20">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-xs font-semibold tracking-[0.3em] uppercase text-gold mb-4"
+            className="sec-label"
           >
             Support
           </motion.p>
@@ -26,7 +29,8 @@ const FAQSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-display-sm font-light text-foreground"
+            className="font-serif text-4xl md:text-5xl font-light"
+            style={{ color: "var(--text)" }}
           >
             {t("faq.title")}
           </motion.h2>
@@ -38,17 +42,24 @@ const FAQSection = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="w-full">
             {faqKeys.map((key, i) => (
               <AccordionItem
                 key={key}
                 value={`faq-${i}`}
-                className="border border-border/80 rounded-2xl px-6 bg-card hover:border-gold/15 transition-colors duration-300 data-[state=open]:border-gold/20 data-[state=open]:shadow-luxury"
+                className="border-0 border-b px-0"
+                style={{ borderColor: "var(--border)" }}
               >
-                <AccordionTrigger className="text-left font-serif text-base font-normal hover:no-underline py-5 text-foreground/90 hover:text-foreground">
+                <AccordionTrigger
+                  className="text-left font-serif text-base md:text-lg font-normal hover:no-underline py-6 transition-colors duration-300 data-[state=open]:text-[var(--accent)]"
+                  style={{ color: "var(--text)", borderRadius: 0 }}
+                >
                   {t(`faq.${key}`)}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pb-5 font-light">
+                <AccordionContent
+                  className="font-sans text-sm leading-relaxed pb-6"
+                  style={{ color: "var(--muted)" }}
+                >
                   {t(`faq.a${key.slice(1)}`)}
                 </AccordionContent>
               </AccordionItem>

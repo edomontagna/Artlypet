@@ -1,4 +1,4 @@
-# Requirements — RexPet
+# Requirements — Artlypet
 
 ## Authentication
 - [x] Email/password signup with email verification

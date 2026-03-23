@@ -1,4 +1,4 @@
-# RexPet — AI Pet Portraits
+# Artlypet — AI Pet Portraits
 
 ## Stack
 - **Frontend**: Vite 5 + React 18 + TypeScript 5

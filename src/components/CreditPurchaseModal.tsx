@@ -2,16 +2,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Sparkles, Check } from "lucide-react";
-
-const packages = [
-  { id: "starter", credits: 2, price: "€4.99", pricePerCredit: "€2.50" },
-  { id: "bundle", credits: 10, price: "€14.99", pricePerCredit: "€1.50", popular: true },
-  { id: "collection", credits: 20, price: "€24.99", pricePerCredit: "€1.25" },
-];
+import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer } from "lucide-react";
+import { PREMIUM_CREDITS, PREMIUM_PRICE, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_PREMIUM, HD_UNLOCK_PRICE } from "@/lib/constants";
 
 interface Props {
   open: boolean;
@@ -20,13 +14,13 @@ interface Props {
 
 export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handlePurchase = async (packageId: string) => {
-    setLoading(packageId);
+  const handlePurchasePremium = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout-session", {
-        body: { package_id: packageId },
+        body: { package_id: "premium" },
       });
 
       if (error) throw error;
@@ -35,61 +29,89 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to start checkout");
-      setLoading(null);
+      setLoading(false);
     }
   };
 
+  const features = [
+    {
+      icon: Sparkles,
+      text: t("pricing.premiumFeature1", "{{credits}} credits included", { credits: PREMIUM_CREDITS }),
+    },
+    {
+      icon: ImageIcon,
+      text: t("pricing.premiumFeature2", "All images in full HD, no watermark"),
+    },
+    {
+      icon: Printer,
+      text: t("pricing.premiumFeature3", "Canvas prints at €{{price}}", { price: PRINT_PRICE_PREMIUM.toFixed(2) }),
+    },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-serif text-2xl">{t("dashboard.buyCredits")}</DialogTitle>
-          <DialogDescription>{t("pricing.subtitle")}</DialogDescription>
+          <DialogTitle className="font-serif text-2xl flex items-center gap-2">
+            <Crown className="h-6 w-6 text-primary" />
+            {t("pricing.goPremium", "Go Premium")}
+          </DialogTitle>
+          <DialogDescription>
+            {t("pricing.premiumSubtitle", "Unlock the full Artlypet experience")}
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-3 mt-4">
-          {packages.map((pkg) => (
-            <Card
-              key={pkg.id}
-              className={`p-4 cursor-pointer transition-all hover:shadow-luxury ${
-                pkg.popular ? "border-primary" : "border-border"
-              }`}
-              onClick={() => !loading && handlePurchase(pkg.id)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold">{pkg.credits} {t("pricing.credits")}</span>
-                      {pkg.popular && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium">
-                          {t("pricing.popular")}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs text-muted-foreground">{pkg.pricePerCredit} per credit</span>
-                  </div>
+
+        <div className="mt-4 space-y-6">
+          {/* Price */}
+          <div className="text-center">
+            <div className="flex items-baseline justify-center gap-1">
+              <span className="font-serif text-5xl font-bold text-foreground">€{PREMIUM_PRICE}</span>
+              <span className="text-sm text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {t("pricing.creditsInfo", "= {{single}} single or {{mix}} mixed portraits", {
+                single: Math.floor(PREMIUM_CREDITS / CREDIT_COST_SINGLE),
+                mix: Math.floor(PREMIUM_CREDITS / CREDIT_COST_MIX),
+              })}
+            </p>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-3">
+            {features.map((feature, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="h-4 w-4 text-primary" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-serif text-xl font-bold">{pkg.price}</span>
-                  <Button
-                    size="sm"
-                    variant={pkg.popular ? "default" : "outline"}
-                    className="rounded-full"
-                    disabled={!!loading}
-                  >
-                    {loading === pkg.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Check className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
+                <span className="text-sm">{feature.text}</span>
               </div>
-            </Card>
-          ))}
+            ))}
+          </div>
+
+          {/* Comparison */}
+          <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg space-y-1">
+            <p className="font-medium text-foreground">{t("pricing.vsFreePlan", "vs. Free Plan:")}</p>
+            <p>• {t("pricing.freeWatermark", "Free = watermarked low-res previews")}</p>
+            <p>• {t("pricing.freeHdPrice", "HD unlock per image: €{{price}}", { price: HD_UNLOCK_PRICE.toFixed(2) })}</p>
+            <p>• {t("pricing.freePrintPrice", "Canvas prints: €79.90")}</p>
+          </div>
+
+          {/* CTA */}
+          <Button
+            size="lg"
+            className="w-full rounded-full h-12 text-base shadow-luxury gap-2"
+            onClick={handlePurchasePremium}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                <Crown className="h-5 w-5" />
+                {t("pricing.upgradeCta", "Upgrade to Premium — €{{price}}", { price: PREMIUM_PRICE })}
+              </>
+            )}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

@@ -4,8 +4,7 @@ import Stripe from "https://esm.sh/stripe@14?target=deno";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2024-12-18.acacia" });
 
-const PRINT_PRICE_FREE = 7990;    // €79.90
-const PRINT_PRICE_PREMIUM = 5990; // €59.90
+const HD_UNLOCK_PRICE_CENTS = 490; // €4.90
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,19 +27,19 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { generated_image_id } = await req.json();
-    if (!generated_image_id) return new Response(JSON.stringify({ error: "Missing generated_image_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { generation_id } = await req.json();
+    if (!generation_id) return new Response(JSON.stringify({ error: "Missing generation_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const serviceSupabase = createClient(
+    const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Verify image belongs to user, is completed, and check HD status
-    const { data: image, error: imageError } = await serviceSupabase
+    // Verify image belongs to user, is completed, and NOT already unlocked
+    const { data: image, error: imageError } = await supabase
       .from("generated_images")
       .select("id, status, is_hd_unlocked")
-      .eq("id", generated_image_id)
+      .eq("id", generation_id)
       .eq("user_id", user.id)
       .eq("status", "completed")
       .single();
@@ -49,57 +48,40 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Image not found or not completed" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Get user plan type
-    const { data: profile } = await serviceSupabase
+    if (image.is_hd_unlocked) {
+      return new Response(JSON.stringify({ error: "Image already unlocked in HD" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Check if user is already premium (no need to purchase)
+    const { data: profile } = await supabase
       .from("profiles")
       .select("plan_type")
       .eq("user_id", user.id)
       .single();
 
-    const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
-
-    // Free users must have HD unlocked to print
-    if (!isPremium && !image.is_hd_unlocked) {
-      return new Response(JSON.stringify({ error: "HD unlock required for printing. Unlock this image or upgrade to Premium." }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (profile?.plan_type === "premium" || profile?.plan_type === "business") {
+      return new Response(JSON.stringify({ error: "Premium users already have HD access" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
-    const priceCents = isPremium ? PRINT_PRICE_PREMIUM : PRINT_PRICE_FREE;
-    const priceLabel = isPremium ? "€59.90" : "€79.90";
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [{
         price_data: {
           currency: "eur",
-          product_data: { name: `Artlypet Canvas Print — Museum Quality (${priceLabel})` },
-          unit_amount: priceCents,
+          product_data: { name: "HD Unlock — Artlypet Portrait" },
+          unit_amount: HD_UNLOCK_PRICE_CENTS,
         },
         quantity: 1,
       }],
       mode: "payment",
-      shipping_address_collection: { allowed_countries: ["AT", "BE", "DE", "DK", "ES", "FI", "FR", "IE", "IT", "LU", "NL", "PT", "SE"] },
-      success_url: `${req.headers.get("origin")}/dashboard?print=success`,
-      cancel_url: `${req.headers.get("origin")}/dashboard?print=cancelled`,
+      success_url: `${req.headers.get("origin")}/dashboard?hd_unlock=success`,
+      cancel_url: `${req.headers.get("origin")}/dashboard?hd_unlock=cancelled`,
       metadata: {
         user_id: user.id,
-        generated_image_id,
-        order_type: "print",
+        generation_id,
+        purchase_type: "hd_image",
       },
-    });
-
-    await serviceSupabase.from("print_orders").insert({
-      user_id: user.id,
-      generated_image_id,
-      status: "pending",
-      price_cents: priceCents,
-      currency: "eur",
-      stripe_session_id: session.id,
-    });
-
-    await serviceSupabase.from("audit_log").insert({
-      user_id: user.id,
-      event_type: "print_order_created",
-      metadata: { generated_image_id, stripe_session_id: session.id, price_cents: priceCents },
+      idempotency_key: `hd-${user.id}-${generation_id}-${Date.now()}`,
     });
 
     return new Response(

@@ -1,10 +1,10 @@
-# Vision — RexPet
+# Vision — Artlypet
 
 ## Problem
 Pet owners want unique, artistic representations of their beloved animals but custom pet portraits are expensive (€100-500+), slow (weeks), and require finding a skilled artist.
 
 ## Solution
-RexPet uses AI to transform any pet photo into a stunning artistic portrait in seconds. Museum-quality digital art at a fraction of the cost, with optional physical prints shipped EU-wide.
+Artlypet uses AI to transform any pet photo into a stunning artistic portrait in seconds. Museum-quality digital art at a fraction of the cost, with optional physical prints shipped EU-wide.
 
 ## Target User
 - **Primary**: Pet owners aged 25-55, EU-based, digitally comfortable

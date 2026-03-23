@@ -39,14 +39,45 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-md shadow-luxury">
-        <CardHeader className="text-center">
-          <Link to="/" className="font-serif text-2xl font-bold text-gradient-gold mx-auto mb-2">
-            RexPet
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "var(--bg)" }}
+    >
+      <Card
+        className="w-full max-w-md border"
+        style={{
+          borderRadius: 0,
+          background: "var(--surface)",
+          borderColor: "var(--border)",
+          boxShadow: "none",
+        }}
+      >
+        <CardHeader className="text-center pb-6">
+          <Link
+            to="/"
+            className="mx-auto mb-4 inline-block"
+            style={{ textDecoration: "none" }}
+          >
+            <span
+              className="font-serif"
+              style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.04em" }}
+            >
+              Artly
+            </span>
+            <span className="logo-accent" style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--accent)" }}>
+              Pet
+            </span>
           </Link>
-          <CardTitle className="font-serif text-2xl">Reset Password</CardTitle>
-          <CardDescription>
+          <CardTitle
+            className="font-serif"
+            style={{ fontSize: "1.5rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.02em" }}
+          >
+            Reset Password
+          </CardTitle>
+          <CardDescription
+            className="font-sans"
+            style={{ color: "var(--muted)", fontSize: "0.875rem" }}
+          >
             {sent
               ? "Check your email for a reset link"
               : "Enter your email and we'll send you a reset link"}
@@ -54,8 +85,8 @@ const ForgotPassword = () => {
         </CardHeader>
         {sent ? (
           <CardContent className="text-center pb-8">
-            <Mail className="h-12 w-12 text-primary mx-auto mb-4" />
-            <p className="text-sm text-muted-foreground">
+            <Mail className="h-12 w-12 mx-auto mb-4" style={{ color: "var(--accent)" }} />
+            <p className="text-sm font-sans" style={{ color: "var(--muted)" }}>
               If an account exists with that email, you'll receive a password reset link shortly.
             </p>
           </CardContent>
@@ -68,9 +99,25 @@ const ForgotPassword = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel
+                        className="font-sans uppercase tracking-widest text-xs"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Email
+                      </FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="you@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="you@example.com"
+                          className="font-sans"
+                          style={{
+                            borderRadius: 0,
+                            borderColor: "var(--border)",
+                            background: "transparent",
+                            color: "var(--text)",
+                          }}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -78,7 +125,18 @@ const ForgotPassword = () => {
                 />
               </CardContent>
               <CardFooter className="flex flex-col gap-4">
-                <Button type="submit" className="w-full rounded-full" disabled={loading}>
+                <Button
+                  type="submit"
+                  className="btn-editorial w-full uppercase tracking-widest text-xs font-sans"
+                  disabled={loading}
+                  style={{
+                    borderRadius: 0,
+                    background: "var(--accent)",
+                    color: "var(--bg)",
+                    height: "2.75rem",
+                    boxShadow: "none",
+                  }}
+                >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Send Reset Link
                 </Button>
@@ -87,7 +145,11 @@ const ForgotPassword = () => {
           </Form>
         )}
         <div className="px-6 pb-6 text-center">
-          <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+          <Link
+            to="/login"
+            className="text-sm font-sans inline-flex items-center gap-1"
+            style={{ color: "var(--muted)" }}
+          >
             <ArrowLeft className="h-3 w-3" />
             Back to Sign In
           </Link>

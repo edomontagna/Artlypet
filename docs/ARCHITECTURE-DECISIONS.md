@@ -1,4 +1,4 @@
-# Architecture Decision Log — RexPet
+# Architecture Decision Log — Artlypet
 
 ## ADR-001: AI Provider — Gemini 3.1 Flash Image Preview
 **Date**: 2026-02-27

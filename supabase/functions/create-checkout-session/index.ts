@@ -4,10 +4,8 @@ import Stripe from "https://esm.sh/stripe@14?target=deno";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2024-12-18.acacia" });
 
-const PACKAGES: Record<string, { credits: number; price: number; name: string }> = {
-  starter: { credits: 2, price: 499, name: "Starter — 2 Credits" },
-  bundle: { credits: 10, price: 1499, name: "Bundle — 10 Credits" },
-  collection: { credits: 20, price: 2499, name: "Collection — 20 Credits" },
+const PACKAGES: Record<string, { credits: number; price: number; name: string; plan_upgrade?: string }> = {
+  premium: { credits: 1500, price: 1500, name: "Premium — 1500 Credits + HD", plan_upgrade: "premium" },
 };
 
 const corsHeaders = {
@@ -33,7 +31,7 @@ serve(async (req) => {
 
     const { package_id } = await req.json();
     const pkg = PACKAGES[package_id];
-    if (!pkg) return new Response(JSON.stringify({ error: "Invalid package_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!pkg) return new Response(JSON.stringify({ error: "Invalid package_id. Available: premium" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -52,6 +50,8 @@ serve(async (req) => {
         user_id: user.id,
         package_id,
         credits: String(pkg.credits),
+        purchase_type: "premium",
+        plan_upgrade: pkg.plan_upgrade || "",
       },
       idempotency_key: `${user.id}-${package_id}-${Date.now()}`,
     });
