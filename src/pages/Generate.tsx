@@ -50,23 +50,25 @@ const Generate = () => {
 
   // Handle generation completion — use serve-image to get correct quality
   useEffect(() => {
-    if (generationStatus?.status === "completed" && generationId) {
+    if (!generationId || !generating) return;
+
+    if (generationStatus?.status === "completed") {
+      setGenerating(false);
       getServedImage(generationId)
         .then((data) => {
           setResultUrl(data.url);
           setResultMode(data.mode);
         })
         .catch(() => toast.error("Failed to load result"));
-      setGenerating(false);
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
     } else if (generationStatus?.status === "failed") {
-      toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
       setGenerating(false);
       setGenerationId(null);
+      toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }
-  }, [generationStatus, generationId, queryClient]);
+  }, [generationStatus?.status, generationId, generating, queryClient]);
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) {
