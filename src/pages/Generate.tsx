@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users, AlertCircle, Printer } from "lucide-react";
+import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Lock, Crown, Users, AlertCircle, Printer, ArrowRight, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -18,7 +18,6 @@ import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/consta
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { SharePanel } from "@/components/SharePanel";
-import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
 
 const Generate = () => {
@@ -53,20 +52,14 @@ const Generate = () => {
 
   const { data: generationStatus } = useGenerationStatus(generationId, generating);
 
-  // Cleanup object URLs on unmount or file change
   useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
   }, [previewUrl]);
 
   useEffect(() => {
-    return () => {
-      if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-    };
+    return () => { if (previewUrl2) URL.revokeObjectURL(previewUrl2); };
   }, [previewUrl2]);
 
-  // Clear file2 when switching from mix to single
   useEffect(() => {
     if (generationType === "single") {
       if (previewUrl2) URL.revokeObjectURL(previewUrl2);
@@ -75,18 +68,13 @@ const Generate = () => {
     }
   }, [generationType]);
 
-  // Handle generation completion — use serve-image to get correct quality
   useEffect(() => {
     if (!generationId || !generating) return;
-
     if (generationStatus?.status === "completed") {
       setGenerating(false);
       setOptimisticCreditDeduction(0);
       getServedImage(generationId)
-        .then((data) => {
-          setResultUrl(data.url);
-          setResultMode(data.mode);
-        })
+        .then((data) => { setResultUrl(data.url); setResultMode(data.mode); })
         .catch(() => toast.error("Failed to load result"));
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
@@ -101,129 +89,54 @@ const Generate = () => {
   }, [generationStatus?.status, generationId, generating, queryClient]);
 
   const handleFile = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file (JPG, PNG, WebP)");
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("File size must be under 10MB");
-      return;
-    }
+    if (!file.type.startsWith("image/")) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setUploadedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-    setResultUrl(null);
-    setResultMode(null);
-    setGenerationId(null);
-  }, [previewUrl]);
+    setResultUrl(null); setResultMode(null); setGenerationId(null);
+  }, [previewUrl, t]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  };
-
-  const removeFile = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setUploadedFile(null);
-    setPreviewUrl(null);
-    setResultUrl(null);
-    setResultMode(null);
-    setGenerationId(null);
-  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) handleFile(file); };
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
+  const handleDrop = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); const file = e.dataTransfer.files[0]; if (file) handleFile(file); };
+  const removeFile = () => { if (previewUrl) URL.revokeObjectURL(previewUrl); setUploadedFile(null); setPreviewUrl(null); setResultUrl(null); setResultMode(null); setGenerationId(null); };
 
   const handleFile2 = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file (JPG, PNG, WebP)");
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("File size must be under 10MB");
-      return;
-    }
+    if (!file.type.startsWith("image/")) { toast.error(t("generate.errorNotImage", "Please upload an image file")); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-    setUploadedFile2(file);
-    setPreviewUrl2(URL.createObjectURL(file));
-  }, [previewUrl2]);
+    setUploadedFile2(file); setPreviewUrl2(URL.createObjectURL(file));
+  }, [previewUrl2, t]);
 
-  const handleFile2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile2(file);
-  };
-
-  const handleDragOver2 = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging2(true);
-  };
-
-  const handleDragLeave2 = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging2(false);
-  };
-
-  const handleDrop2 = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging2(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile2(file);
-  };
-
-  const removeFile2 = () => {
-    if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-    setUploadedFile2(null);
-    setPreviewUrl2(null);
-  };
+  const handleFile2Change = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) handleFile2(file); };
+  const handleDragOver2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(true); };
+  const handleDragLeave2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(false); };
+  const handleDrop2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(false); const file = e.dataTransfer.files[0]; if (file) handleFile2(file); };
+  const removeFile2 = () => { if (previewUrl2) URL.revokeObjectURL(previewUrl2); setUploadedFile2(null); setPreviewUrl2(null); };
 
   const handleGenerate = async () => {
     if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
     if (generationType === "mix" && !uploadedFile2) return;
-
-    setGenerating(true);
-    setGenerationStartTime(Date.now());
-    setShowRetry(false);
-    setOptimisticCreditDeduction(creditCost);
+    setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setOptimisticCreditDeduction(creditCost);
     try {
       const original = await uploadOriginalImage(user.id, uploadedFile);
       let originalId2: string | undefined;
-      if (generationType === "mix" && uploadedFile2) {
-        const original2 = await uploadOriginalImage(user.id, uploadedFile2);
-        originalId2 = original2.id;
-      }
+      if (generationType === "mix" && uploadedFile2) { const original2 = await uploadOriginalImage(user.id, uploadedFile2); originalId2 = original2.id; }
       const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to start generation");
-      setGenerating(false);
-      setOptimisticCreditDeduction(0);
-    }
+    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setGenerating(false); setOptimisticCreditDeduction(0); }
   };
 
   const handleUnlockHd = async () => {
     if (!generationId) return;
-    try {
-      const { url } = await purchaseHdImage(generationId);
-      if (url) window.location.href = url;
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to start HD unlock");
-    }
+    try { const { url } = await purchaseHdImage(generationId); if (url) window.location.href = url; }
+    catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start HD unlock"); }
   };
+
+  const canGenerate = uploadedFile && selectedStyleId && (creditBalance ?? 0) >= creditCost && (generationType === "single" || uploadedFile2);
 
   return (
     <div className="min-h-screen bg-background">
@@ -250,286 +163,363 @@ const Generate = () => {
         </div>
       </header>
 
-      <div className="container px-4 lg:px-8 py-10 max-w-5xl">
-        {/* Result display */}
-        {resultUrl && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-12 text-center"
-          >
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-6">
-              {t("generate.portraitReady", "Your Portrait is Ready!")}
-            </h2>
+      <div className="container px-4 lg:px-8 py-8 max-w-4xl">
 
-            {/* Image with optional watermark overlay */}
-            <div className="max-w-lg mx-auto rounded-2xl overflow-hidden shadow-xl border border-border relative">
-              <img
-                src={resultUrl}
-                alt="Generated portrait"
-                className="w-full"
-                style={resultMode === "watermarked" ? { maxWidth: "768px" } : undefined}
-              />
-              {resultMode === "watermarked" && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="rotate-[-30deg] opacity-30">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <p key={i} className="text-white font-serif text-4xl font-bold tracking-widest mb-16 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
-                        Artlypet &nbsp; Artlypet &nbsp; Artlypet
-                      </p>
-                    ))}
+        {/* ═══════════════════════════════════════ */}
+        {/*  RESULT — Celebration & Next Steps     */}
+        {/* ═══════════════════════════════════════ */}
+        {resultUrl && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+
+            {/* Success header */}
+            <div className="text-center">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-primary" />
+                </div>
+              </motion.div>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
+                {t("generate.portraitReady", "Your Portrait is Ready!")}
+              </h2>
+              <p className="text-muted-foreground">
+                {t("generate.portraitReadyDesc", "Here's your masterpiece. Choose what to do next.")}
+              </p>
+            </div>
+
+            {/* Before / After — side by side, crystal clear */}
+            <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+              {previewUrl && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground text-center mb-2 uppercase tracking-wider">
+                    {t("generate.originalPhoto", "Original")}
+                  </p>
+                  <div className="aspect-square rounded-2xl overflow-hidden border border-border shadow-sm">
+                    <img src={previewUrl} alt="Original photo" className="w-full h-full object-cover" />
                   </div>
+                </div>
+              )}
+              <div>
+                <p className="text-xs font-medium text-primary text-center mb-2 uppercase tracking-wider">
+                  {t("generate.aiPortrait", "AI Portrait")}
+                </p>
+                <div className="aspect-square rounded-2xl overflow-hidden border-2 border-primary shadow-xl relative">
+                  <img src={resultUrl} alt="Generated portrait" className="w-full h-full object-cover" />
+                  {resultMode === "watermarked" && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="rotate-[-30deg] opacity-25">
+                        {[0, 1, 2].map((i) => (
+                          <p key={i} className="text-white font-serif text-3xl font-bold tracking-widest mb-12 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
+                            Artlypet &nbsp; Artlypet
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
+            <div className="space-y-4 max-w-2xl mx-auto">
+
+              <h3 className="font-serif text-xl font-bold text-foreground text-center">
+                {t("generate.whatNext", "What would you like to do?")}
+              </h3>
+
+              {/* Card 1: HD Unlock (FREE users only) */}
+              {resultMode === "watermarked" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                  <Card className="rounded-2xl border-2 border-primary bg-primary/5 p-6 shadow-md">
+                    <div className="flex items-start gap-4">
+                      <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                        <Download className="h-6 w-6 text-primary-foreground" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
+                          {t("generate.unlockHdTitle", "Download in Full HD")}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {t("generate.unlockHdDesc", "Remove the watermark and get your portrait in stunning 2K resolution, perfect for printing and sharing.")}
+                        </p>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <Button onClick={handleUnlockHd} size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
+                            <Lock className="h-4 w-4" />
+                            {t("generate.unlockHdBtn", "Unlock HD — €4.90")}
+                          </Button>
+                          <span className="text-xs text-muted-foreground">{t("generate.oneTimePayment", "One-time payment")}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              )}
+
+              {/* Card 2: Go Premium (FREE users only) */}
+              {!isPremium && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                  <Card className="rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-start gap-4">
+                      <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                        <Crown className="h-6 w-6 text-secondary" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
+                          {t("generate.premiumTitle", "Go Premium — Save Big")}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          {t("generate.premiumDesc", "1500 credits + ALL images in HD + discounted prints. No more watermarks, ever.")}
+                        </p>
+                        <p className="text-xs text-primary font-medium mb-3">
+                          {t("generate.premiumSaving", "5 HD images would cost €24.50 — Premium is just €15!")}
+                        </p>
+                        <Button variant="outline" asChild size="lg" className="rounded-full gap-2 h-12 px-8 text-base border-primary/30 text-primary hover:bg-primary/5">
+                          <Link to="/dashboard?upgrade=true">
+                            <Crown className="h-4 w-4" />
+                            {t("generate.premiumBtn", "Go Premium — €15")}
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              )}
+
+              {/* Card 3: Canvas Print (ALWAYS visible) */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <Card className="rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Printer className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-serif text-lg font-bold text-foreground mb-1">
+                        {t("generate.printTitle", "Print on Canvas")}
+                      </h4>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        {t("generate.printDesc2", "Museum-quality canvas print, shipped directly to your door. Perfect as a gift or wall decoration.")}
+                      </p>
+                      {resultMode === "watermarked" && (
+                        <p className="text-xs text-muted-foreground mb-2 italic">
+                          {t("generate.printRequiresHd", "Requires HD unlock or Premium plan")}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <Button variant="outline" asChild size="lg" className="rounded-full gap-2 h-12 px-8 text-base">
+                          <Link to="/prints">
+                            <Printer className="h-4 w-4" />
+                            {t("generate.printBtn", "Order Canvas — {{price}}", { price: isPremium ? "€59.90" : "€79.90" })}
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+
+              {/* Card 4: Download (HD users) */}
+              {resultMode === "hd" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+                  <Card className="rounded-2xl border-2 border-primary bg-primary/5 p-6 shadow-md">
+                    <div className="flex items-start gap-4">
+                      <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                        <Download className="h-6 w-6 text-primary-foreground" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
+                          {t("generate.downloadTitle", "Download Your Portrait")}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {t("generate.downloadDesc", "Full 2K HD resolution, no watermark. Ready to print or share.")}
+                        </p>
+                        <Button asChild size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
+                          <a href={resultUrl} download="artlypet-portrait-HD.png">
+                            <Download className="h-4 w-4" />
+                            {t("generate.downloadHd", "Download HD")}
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              )}
+
+              {/* Download preview for free users */}
+              {resultMode === "watermarked" && (
+                <div className="text-center">
+                  <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground text-sm">
+                    <a href={resultUrl} download="artlypet-preview.jpg">
+                      <Download className="h-3 w-3" />
+                      {t("generate.downloadPreview", "Download watermarked preview")}
+                    </a>
+                  </Button>
                 </div>
               )}
             </div>
 
-            {/* Watermark notice + Unlock HD */}
-            {resultMode === "watermarked" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 rounded-2xl border border-primary/20 bg-primary/5"
-              >
-                <p className="text-sm text-muted-foreground mb-3">
-                  {t("generate.watermarkedPreview", "Preview with watermark — Unlock HD for full resolution without watermark")}
-                </p>
-                <div className="flex items-center justify-center gap-3 flex-wrap">
-                  <Button onClick={handleUnlockHd} className="rounded-full gap-2 shadow-md">
-                    <Lock className="h-4 w-4" />
-                    {t("generate.unlockHd", "Unlock HD — €4.90")}
-                  </Button>
-                  <Button variant="outline" asChild className="rounded-full gap-2">
-                    <Link to="/dashboard?upgrade=true">
-                      <Crown className="h-4 w-4" />
-                      {t("generate.goPremium", "Go Premium — €15")}
-                    </Link>
-                  </Button>
-                </div>
-              </motion.div>
-            )}
+            {/* Share */}
+            <div className="max-w-2xl mx-auto text-center space-y-3">
+              <h3 className="font-serif text-lg font-semibold text-foreground">
+                {t("generate.shareHeading", "Share your masterpiece!")}
+              </h3>
+              <SharePanel imageUrl={resultUrl} />
+            </div>
 
-            {/* Download + Share for HD images */}
-            {resultMode === "hd" && (
-              <div className="space-y-4 mt-6">
-                <div className="flex items-center justify-center gap-3">
-                  <Button asChild className="rounded-full gap-2 shadow-md">
-                    <a href={resultUrl} download="artlypet-portrait.png">
-                      <Download className="h-4 w-4" />
-                      {t("generate.downloadHd", "Download HD")}
-                    </a>
-                  </Button>
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-foreground text-center">
-                  {t("generate.shareHeading", "Share your masterpiece!")}
-                </h3>
-                <SharePanel imageUrl={resultUrl} />
-
-                {/* Canvas Print Upsell */}
-                <div className="mt-6 p-5 rounded-2xl border border-border bg-card text-center">
-                  <Printer className="h-6 w-6 text-secondary mx-auto mb-2" />
-                  <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                    {t("generate.printCta", "Love it? Get it on canvas")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {t("generate.printDesc", "Museum-quality canvas print, shipped to your door")}
-                  </p>
-                  <p className="text-lg font-bold text-foreground mb-3">
-                    {isPremium ? "€59.90" : "€79.90"}
-                  </p>
-                  <Button variant="outline" className="rounded-full gap-2" asChild>
-                    <Link to="/prints">
-                      <Printer className="h-4 w-4" />
-                      {t("generate.orderPrint", "Order Canvas Print")}
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Download + Share watermarked version for free users */}
-            {resultMode === "watermarked" && (
-              <div className="space-y-4 mt-4">
-                <div className="flex items-center justify-center">
-                  <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground">
-                    <a href={resultUrl} download="artlypet-preview.jpg">
-                      <Download className="h-4 w-4" />
-                      {t("generate.downloadPreview", "Download Preview")}
-                    </a>
-                  </Button>
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-foreground text-center">
-                  {t("generate.shareHeading", "Share your masterpiece!")}
-                </h3>
-                <SharePanel imageUrl={resultUrl} />
-
-                {/* Canvas Print Upsell */}
-                <div className="mt-6 p-5 rounded-2xl border border-border bg-card text-center">
-                  <Printer className="h-6 w-6 text-secondary mx-auto mb-2" />
-                  <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                    {t("generate.printCta", "Love it? Get it on canvas")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {t("generate.printDesc", "Museum-quality canvas print, shipped to your door")}
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {t("generate.printRequiresHd", "Unlock HD first to order a canvas print")}
-                  </p>
-                  <p className="text-lg font-bold text-foreground mb-3">
-                    {isPremium ? "€59.90" : "€79.90"}
-                  </p>
-                  <Button variant="outline" className="rounded-full gap-2" asChild>
-                    <Link to="/prints">
-                      <Printer className="h-4 w-4" />
-                      {t("generate.orderPrint", "Order Canvas Print")}
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Before/After comparison slider */}
-            {resultUrl && previewUrl && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-10 max-w-lg mx-auto"
-              >
-                <h3 className="font-serif text-lg font-semibold text-foreground text-center mb-4">
-                  {t("share.compareTitle", "The Transformation")}
-                </h3>
-                <BeforeAfterSlider beforeUrl={previewUrl} afterUrl={resultUrl} />
-              </motion.div>
-            )}
+            {/* Create another */}
+            <div className="text-center pt-4">
+              <Button variant="outline" className="rounded-full gap-2" onClick={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); removeFile(); }}>
+                <ImageIcon className="h-4 w-4" />
+                {t("generate.createAnother", "Create Another Portrait")}
+              </Button>
+            </div>
           </motion.div>
         )}
 
-        {/* Generation in progress */}
+        {/* ═══════════════════════════════════════ */}
+        {/*  GENERATING — Creation Theater          */}
+        {/* ═══════════════════════════════════════ */}
         {generating && !resultUrl && (
-          <CreationTheater
-            previewUrl={previewUrl}
-            styleName={styles?.find((s) => s.id === selectedStyleId)?.name}
-            startTime={generationStartTime}
-          />
+          <CreationTheater previewUrl={previewUrl} styleName={styles?.find((s) => s.id === selectedStyleId)?.name} startTime={generationStartTime} />
         )}
 
-        {/* Retry after failure */}
+        {/* ═══════════════════════════════════════ */}
+        {/*  RETRY after failure                    */}
+        {/* ═══════════════════════════════════════ */}
         {showRetry && !generating && !resultUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-12 text-center py-12"
-          >
-            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <AlertCircle className="h-16 w-16 text-destructive mx-auto mb-4" />
+            <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
               {t("generate.generationFailed", "Generation Failed")}
             </h2>
-            <p className="text-muted-foreground mb-6">
-              {t("generate.failedDesc", "Something went wrong. Your credits have been refunded.")}
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              {t("generate.failedDesc", "Something went wrong. Don't worry — your credits have been automatically refunded.")}
             </p>
-            <Button
-              className="rounded-full px-8 shadow-md"
-              onClick={() => {
-                setShowRetry(false);
-              }}
-            >
+            <Button size="lg" className="rounded-full px-10 h-14 text-base shadow-xl" onClick={() => setShowRetry(false)}>
               {t("generate.tryAgain", "Try Again")}
             </Button>
           </motion.div>
         )}
 
-        {/* Upload + Style selection (hidden during generation) */}
+        {/* ═══════════════════════════════════════ */}
+        {/*  CREATE FLOW — Steps 1-4                */}
+        {/* ═══════════════════════════════════════ */}
         {!generating && !resultUrl && !showRetry && (
-          <>
-            {/* Step 1: Upload */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-12"
-            >
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {t("generate.step1Title", "1. Upload your photo")}
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                {generationType === "mix"
-                  ? t("generate.step1DescMix", "Upload your pet's photo and your photo (person)")
-                  : t("generate.step1Desc", "Choose a clear, well-lit photo of your pet or person")}
+          <div className="space-y-10">
+
+            {/* ── Step 1: Choose type ── */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">1</div>
+                <h2 className="font-serif text-xl font-bold text-foreground">
+                  {t("generate.step2Title", "Choose generation type")}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Card
+                  onClick={() => setGenerationType("single")}
+                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+                    generationType === "single" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`h-10 w-10 rounded-full flex items-center justify-center ${generationType === "single" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      <ImageIcon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="font-serif text-lg font-bold block">{t("generate.single", "Single")}</span>
+                      <span className="text-xs text-muted-foreground">{CREDIT_COST_SINGLE} {t("generate.credits", "credits")}</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{t("generate.singleDesc", "One pet or one person — perfect for a classic portrait")}</p>
+                </Card>
+                <Card
+                  onClick={() => setGenerationType("mix")}
+                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+                    generationType === "mix" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`h-10 w-10 rounded-full flex items-center justify-center ${generationType === "mix" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      <Users className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="font-serif text-lg font-bold block">{t("generate.mix", "Mix")}</span>
+                      <span className="text-xs text-muted-foreground">{CREDIT_COST_MIX} {t("generate.credits", "credits")}</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{t("generate.mixDesc", "Pet + person together — create a shared masterpiece")}</p>
+                </Card>
+              </div>
+            </motion.div>
+
+            {/* ── Step 2: Upload photos ── */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">2</div>
+                <h2 className="font-serif text-xl font-bold text-foreground">
+                  {generationType === "mix"
+                    ? t("generate.uploadBothTitle", "Upload both photos")
+                    : t("generate.step1Title", "Upload your photo")}
+                </h2>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                {t("generate.uploadTip", "Use a clear, well-lit photo where the face is visible. The better the photo, the better the portrait!")}
               </p>
 
-              <div className={generationType === "mix" ? "grid grid-cols-1 sm:grid-cols-2 gap-4" : ""}>
-                {/* Upload area 1 */}
+              <div className={generationType === "mix" ? "grid grid-cols-1 sm:grid-cols-2 gap-6" : "max-w-md"}>
+                {/* Upload 1 */}
                 <div>
                   {generationType === "mix" && (
-                    <p className="text-sm font-medium text-foreground mb-2">{t("generate.petPhoto", "Your pet's photo")}</p>
+                    <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <span className="h-6 w-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center text-xs font-bold">A</span>
+                      {t("generate.petPhoto", "Your pet's photo")}
+                    </p>
                   )}
                   {previewUrl ? (
-                    <div className="relative inline-block">
-                      <img src={previewUrl} alt="Preview" className="max-h-64 rounded-2xl object-contain shadow-md" />
-                      <button
-                        onClick={removeFile}
-                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
-                      >
-                        <X className="h-3 w-3" />
+                    <div className="relative">
+                      <img src={previewUrl} alt="Pet preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
+                      <button onClick={removeFile} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
+                        <X className="h-4 w-4" />
                       </button>
                     </div>
                   ) : (
-                    <label
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
-                        isDragging
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50 hover:bg-muted/30"
+                    <label onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
+                      className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[200px] p-8 cursor-pointer transition-all ${
+                        isDragging ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                       }`}
                     >
-                      <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
-                      <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                      <span className="text-xs text-muted-foreground/60 mt-1">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
+                      <Upload className="h-12 w-12 text-muted-foreground/30 mb-3" />
+                      <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
+                      <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="hidden" />
                     </label>
                   )}
                 </div>
 
-                {/* Upload area 2 (mix mode only) */}
+                {/* Upload 2 (mix only) */}
                 {generationType === "mix" && (
                   <div>
-                    <p className="text-sm font-medium text-foreground mb-2">{t("generate.personPhoto", "Your photo (person)")}</p>
+                    <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <span className="h-6 w-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center text-xs font-bold">B</span>
+                      {t("generate.personPhoto", "Your photo (person)")}
+                    </p>
                     {previewUrl2 ? (
-                      <div className="relative inline-block">
-                        <img src={previewUrl2} alt="Preview person" className="max-h-64 rounded-2xl object-contain shadow-md" />
-                        <button
-                          onClick={removeFile2}
-                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
-                        >
-                          <X className="h-3 w-3" />
+                      <div className="relative">
+                        <img src={previewUrl2} alt="Person preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
+                        <button onClick={removeFile2} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
+                          <X className="h-4 w-4" />
                         </button>
                       </div>
                     ) : (
-                      <label
-                        onDragOver={handleDragOver2}
-                        onDragLeave={handleDragLeave2}
-                        onDrop={handleDrop2}
-                        className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
-                          isDragging2
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50 hover:bg-muted/30"
+                      <label onDragOver={handleDragOver2} onDragLeave={handleDragLeave2} onDrop={handleDrop2}
+                        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[200px] p-8 cursor-pointer transition-all ${
+                          isDragging2 ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                         }`}
                       >
-                        <Users className="h-10 w-10 text-muted-foreground/40 mb-4" />
-                        <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                        <span className="text-xs text-muted-foreground/60 mt-1">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          onChange={handleFile2Change}
-                          className="hidden"
-                        />
+                        <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
+                        <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
+                        <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
+                        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile2Change} className="hidden" />
                       </label>
                     )}
                   </div>
@@ -537,166 +527,102 @@ const Generate = () => {
               </div>
             </motion.div>
 
-            {/* Step 2: Generation Type */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="mb-12"
-            >
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {t("generate.step2Title", "2. Choose generation type")}
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                {t("generate.step2Desc", "Single subject or a mix of pet and person")}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
-                <Card
-                  onClick={() => setGenerationType("single")}
-                  className={`rounded-2xl border-2 p-5 cursor-pointer transition-all ${
-                    generationType === "single"
-                      ? "border-primary bg-primary/5 shadow-md"
-                      : "border-border hover:border-primary/30 hover:shadow-sm"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <ImageIcon className="h-5 w-5 text-primary" />
-                    <span className="font-serif font-semibold">{t("generate.single", "Single")}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{t("generate.singleDesc", "One pet or one person")}</p>
-                  <p className="text-sm font-medium text-primary mt-2">{CREDIT_COST_SINGLE} {t("generate.credits", "credits")}</p>
-                </Card>
-
-                <Card
-                  onClick={() => setGenerationType("mix")}
-                  className={`rounded-2xl border-2 p-5 cursor-pointer transition-all ${
-                    generationType === "mix"
-                      ? "border-primary bg-primary/5 shadow-md"
-                      : "border-border hover:border-primary/30 hover:shadow-sm"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <Users className="h-5 w-5 text-primary" />
-                    <span className="font-serif font-semibold">{t("generate.mix", "Mix")}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{t("generate.mixDesc", "Pet + person together")}</p>
-                  <p className="text-sm font-medium text-primary mt-2">{CREDIT_COST_MIX} {t("generate.credits", "credits")}</p>
-                </Card>
+            {/* ── Step 3: Choose style ── */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">3</div>
+                <h2 className="font-serif text-xl font-bold text-foreground">
+                  {t("generate.step3Title", "Choose your style")}
+                </h2>
               </div>
-            </motion.div>
-
-            {/* Step 3: Choose Style */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="mb-12"
-            >
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {t("generate.step3Title", "3. Choose your style")}
-              </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-4">
                 {t("generate.step3Desc", "Select the artistic style for your portrait")}
               </p>
-
               {stylesLoading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <Skeleton key={i} className="aspect-square rounded-2xl" />
-                  ))}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {styles?.map((style) => (
                     <Card
                       key={style.id}
                       onClick={() => setSelectedStyleId(style.id)}
-                      className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${
+                      className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-200 rounded-2xl ${
                         selectedStyleId === style.id
-                          ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.02] shadow-md"
-                          : "hover:shadow-md"
+                          ? "ring-3 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-lg"
+                          : "shadow-sm hover:shadow-md"
                       }`}
                     >
                       {style.preview_url ? (
-                        <img
-                          src={style.preview_url}
-                          alt={style.name}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                        />
+                        <img src={style.preview_url} alt={style.name} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <div className="absolute bottom-0 inset-x-0 p-3">
-                        <span className="font-serif text-sm font-semibold text-primary-foreground block">{style.name}</span>
-                        {style.description && (
-                          <span className="text-xs text-primary-foreground/70">{style.description}</span>
-                        )}
+                        <span className="font-serif text-sm font-bold text-white block">{style.name}</span>
                       </div>
+                      {selectedStyleId === style.id && (
+                        <div className="absolute top-2 right-2 h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                          <span className="text-xs font-bold">✓</span>
+                        </div>
+                      )}
                     </Card>
                   ))}
                 </div>
               )}
             </motion.div>
 
-            {/* Step 4: Generate */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              {(creditBalance ?? 0) < creditCost ? (
-                <div className="p-6 rounded-2xl border border-border bg-card shadow-sm mb-4">
-                  <p className="text-muted-foreground mb-3">
-                    {t("generate.needCredits", "You need at least {{cost}} credits to generate this portrait", { cost: creditCost })}
-                  </p>
-                  <div className="flex items-center justify-center gap-3">
-                    <Button asChild className="rounded-full shadow-md">
+            {/* ══ GENERATE BUTTON — BIG, IMPOSSIBLE TO MISS ══ */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+              <div className="bg-card border border-border rounded-2xl p-8 text-center shadow-md">
+                {(creditBalance ?? 0) < creditCost ? (
+                  <div>
+                    <p className="text-muted-foreground mb-4 text-lg">
+                      {t("generate.needCredits", "You need at least {{cost}} credits", { cost: creditCost })}
+                    </p>
+                    <Button asChild size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl">
                       <Link to="/dashboard?upgrade=true">
+                        <Crown className="mr-2 h-5 w-5" />
                         {t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
                       </Link>
                     </Button>
                   </div>
-                </div>
-              ) : (
-                <Button
-                  size="lg"
-                  onClick={handleGenerate}
-                  disabled={!uploadedFile || !selectedStyleId || (generationType === "mix" && !uploadedFile2)}
-                  className="rounded-full px-10 h-13 text-base shadow-xl"
-                >
-                  <ImageIcon className="mr-2 h-5 w-5" />
-                  {t("generate.generateBtn", "Generate Portrait ({{cost}} credits)", { cost: creditCost })}
-                </Button>
-              )}
-
-              {!isPremium && (creditBalance ?? 0) >= creditCost && (
-                <p className="text-xs text-muted-foreground mt-3">
-                  {t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}
-                </p>
-              )}
+                ) : (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {t("generate.readyToCreate", "Everything looks good! Click the button to create your portrait.")}
+                    </p>
+                    <Button
+                      size="lg"
+                      onClick={handleGenerate}
+                      disabled={!canGenerate}
+                      className="rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40"
+                    >
+                      <Sparkles className="mr-3 h-6 w-6" />
+                      {t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}
+                    </Button>
+                    {!canGenerate && (
+                      <p className="text-xs text-muted-foreground mt-3">
+                        {!uploadedFile
+                          ? t("generate.missingPhoto", "↑ Upload a photo first")
+                          : !selectedStyleId
+                          ? t("generate.missingStyle", "↑ Select a style first")
+                          : generationType === "mix" && !uploadedFile2
+                          ? t("generate.missingPhoto2", "↑ Upload both photos for Mix mode")
+                          : ""}
+                      </p>
+                    )}
+                    {!isPremium && canGenerate && (
+                      <p className="text-xs text-muted-foreground mt-3">
+                        {t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </motion.div>
-          </>
-        )}
-
-        {/* New portrait button after result */}
-        {resultUrl && (
-          <div className="text-center mt-8">
-            <Button
-              variant="outline"
-              className="rounded-full"
-              onClick={() => {
-                setResultUrl(null);
-                setResultMode(null);
-                setGenerationId(null);
-                removeFile();
-              }}
-            >
-              {t("generate.createAnother", "Create Another Portrait")}
-            </Button>
           </div>
         )}
       </div>
