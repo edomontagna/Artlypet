@@ -27,7 +27,7 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { original_id, style_id, generation_type = "single" } = await req.json();
+    const { original_id, style_id, generation_type = "single", original_id_2 } = await req.json();
     if (!original_id || !style_id) return new Response(JSON.stringify({ error: "Missing original_id or style_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const creditCost = CREDIT_COSTS[generation_type] || CREDIT_COSTS.single;
@@ -83,7 +83,7 @@ serve(async (req) => {
     await supabase.from("audit_log").insert({
       user_id: user.id,
       event_type: "generation_requested",
-      metadata: { generation_id: generation.id, style_id, original_id, generation_type, credit_cost: creditCost },
+      metadata: { generation_id: generation.id, style_id, original_id, original_id_2, generation_type, credit_cost: creditCost },
     });
 
     // Start async generation (non-blocking)
@@ -119,15 +119,63 @@ serve(async (req) => {
 
         if (!style) throw new Error("Style not found");
 
-        // Convert image to base64 (chunk-safe for large files)
-        const arrayBuffer = await imageData.arrayBuffer();
-        const bytes = new Uint8Array(arrayBuffer);
-        let binary = "";
-        const chunkSize = 8192;
-        for (let i = 0; i < bytes.length; i += chunkSize) {
-          binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        // Helper: convert blob to base64 (chunk-safe for large files)
+        const blobToBase64 = async (blob: Blob): Promise<string> => {
+          const arrayBuffer = await blob.arrayBuffer();
+          const bytes = new Uint8Array(arrayBuffer);
+          let binary = "";
+          const chunkSize = 8192;
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+          }
+          return btoa(binary);
+        };
+
+        const base64Image = await blobToBase64(imageData);
+
+        // Build Gemini request parts based on generation type
+        const contentParts: Array<Record<string, unknown>> = [
+          {
+            inlineData: {
+              mimeType: "image/jpeg",
+              data: base64Image,
+            },
+          },
+        ];
+
+        // If mix mode with second image, download and add it
+        if (generation_type === "mix" && original_id_2) {
+          const { data: original2 } = await supabase
+            .from("image_originals")
+            .select("storage_path")
+            .eq("id", original_id_2)
+            .single();
+
+          if (!original2) throw new Error("Second original image not found");
+
+          const { data: imageData2 } = await supabase.storage
+            .from("original-images")
+            .download(original2.storage_path);
+
+          if (!imageData2) throw new Error("Failed to download second original image");
+
+          const base64Image2 = await blobToBase64(imageData2);
+
+          contentParts.push({
+            inlineData: {
+              mimeType: "image/jpeg",
+              data: base64Image2,
+            },
+          });
+
+          contentParts.push({
+            text: `Combine these two subjects (a pet and a person) into a single artistic portrait. ${style.prompt_template}. Place both subjects together in the same scene, interacting naturally.`,
+          });
+        } else {
+          contentParts.push({
+            text: style.prompt_template,
+          });
         }
-        const base64Image = btoa(binary);
 
         // Call Gemini API
         const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
@@ -138,17 +186,7 @@ serve(async (req) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               contents: [{
-                parts: [
-                  {
-                    inlineData: {
-                      mimeType: "image/jpeg",
-                      data: base64Image,
-                    },
-                  },
-                  {
-                    text: style.prompt_template,
-                  },
-                ],
+                parts: contentParts,
               }],
               generationConfig: {
                 responseModalities: ["TEXT", "IMAGE"],

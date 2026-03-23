@@ -19,6 +19,7 @@ import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { SharePanel } from "@/components/SharePanel";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { CreationTheater } from "@/components/CreationTheater";
 
 const Generate = () => {
   const { t } = useTranslation();
@@ -32,9 +33,13 @@ const Generate = () => {
   const [generationType, setGenerationType] = useState<GenerationType>("single");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadedFile2, setUploadedFile2] = useState<File | null>(null);
+  const [previewUrl2, setPreviewUrl2] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDragging2, setIsDragging2] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generationId, setGenerationId] = useState<string | null>(null);
+  const [generationStartTime, setGenerationStartTime] = useState(0);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultMode, setResultMode] = useState<"hd" | "watermarked" | null>(null);
   const [showRetry, setShowRetry] = useState(false);
@@ -48,12 +53,27 @@ const Generate = () => {
 
   const { data: generationStatus } = useGenerationStatus(generationId, generating);
 
-  // Cleanup object URL on unmount or file change
+  // Cleanup object URLs on unmount or file change
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl2) URL.revokeObjectURL(previewUrl2);
+    };
+  }, [previewUrl2]);
+
+  // Clear file2 when switching from mix to single
+  useEffect(() => {
+    if (generationType === "single") {
+      if (previewUrl2) URL.revokeObjectURL(previewUrl2);
+      setUploadedFile2(null);
+      setPreviewUrl2(null);
+    }
+  }, [generationType]);
 
   // Handle generation completion — use serve-image to get correct quality
   useEffect(() => {
@@ -128,15 +148,64 @@ const Generate = () => {
     setGenerationId(null);
   };
 
+  const handleFile2 = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file (JPG, PNG, WebP)");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be under 10MB");
+      return;
+    }
+    if (previewUrl2) URL.revokeObjectURL(previewUrl2);
+    setUploadedFile2(file);
+    setPreviewUrl2(URL.createObjectURL(file));
+  }, [previewUrl2]);
+
+  const handleFile2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile2(file);
+  };
+
+  const handleDragOver2 = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging2(true);
+  };
+
+  const handleDragLeave2 = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging2(false);
+  };
+
+  const handleDrop2 = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging2(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile2(file);
+  };
+
+  const removeFile2 = () => {
+    if (previewUrl2) URL.revokeObjectURL(previewUrl2);
+    setUploadedFile2(null);
+    setPreviewUrl2(null);
+  };
+
   const handleGenerate = async () => {
     if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
+    if (generationType === "mix" && !uploadedFile2) return;
 
     setGenerating(true);
+    setGenerationStartTime(Date.now());
     setShowRetry(false);
     setOptimisticCreditDeduction(creditCost);
     try {
       const original = await uploadOriginalImage(user.id, uploadedFile);
-      const result = await requestGeneration(original.id, selectedStyleId, generationType);
+      let originalId2: string | undefined;
+      if (generationType === "mix" && uploadedFile2) {
+        const original2 = await uploadOriginalImage(user.id, uploadedFile2);
+        originalId2 = original2.id;
+      }
+      const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
     } catch (err) {
@@ -294,19 +363,11 @@ const Generate = () => {
 
         {/* Generation in progress */}
         {generating && !resultUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-12 text-center py-16"
-          >
-            <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-6" />
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-              {t("generate.creating", "Creating Your Portrait...")}
-            </h2>
-            <p className="text-muted-foreground">
-              {t("generate.creatingDesc", "This usually takes 30-60 seconds. Please don't close this page.")}
-            </p>
-          </motion.div>
+          <CreationTheater
+            previewUrl={previewUrl}
+            styleName={styles?.find((s) => s.id === selectedStyleId)?.name}
+            startTime={generationStartTime}
+          />
         )}
 
         {/* Retry after failure */}
@@ -347,41 +408,90 @@ const Generate = () => {
                 {t("generate.step1Title", "1. Upload your photo")}
               </h2>
               <p className="text-muted-foreground mb-6">
-                {t("generate.step1Desc", "Choose a clear, well-lit photo of your pet or person")}
+                {generationType === "mix"
+                  ? t("generate.step1DescMix", "Upload your pet's photo and your photo (person)")
+                  : t("generate.step1Desc", "Choose a clear, well-lit photo of your pet or person")}
               </p>
 
-              {previewUrl ? (
-                <div className="relative inline-block">
-                  <img src={previewUrl} alt="Preview" className="max-h-64 rounded-2xl object-contain shadow-md" />
-                  <button
-                    onClick={removeFile}
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
+              <div className={generationType === "mix" ? "grid grid-cols-1 sm:grid-cols-2 gap-4" : ""}>
+                {/* Upload area 1 */}
+                <div>
+                  {generationType === "mix" && (
+                    <p className="text-sm font-medium text-foreground mb-2">{t("generate.petPhoto", "Your pet's photo")}</p>
+                  )}
+                  {previewUrl ? (
+                    <div className="relative inline-block">
+                      <img src={previewUrl} alt="Preview" className="max-h-64 rounded-2xl object-contain shadow-md" />
+                      <button
+                        onClick={removeFile}
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
+                        isDragging
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50 hover:bg-muted/30"
+                      }`}
+                    >
+                      <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
+                      <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
+                      <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
                 </div>
-              ) : (
-                <label
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
-                    isDragging
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50 hover:bg-muted/30"
-                  }`}
-                >
-                  <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
-                  <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                  <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
-              )}
+
+                {/* Upload area 2 (mix mode only) */}
+                {generationType === "mix" && (
+                  <div>
+                    <p className="text-sm font-medium text-foreground mb-2">{t("generate.personPhoto", "Your photo (person)")}</p>
+                    {previewUrl2 ? (
+                      <div className="relative inline-block">
+                        <img src={previewUrl2} alt="Preview person" className="max-h-64 rounded-2xl object-contain shadow-md" />
+                        <button
+                          onClick={removeFile2}
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label
+                        onDragOver={handleDragOver2}
+                        onDragLeave={handleDragLeave2}
+                        onDrop={handleDrop2}
+                        className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
+                          isDragging2
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:border-primary/50 hover:bg-muted/30"
+                        }`}
+                      >
+                        <Users className="h-10 w-10 text-muted-foreground/40 mb-4" />
+                        <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
+                        <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          onChange={handleFile2Change}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+                )}
+              </div>
             </motion.div>
 
             {/* Step 2: Generation Type */}
@@ -512,7 +622,7 @@ const Generate = () => {
                 <Button
                   size="lg"
                   onClick={handleGenerate}
-                  disabled={!uploadedFile || !selectedStyleId}
+                  disabled={!uploadedFile || !selectedStyleId || (generationType === "mix" && !uploadedFile2)}
                   className="rounded-full px-10 h-13 text-base shadow-xl"
                 >
                   <ImageIcon className="mr-2 h-5 w-5" />

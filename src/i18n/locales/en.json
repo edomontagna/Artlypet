@@ -1,8 +1,16 @@
 {
   "nav": {
+    "home": "Home",
     "gallery": "Gallery",
+    "styles": "Styles",
+    "howItWorks": "How It Works",
     "pricing": "Pricing",
     "faq": "FAQ",
+    "more": "More",
+    "about": "About",
+    "blog": "Blog",
+    "prints": "Prints",
+    "contact": "Contact",
     "signIn": "Sign In",
     "getStarted": "Get Started"
   },
@@ -111,10 +119,14 @@
   "footer": {
     "description": "Luxury AI pet portraits crafted with cutting-edge technology and artistic excellence.",
     "product": "Product",
+    "company": "Company",
     "account": "Account",
     "legal": "Legal",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
+    "createPortrait": "Create Portrait",
+    "business": "Business",
+    "allRights": "All rights reserved.",
     "madeWith": "Made with love for pet lovers in the EU"
   },
   "auth": {

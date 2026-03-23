@@ -24,12 +24,13 @@ export const requestGeneration = async (
   originalId: string,
   styleId: string,
   generationType: GenerationType = "single",
+  originalId2?: string,
 ) => {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error("Not authenticated");
 
   const res = await supabase.functions.invoke("generate-portrait", {
-    body: { original_id: originalId, style_id: styleId, generation_type: generationType },
+    body: { original_id: originalId, style_id: styleId, generation_type: generationType, original_id_2: originalId2 },
   });
 
   if (res.error) throw res.error;

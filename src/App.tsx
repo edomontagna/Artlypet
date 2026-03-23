@@ -21,6 +21,12 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Demo = lazy(() => import("./pages/Demo"));
 const BusinessPlan = lazy(() => import("./pages/BusinessPlan"));
+const StylesGallery = lazy(() => import("./pages/StylesGallery"));
+const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const PrintQuality = lazy(() => import("./pages/PrintQuality"));
+const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -53,6 +59,12 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/business" element={<BusinessPlan />} />
+                <Route path="/styles" element={<StylesGallery />} />
+                <Route path="/how-it-works" element={<HowItWorksPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/prints" element={<PrintQuality />} />
+                <Route path="/blog" element={<Blog />} />
                 <Route
                   path="/dashboard"
                   element={

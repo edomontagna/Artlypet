@@ -1,15 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const { t } = useTranslation();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       return (document.documentElement.getAttribute("data-theme") as "light" | "dark") || "light";
@@ -34,6 +37,9 @@ const Navbar = () => {
     }
   }, [theme]);
 
+  const navLinkClass =
+    "text-sm text-muted-foreground hover:text-primary transition-colors duration-200";
+
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -57,24 +63,68 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#gallery"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
-          >
-            {t("nav.gallery")}
-          </a>
-          <a
-            href="#pricing"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
-          >
-            {t("nav.pricing")}
-          </a>
-          <a
-            href="#faq"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
-          >
-            {t("nav.faq")}
-          </a>
+          <Link to="/" className={navLinkClass}>
+            {t("nav.home", "Home")}
+          </Link>
+          <Link to="/styles" className={navLinkClass}>
+            {t("nav.styles", "Styles")}
+          </Link>
+          <Link to="/how-it-works" className={navLinkClass}>
+            {t("nav.howItWorks", "How It Works")}
+          </Link>
+          {isHome ? (
+            <a href="#pricing" className={navLinkClass}>
+              {t("nav.pricing")}
+            </a>
+          ) : (
+            <Link to="/#pricing" className={navLinkClass}>
+              {t("nav.pricing")}
+            </Link>
+          )}
+
+          {/* More dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setMoreOpen(!moreOpen)}
+              onBlur={() => setTimeout(() => setMoreOpen(false), 150)}
+              className={`${navLinkClass} flex items-center gap-1`}
+            >
+              {t("nav.more", "More")}
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+            </button>
+            {moreOpen && (
+              <div className="absolute top-full right-0 mt-2 w-44 bg-background rounded-xl border border-border shadow-xl py-2 z-50">
+                <Link
+                  to="/about"
+                  className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                  onClick={() => setMoreOpen(false)}
+                >
+                  {t("nav.about", "About")}
+                </Link>
+                <Link
+                  to="/blog"
+                  className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                  onClick={() => setMoreOpen(false)}
+                >
+                  {t("nav.blog", "Blog")}
+                </Link>
+                <Link
+                  to="/prints"
+                  className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                  onClick={() => setMoreOpen(false)}
+                >
+                  {t("nav.prints", "Prints")}
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                  onClick={() => setMoreOpen(false)}
+                >
+                  {t("nav.contact", "Contact")}
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Desktop Right */}
@@ -113,27 +163,72 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg px-6 py-6 space-y-1">
-          <a
-            href="#gallery"
+          <Link
+            to="/"
             className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
-            {t("nav.gallery")}
-          </a>
-          <a
-            href="#pricing"
+            {t("nav.home", "Home")}
+          </Link>
+          <Link
+            to="/styles"
             className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
-            {t("nav.pricing")}
-          </a>
-          <a
-            href="#faq"
+            {t("nav.styles", "Styles")}
+          </Link>
+          <Link
+            to="/how-it-works"
             className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
-            {t("nav.faq")}
-          </a>
+            {t("nav.howItWorks", "How It Works")}
+          </Link>
+          {isHome ? (
+            <a
+              href="#pricing"
+              className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("nav.pricing")}
+            </a>
+          ) : (
+            <Link
+              to="/#pricing"
+              className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("nav.pricing")}
+            </Link>
+          )}
+          <Link
+            to="/about"
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            onClick={() => setMobileOpen(false)}
+          >
+            {t("nav.about", "About")}
+          </Link>
+          <Link
+            to="/blog"
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            onClick={() => setMobileOpen(false)}
+          >
+            {t("nav.blog", "Blog")}
+          </Link>
+          <Link
+            to="/prints"
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            onClick={() => setMobileOpen(false)}
+          >
+            {t("nav.prints", "Prints")}
+          </Link>
+          <Link
+            to="/contact"
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            onClick={() => setMobileOpen(false)}
+          >
+            {t("nav.contact", "Contact")}
+          </Link>
           <div className="flex items-center justify-between pt-4 pb-2">
             <LanguageSwitcher />
             <button
