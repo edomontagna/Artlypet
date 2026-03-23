@@ -239,6 +239,13 @@ const Dashboard = () => {
                       {t("referral.copyLink", "Copy Link")}
                     </Button>
                   </div>
+                  <div className="mt-3 flex items-center gap-3 flex-wrap">
+                    <div className="px-4 py-2 bg-primary/10 rounded-lg">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">{t("referral.yourCode", "Your Code")}</p>
+                      <p className="font-mono text-lg font-bold text-primary select-all">{profile.referral_code}</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{t("referral.shareCta", "Share this code with friends to earn bonus credits!")}</p>
+                  </div>
                   <div className="mt-3 p-3 bg-muted rounded-lg text-sm font-mono text-muted-foreground select-all">
                     {window.location.origin}/signup?ref={profile.referral_code}
                   </div>
@@ -284,9 +291,9 @@ const Dashboard = () => {
                             )}
                           </div>
                         )}
-                        {/* Hover overlay */}
+                        {/* Action buttons — always visible for mobile */}
                         {gen.status === "completed" && (
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent pt-8 pb-2 px-2 flex items-end justify-center gap-2">
                             <Button size="sm" variant="secondary" className="rounded-full gap-1" onClick={() => handleDownload(gen)}>
                               <Download className="h-3 w-3" />
                               {t("dashboard.download", "Download")}
@@ -299,9 +306,31 @@ const Dashboard = () => {
                             )}
                           </div>
                         )}
+                        {/* Failed generation — actionable text */}
+                        {gen.status === "failed" && (
+                          <div className="absolute bottom-0 inset-x-0 p-2 text-center">
+                            <p className="text-xs text-destructive font-medium">
+                              {t("dashboard.failedRefunded", "Failed — credits refunded")}
+                            </p>
+                            <Button size="sm" variant="link" className="text-xs h-auto p-0 text-primary" asChild>
+                              <Link to="/generate">{t("dashboard.retryGenerate", "Retry")}</Link>
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
+                  {generations.length > 6 && (
+                    <div className="text-center mt-6">
+                      <Button
+                        variant="outline"
+                        className="rounded-full"
+                        onClick={() => setActiveTab("history")}
+                      >
+                        {t("dashboard.viewAll", "View all portraits")}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/50">
@@ -353,7 +382,7 @@ const Dashboard = () => {
                           </div>
                         )}
                         {gen.status === "completed" && (
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent pt-8 pb-2 px-2 flex items-end justify-center gap-2">
                             <Button size="sm" variant="secondary" className="rounded-full gap-1" onClick={() => handleDownload(gen)}>
                               <Download className="h-3 w-3" />
                             </Button>
@@ -379,6 +408,14 @@ const Dashboard = () => {
                             {new Date(gen.created_at).toLocaleDateString()}
                           </span>
                         </div>
+                        {gen.status === "failed" && (
+                          <div className="flex items-center justify-between mt-1.5">
+                            <span className="text-xs text-muted-foreground">{t("dashboard.failedRefunded", "Failed — credits refunded")}</span>
+                            <Button size="sm" variant="link" className="text-xs h-auto p-0 text-primary" asChild>
+                              <Link to="/generate">{t("dashboard.retryGenerate", "Retry")}</Link>
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -480,13 +517,13 @@ const Dashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
+              className={`flex-1 flex flex-col items-center gap-0.5 py-3 font-medium transition-colors ${
                 activeTab === tab.id ? "text-primary" : "text-muted-foreground"
               }`}
               aria-current={activeTab === tab.id ? "page" : undefined}
             >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
+              <tab.icon className="h-5 w-5" />
+              <span className="text-[10px]">{tab.label}</span>
             </button>
           ))}
         </nav>

@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BeforeAfterSliderProps {
   beforeUrl: string;
@@ -9,8 +10,14 @@ interface BeforeAfterSliderProps {
 export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProps) => {
   const { t } = useTranslation();
   const [position, setPosition] = useState(50);
+  const [showHint, setShowHint] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowHint(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const updatePosition = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -34,6 +41,14 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
     updatePosition(e.clientX);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      setPosition((prev) => Math.max(0, prev - 5));
+    } else if (e.key === "ArrowRight") {
+      setPosition((prev) => Math.min(100, prev + 5));
+    }
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
@@ -42,12 +57,18 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
       </div>
       <div
         ref={containerRef}
-        className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-xl cursor-col-resize select-none border border-border"
+        tabIndex={0}
+        role="slider"
+        aria-valuenow={Math.round(position)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-xl cursor-col-resize select-none border border-border focus:outline-none focus:ring-2 focus:ring-primary"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleClick}
         onTouchMove={handleTouchMove}
+        onKeyDown={handleKeyDown}
       >
         {/* After image (full) */}
         <img
@@ -88,6 +109,21 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
             </div>
           </div>
         </div>
+
+        {/* Drag hint */}
+        <AnimatePresence>
+          {showHint && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white text-xs font-medium px-3 py-1.5 rounded-full pointer-events-none z-20"
+            >
+              &larr; {t("slider.dragHint", "Drag to compare")} &rarr;
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

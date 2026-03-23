@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useStyles } from "@/hooks/useStyles";
+import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const fallbackStyles = [
@@ -16,6 +18,7 @@ const ease = [0.16, 1, 0.3, 1];
 
 const GallerySection = () => {
   const { t } = useTranslation();
+  const { session } = useAuth();
   const { data: dbStyles, isLoading } = useStyles();
   const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
 
@@ -93,10 +96,16 @@ const GallerySection = () => {
                     {item.name}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-white/70 font-sans opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-sm text-white/70 font-sans opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                       {item.description}
                     </p>
                   )}
+                  <Link
+                    to={session ? "/generate" : "/signup"}
+                    className="inline-block mt-2 text-xs font-medium text-white/90 hover:text-white transition-colors duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                  >
+                    {t("gallery.tryStyle", "Try this style")} &rarr;
+                  </Link>
                 </div>
               </motion.div>
             ))}

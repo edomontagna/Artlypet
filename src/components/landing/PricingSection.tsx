@@ -42,6 +42,7 @@ const PricingSection = () => {
         t("pricing.features.fullHd", "Full HD downloads, no watermark"),
         t("pricing.features.discountedPrints", "Canvas prints: €{{price}}", { price: PRINT_PRICE_PREMIUM.toFixed(2) }),
         t("pricing.features.noExpiry", "Credits never expire"),
+        t("pricing.features.savingsMath", "Save vs. HD unlocks: 5 images = €24.50 → Premium only €15"),
       ],
       cta: t("pricing.goPremium", "Go Premium"),
       ctaLink: "/signup",
@@ -148,6 +149,11 @@ const PricingSection = () => {
                 {plan.priceSuffix && (
                   <p className={`text-sm mt-1 ${plan.popular ? "text-white/50" : "text-muted-foreground"}`}>
                     {plan.priceSuffix}
+                  </p>
+                )}
+                {plan.popular && (
+                  <p className="text-xs mt-2 text-white/50">
+                    {t("pricing.needMore", "Need more? Purchase again anytime.")}
                   </p>
                 )}
               </div>

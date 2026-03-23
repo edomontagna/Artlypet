@@ -17,6 +17,9 @@ const schema = z.object({
   displayName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(10, "Password must be at least 10 characters"),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Terms of Service and Privacy Policy" }),
+  }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -46,14 +49,16 @@ const Signup = () => {
   const { signUp, signInWithGoogle } = useAuth();
 
   // Capture referral code from URL (?ref=ABC123) and persist in localStorage
+  const [hasReferral, setHasReferral] = useState(false);
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref) localStorage.setItem("artlypet_ref", ref);
+    if (ref || localStorage.getItem("artlypet_ref")) setHasReferral(true);
   }, [searchParams]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { displayName: "", email: "", password: "" },
+    defaultValues: { displayName: "", email: "", password: "", termsAccepted: false as unknown as true },
   });
 
   const password = form.watch("password");
@@ -84,6 +89,11 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-background">
       <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
+        {hasReferral && (
+          <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-center text-sm text-green-800 font-medium">
+            {"\uD83C\uDF89"} You've been invited! Sign up and get 150 bonus credits
+          </div>
+        )}
         <CardHeader className="text-center pb-6 p-0 mb-6">
           <Link to="/" className="mx-auto mb-4 inline-block no-underline">
             <span className="font-serif text-2xl font-bold text-primary">
@@ -205,6 +215,35 @@ const Signup = () => {
                         </div>
                       </div>
                     )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="termsAccepted"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-start gap-2">
+                      <FormControl>
+                        <input
+                          type="checkbox"
+                          checked={field.value as unknown as boolean}
+                          onChange={field.onChange}
+                          className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                        />
+                      </FormControl>
+                      <FormLabel className="font-sans text-sm text-muted-foreground leading-snug cursor-pointer">
+                        I agree to the{" "}
+                        <Link to="/terms" className="text-primary hover:underline">
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link to="/privacy" className="text-primary hover:underline">
+                          Privacy Policy
+                        </Link>
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

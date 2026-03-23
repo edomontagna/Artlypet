@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
 
 const ease = [0.16, 1, 0.3, 1];
@@ -73,8 +74,23 @@ const HeroSection = () => {
               </Button>
             </motion.div>
 
+            {/* Free tier mention */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.5, ease }}
+              className="mt-4 text-sm text-muted-foreground"
+            >
+              {t("hero.freeTier", "Start free — 300 credits, no card required")}
+            </motion.p>
+
             {/* Portrait counter — social proof */}
-            {portraitCount != null && portraitCount > 0 && (
+            {portraitCount == null ? (
+              <div className="mt-10 flex items-center gap-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-36 rounded" />
+              </div>
+            ) : portraitCount > 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -87,7 +103,7 @@ const HeroSection = () => {
                   {t("hero.portraitsCreated", "portraits created")}
                 </span>
               </motion.div>
-            )}
+            ) : null}
           </div>
 
           {/* Right — Image */}
@@ -98,11 +114,11 @@ const HeroSection = () => {
             className="relative"
           >
             <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10">
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="font-serif text-6xl font-bold text-primary/20 select-none">
-                  AP
-                </span>
-              </div>
+              <img
+                src="/images/renaissance.png"
+                alt="Royal pet portrait in Renaissance style"
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
         </div>

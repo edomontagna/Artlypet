@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users } from "lucide-react";
+import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -37,9 +37,14 @@ const Generate = () => {
   const [generationId, setGenerationId] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultMode, setResultMode] = useState<"hd" | "watermarked" | null>(null);
+  const [showRetry, setShowRetry] = useState(false);
+  const [optimisticCreditDeduction, setOptimisticCreditDeduction] = useState(0);
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const creditCost = getCreditCost(generationType);
+  const displayCredits = optimisticCreditDeduction > 0
+    ? Math.max(0, (creditBalance ?? 0) - optimisticCreditDeduction)
+    : (creditBalance ?? 0);
 
   const { data: generationStatus } = useGenerationStatus(generationId, generating);
 
@@ -56,6 +61,7 @@ const Generate = () => {
 
     if (generationStatus?.status === "completed") {
       setGenerating(false);
+      setOptimisticCreditDeduction(0);
       getServedImage(generationId)
         .then((data) => {
           setResultUrl(data.url);
@@ -67,6 +73,8 @@ const Generate = () => {
     } else if (generationStatus?.status === "failed") {
       setGenerating(false);
       setGenerationId(null);
+      setShowRetry(true);
+      setOptimisticCreditDeduction(0);
       toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }
@@ -124,6 +132,8 @@ const Generate = () => {
     if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
 
     setGenerating(true);
+    setShowRetry(false);
+    setOptimisticCreditDeduction(creditCost);
     try {
       const original = await uploadOriginalImage(user.id, uploadedFile);
       const result = await requestGeneration(original.id, selectedStyleId, generationType);
@@ -132,6 +142,7 @@ const Generate = () => {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to start generation");
       setGenerating(false);
+      setOptimisticCreditDeduction(0);
     }
   };
 
@@ -164,7 +175,7 @@ const Generate = () => {
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="font-medium text-foreground">
-              {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : (creditBalance ?? 0)} {t("generate.credits", "credits")}
+              {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : displayCredits} {t("generate.credits", "credits")}
             </span>
           </div>
         </div>
@@ -239,6 +250,9 @@ const Generate = () => {
                     </a>
                   </Button>
                 </div>
+                <h3 className="font-serif text-lg font-semibold text-foreground text-center">
+                  {t("generate.shareHeading", "Share your masterpiece!")}
+                </h3>
                 <SharePanel imageUrl={resultUrl} />
               </div>
             )}
@@ -254,6 +268,9 @@ const Generate = () => {
                     </a>
                   </Button>
                 </div>
+                <h3 className="font-serif text-lg font-semibold text-foreground text-center">
+                  {t("generate.shareHeading", "Share your masterpiece!")}
+                </h3>
                 <SharePanel imageUrl={resultUrl} />
               </div>
             )}
@@ -292,8 +309,33 @@ const Generate = () => {
           </motion.div>
         )}
 
+        {/* Retry after failure */}
+        {showRetry && !generating && !resultUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-12 text-center py-12"
+          >
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+              {t("generate.generationFailed", "Generation Failed")}
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              {t("generate.failedDesc", "Something went wrong. Your credits have been refunded.")}
+            </p>
+            <Button
+              className="rounded-full px-8 shadow-md"
+              onClick={() => {
+                setShowRetry(false);
+              }}
+            >
+              {t("generate.tryAgain", "Try Again")}
+            </Button>
+          </motion.div>
+        )}
+
         {/* Upload + Style selection (hidden during generation) */}
-        {!generating && !resultUrl && (
+        {!generating && !resultUrl && !showRetry && (
           <>
             {/* Step 1: Upload */}
             <motion.div
