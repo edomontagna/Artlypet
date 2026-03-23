@@ -1,38 +1,85 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root,
-  [data-theme="light"] {
-    --bg:       #f3f8f2;
-    --surface:  #ffffff;
-    --surface2: #e3efe0;
-    --border:   #b4ccae;
-    --accent:   #1e5c38;
-    --accent2:  #3a8a58;
-    --text:     #050d05;
-    --muted:    #1a2e1a;
-    --radius:   0px;
+  :root {
+    --background: 40 33% 98%;
+    --foreground: 40 4% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 40 4% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 40 4% 16%;
+
+    --primary: 16 58% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 135 10% 56%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 40 14% 94%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 40 14% 94%;
+    --accent-foreground: 40 4% 16%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 16 58% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 40 4% 16%;
+    --sidebar-foreground: 40 33% 98%;
+    --sidebar-primary: 16 58% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 4% 22%;
+    --sidebar-accent-foreground: 40 33% 98%;
+    --sidebar-border: 40 4% 22%;
+    --sidebar-ring: 16 58% 60%;
   }
 
-  [data-theme="dark"] {
-    --bg:       #080808;
-    --surface:  #111111;
-    --surface2: #191919;
-    --border:   #282828;
-    --accent:   #FFC800;
-    --accent2:  #ffd740;
-    --text:     #f0ede2;
-    --muted:    #cac4aa;
+  .dark {
+    --background: 40 3% 10%;
+    --foreground: 36 20% 94%;
+
+    --card: 40 3% 14%;
+    --card-foreground: 36 20% 94%;
+
+    --popover: 40 3% 14%;
+    --popover-foreground: 36 20% 94%;
+
+    --primary: 16 58% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 135 10% 56%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 40 4% 16%;
+    --muted-foreground: 0 0% 64%;
+
+    --accent: 40 4% 16%;
+    --accent-foreground: 36 20% 94%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 4% 16%;
+    --input: 40 4% 16%;
+    --ring: 16 58% 60%;
   }
 }
 
 @layer base {
   * {
-    border-color: var(--border);
+    @apply border-border;
   }
 
   html {
@@ -40,201 +87,44 @@
   }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Jost', system-ui, sans-serif;
-    font-weight: 400;
-    font-size: 18px;
+    @apply bg-background text-foreground font-sans antialiased;
     line-height: 1.75;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transition: background 0.45s, color 0.45s;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-weight: 300;
-    letter-spacing: -0.01em;
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   ::selection {
-    background: var(--accent);
-    color: var(--bg);
-  }
-
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-
-  /* Override shadcn/ui radius to 0 everywhere */
-  [class*="rounded"] {
-    border-radius: 0px !important;
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
   }
 }
 
 @layer utilities {
-  /* Section label — tiny uppercase accent */
-  .sec-label {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  /* Logo accent */
-  .logo-accent {
-    color: var(--accent);
-    font-style: normal;
-  }
-
-  /* Button base: square, uppercase, tracked */
-  .btn-editorial {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0.7rem 1.7rem;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.3s, transform 0.2s;
-    background: var(--accent);
-    color: #ffffff;
-  }
-  [data-theme="dark"] .btn-editorial {
-    color: #080808;
-  }
-  .btn-editorial:hover { opacity: 0.82; }
-  .btn-editorial:active { transform: scale(0.97); }
-
-  .btn-outline-editorial {
-    background: transparent;
-    border: 2px solid var(--accent);
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .btn-outline-editorial:hover {
-    background: var(--accent);
-    color: #ffffff;
-  }
-  [data-theme="dark"] .btn-outline-editorial:hover {
-    color: #080808;
-  }
-
-  /* Image box with corner accents */
-  .img-box {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-  }
-  .img-box::before,
-  .img-box::after {
-    content: '';
-    position: absolute;
-    width: 34px;
-    height: 34px;
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0.65;
-  }
-  .img-box::before {
-    top: 10px;
-    left: 10px;
-    border-top: 1.5px solid var(--accent);
-    border-left: 1.5px solid var(--accent);
-  }
-  .img-box::after {
-    bottom: 10px;
-    right: 10px;
-    border-bottom: 1.5px solid var(--accent);
-    border-right: 1.5px solid var(--accent);
-  }
-
-  /* Step hover bar (bottom) */
-  .step-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    width: 0;
-    background: var(--accent);
-    transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Card hover bar (left) */
-  .card-bar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 2px;
-    height: 0;
-    background: var(--accent);
-    transition: height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Decorative step number */
-  .step-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 4.5rem;
-    font-weight: 300;
-    color: var(--accent);
-    opacity: 0.18;
-    line-height: 1;
-  }
-
-  /* Tag with left dash */
-  .hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .hero-tag::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 1.5px;
-    background: var(--accent);
-  }
-
-  /* Surface section background */
-  .sec-on-surface {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* Accent text for emphasis */
-  .text-accent-em {
-    color: var(--accent);
-    font-style: italic;
-  }
-
-  /* Legacy compatibility */
+  /* Legacy compatibility — map old classes to new design */
   .text-gradient-gold {
-    color: var(--accent);
+    @apply text-primary;
   }
 
   .shadow-luxury {
-    box-shadow: none;
+    @apply shadow-md;
   }
 
   .shadow-luxury-lg {
-    box-shadow: none;
+    @apply shadow-xl;
   }
 
-  .rounded-full {
-    border-radius: 0px !important;
+  .logo-accent {
+    @apply text-primary;
+    font-style: normal;
+  }
+
+  .sec-label {
+    @apply text-xs font-medium tracking-widest uppercase text-primary;
+  }
+
+  .text-accent-em {
+    @apply text-primary italic;
   }
 }

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,84 +27,81 @@ const Navbar = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
+    if (next === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [theme]);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+    <motion.nav
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b"
-          : "border-b border-transparent"
+          ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-sm"
+          : "bg-transparent"
       }`}
-      style={{
-        background: scrolled ? "var(--surface)" : "transparent",
-      }}
       role="navigation"
       aria-label="Main navigation"
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center" aria-label="Artlypet home">
-          <span className="font-serif text-2xl font-light tracking-tight" style={{ color: "var(--text)" }}>
-            Artly<span className="logo-accent">Pet</span>
+        <Link to="/" className="flex items-center" aria-label="ArtlyPet home">
+          <span className="font-serif text-2xl font-bold text-primary">
+            ArtlyPet
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-10">
+        <div className="hidden md:flex items-center gap-8">
           <a
             href="#gallery"
-            className="text-[0.72rem] font-semibold tracking-[0.18em] uppercase transition-colors duration-300"
-            style={{ color: "var(--muted)" }}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
           >
             {t("nav.gallery")}
           </a>
           <a
             href="#pricing"
-            className="text-[0.72rem] font-semibold tracking-[0.18em] uppercase transition-colors duration-300"
-            style={{ color: "var(--muted)" }}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
           >
             {t("nav.pricing")}
           </a>
           <a
             href="#faq"
-            className="text-[0.72rem] font-semibold tracking-[0.18em] uppercase transition-colors duration-300"
-            style={{ color: "var(--muted)" }}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
           >
             {t("nav.faq")}
           </a>
         </div>
 
         {/* Desktop Right */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center border transition-colors duration-300"
-            style={{
-              borderColor: "var(--border)",
-              color: "var(--text)",
-            }}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors duration-200"
             aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
           >
-            <span className="text-sm">{theme === "light" ? "\u263D" : "\u2600"}</span>
+            {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </button>
 
           <LanguageSwitcher />
 
-          <Button variant="ghost" asChild className="text-[0.72rem] tracking-[0.14em] uppercase font-semibold">
+          <Button variant="outline" asChild className="rounded-full h-10 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
             <Link to="/login">{t("nav.signIn")}</Link>
           </Button>
 
-          <Link to="/signup" className="btn-editorial">
-            {t("nav.getStarted")}
-          </Link>
+          <Button asChild className="rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Link to="/signup">{t("nav.getStarted")}</Link>
+          </Button>
         </div>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden p-2"
-          style={{ color: "var(--text)" }}
+          className="md:hidden p-2 text-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
@@ -114,33 +112,24 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div
-          className="md:hidden border-t px-6 py-6 space-y-1"
-          style={{
-            background: "var(--surface)",
-            borderColor: "var(--border)",
-          }}
-        >
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg px-6 py-6 space-y-1">
           <a
             href="#gallery"
-            className="block text-[0.72rem] font-semibold tracking-[0.18em] uppercase py-3"
-            style={{ color: "var(--muted)" }}
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.gallery")}
           </a>
           <a
             href="#pricing"
-            className="block text-[0.72rem] font-semibold tracking-[0.18em] uppercase py-3"
-            style={{ color: "var(--muted)" }}
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.pricing")}
           </a>
           <a
             href="#faq"
-            className="block text-[0.72rem] font-semibold tracking-[0.18em] uppercase py-3"
-            style={{ color: "var(--muted)" }}
+            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.faq")}
@@ -149,33 +138,23 @@ const Navbar = () => {
             <LanguageSwitcher />
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 flex items-center justify-center border"
-              style={{
-                borderColor: "var(--border)",
-                color: "var(--text)",
-              }}
+              className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
               aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
             >
-              <span className="text-sm">{theme === "light" ? "\u263D" : "\u2600"}</span>
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </button>
           </div>
           <div className="flex flex-col gap-3 pt-3">
-            <Link
-              to="/login"
-              className="btn-editorial btn-outline-editorial w-full text-center"
-            >
-              {t("nav.signIn")}
-            </Link>
-            <Link
-              to="/signup"
-              className="btn-editorial w-full text-center"
-            >
-              {t("nav.getStarted")}
-            </Link>
+            <Button variant="outline" asChild className="rounded-full h-12 w-full text-sm font-medium border-border">
+              <Link to="/login">{t("nav.signIn")}</Link>
+            </Button>
+            <Button asChild className="rounded-full h-12 w-full text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Link to="/signup">{t("nav.getStarted")}</Link>
+            </Button>
           </div>
         </div>
       )}
-    </nav>
+    </motion.nav>
   );
 };
 

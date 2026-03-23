@@ -17,8 +17,7 @@ const PrintShopSection = () => {
   return (
     <section
       id="prints"
-      className="py-28 lg:py-36 relative"
-      style={{ background: "var(--bg)" }}
+      className="py-24 bg-muted/30"
       aria-labelledby="prints-heading"
     >
       <div className="container px-6 lg:px-8 relative z-10">
@@ -26,22 +25,21 @@ const PrintShopSection = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* Left: Text content */}
             <div>
-              <motion.p
+              <motion.span
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                className="sec-label"
+                className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
               >
                 Physical Prints
-              </motion.p>
+              </motion.span>
               <motion.h2
                 id="prints-heading"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="font-serif text-4xl md:text-5xl font-light mb-6"
-                style={{ color: "var(--text)" }}
+                className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-6"
               >
                 {t("printShop.title")}
               </motion.h2>
@@ -50,8 +48,7 @@ const PrintShopSection = () => {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="text-lg font-sans leading-relaxed mb-10"
-                style={{ color: "var(--muted)" }}
+                className="text-lg font-sans text-muted-foreground leading-relaxed mb-10"
               >
                 {t("printShop.subtitle")}
               </motion.p>
@@ -65,13 +62,7 @@ const PrintShopSection = () => {
                 <Button
                   size="lg"
                   asChild
-                  className="btn-editorial px-10 h-14 font-sans text-sm font-semibold tracking-wider uppercase group"
-                  style={{
-                    borderRadius: 0,
-                    background: "var(--accent)",
-                    color: "var(--bg)",
-                    border: "none",
-                  }}
+                  className="rounded-full px-8 h-12 font-medium group"
                 >
                   <Link to="/signup">
                     {t("printShop.cta")}
@@ -90,42 +81,19 @@ const PrintShopSection = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 + i * 0.15, duration: 0.6 }}
-                  className="relative flex items-start gap-5 p-6 border transition-all duration-300 overflow-hidden group"
-                  style={{
-                    borderRadius: 0,
-                    borderColor: "var(--border)",
-                    background: "var(--surface)",
-                  }}
+                  className="flex items-start gap-5 rounded-2xl bg-card p-6 shadow-sm"
                 >
-                  {/* card-bar hover effect */}
-                  <span
-                    className="absolute left-0 top-0 h-full w-0 group-hover:w-1 transition-all duration-300"
-                    style={{ background: "var(--accent)" }}
-                  />
-                  <div
-                    className="w-12 h-12 border flex items-center justify-center shrink-0"
-                    style={{
-                      borderRadius: 0,
-                      borderColor: "var(--border)",
-                    }}
-                  >
+                  <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
                     <feat.icon
-                      className="h-5 w-5"
-                      style={{ color: "var(--accent)" }}
+                      className="h-5 w-5 text-primary"
                       strokeWidth={1.5}
                     />
                   </div>
                   <div>
-                    <h3
-                      className="font-serif text-lg font-normal mb-1"
-                      style={{ color: "var(--text)" }}
-                    >
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
                       {t(feat.titleKey)}
                     </h3>
-                    <p
-                      className="text-sm font-sans leading-relaxed"
-                      style={{ color: "var(--muted)" }}
-                    >
+                    <p className="text-sm font-sans text-muted-foreground leading-relaxed">
                       {t(feat.descKey)}
                     </p>
                   </div>

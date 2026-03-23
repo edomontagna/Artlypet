@@ -7,46 +7,44 @@ const FooterSection = () => {
 
   return (
     <footer
-      className="border-t"
-      style={{
-        background: "var(--surface)",
-        borderColor: "var(--border)",
-        color: "var(--text)",
-      }}
+      className="py-12 border-t border-border bg-background"
       role="contentinfo"
     >
-      <div className="container px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="container px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-8">
           {/* Logo + Language */}
           <div className="flex items-center gap-6">
             <Link
               to="/"
-              className="font-serif text-2xl font-light tracking-tight"
-              style={{ color: "var(--text)" }}
+              className="font-serif text-xl font-bold text-primary"
             >
-              Artly<span className="logo-accent">Pet</span>
+              Artly<span className="text-foreground">Pet</span>
             </Link>
             <LanguageSwitcher variant="outline" />
           </div>
 
-          {/* Links + Copyright */}
-          <div className="flex items-center gap-6 text-xs" style={{ color: "var(--muted)" }}>
+          {/* Links */}
+          <nav className="flex items-center gap-6">
             <Link
               to="/privacy"
-              className="hover:underline underline-offset-4 transition-colors duration-200"
-              style={{ color: "var(--muted)" }}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               {t("footer.privacy")}
             </Link>
             <Link
               to="/terms"
-              className="hover:underline underline-offset-4 transition-colors duration-200"
-              style={{ color: "var(--muted)" }}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               {t("footer.terms")}
             </Link>
-            <span>&copy; {new Date().getFullYear()} Artlypet</span>
-          </div>
+          </nav>
+        </div>
+
+        {/* Copyright */}
+        <div className="mt-8 pt-6 border-t border-border text-center">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} Artlypet. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

@@ -103,9 +103,9 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left sidebar */}
-      <aside className="hidden lg:flex w-56 border-r border-border flex-col">
+      <aside className="hidden lg:flex w-56 bg-card border-r border-border flex-col">
         <div className="p-4 border-b border-border">
-          <Link to="/" className="font-serif text-xl font-bold text-gradient-gold">Artlypet</Link>
+          <Link to="/" className="font-serif text-xl font-bold text-primary">Artlypet</Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {tabs.map((tab) => (
@@ -115,7 +115,7 @@ const Dashboard = () => {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left w-full ${
                 activeTab === tab.id
                   ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
               aria-current={activeTab === tab.id ? "page" : undefined}
             >
@@ -131,13 +131,13 @@ const Dashboard = () => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="text-sm font-medium truncate">{displayName}</p>
+                <p className="text-sm font-medium truncate text-foreground">{displayName}</p>
                 {isPremium && <Crown className="h-3 w-3 text-primary flex-shrink-0" />}
               </div>
               <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={handleLogout}>
+          <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground rounded-lg hover:bg-muted" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
             {t("dashboard.signOut", "Sign Out")}
           </Button>
@@ -146,17 +146,17 @@ const Dashboard = () => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-8">
-          <h1 className="font-serif text-xl font-bold text-gradient-gold lg:hidden">Artlypet</h1>
+        <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
+          <h1 className="font-serif text-xl font-bold text-primary lg:hidden">Artlypet</h1>
           <div className="flex items-center gap-3 ml-auto">
             {isPremium && (
-              <span className="flex items-center gap-1 text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded-full">
+              <span className="rounded-full bg-primary/10 text-primary px-3 py-1 flex items-center gap-1 text-xs font-medium">
                 <Crown className="h-3 w-3" /> Premium
               </span>
             )}
             <div className="flex items-center gap-1.5 text-sm">
               <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-medium">
+              <span className="font-medium text-foreground">
                 {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : creditBalance ?? 0} {t("dashboard.credits", "credits")}
               </span>
             </div>
@@ -166,7 +166,7 @@ const Dashboard = () => {
                 <span className="hidden sm:inline">{t("dashboard.createPortrait", "Create Portrait")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Sign out" className="lg:hidden">
+            <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Sign out" className="lg:hidden rounded-full">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
@@ -181,12 +181,12 @@ const Dashboard = () => {
               <p className="text-muted-foreground mb-8">{t("dashboard.subtitle", "Create your next pet masterpiece")}</p>
 
               {/* Plan + Credits card */}
-              <div className="p-6 rounded-xl bg-card border border-border shadow-luxury mb-8">
+              <div className="rounded-2xl bg-card border border-border shadow-md p-6 mb-8">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <p className="text-sm text-muted-foreground">{t("dashboard.creditBalance", "Credit Balance")}</p>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${
                         isPremium
                           ? "bg-primary/10 text-primary"
                           : "bg-muted text-muted-foreground"
@@ -202,7 +202,7 @@ const Dashboard = () => {
                     </p>
                   </div>
                   {!isPremium ? (
-                    <Button className="rounded-full gap-2" onClick={() => setCreditModalOpen(true)}>
+                    <Button className="rounded-full gap-2 shadow-md" onClick={() => setCreditModalOpen(true)}>
                       <Crown className="h-4 w-4" />
                       {t("dashboard.goPremium", "Go Premium — €15")}
                     </Button>
@@ -217,14 +217,14 @@ const Dashboard = () => {
               {/* Recent generations */}
               {generationsLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => <Skeleton key={i} className="aspect-square rounded-xl" />)}
+                  {[1, 2, 3].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
               ) : generations && generations.length > 0 ? (
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-foreground mb-4">{t("dashboard.recentPortraits", "Recent Portraits")}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {generations.slice(0, 6).map((gen) => (
-                      <div key={gen.id} className="aspect-square rounded-xl bg-card border border-border overflow-hidden relative group">
+                      <div key={gen.id} className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group">
                         {gen.storage_path ? (
                           <img
                             src={gen.storage_path}
@@ -273,11 +273,11 @@ const Dashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-16 border border-dashed border-border rounded-xl bg-card/50">
+                <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/50">
                   <Upload className="h-10 w-10 text-muted-foreground/40 mx-auto mb-4" />
                   <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{t("dashboard.noPortraits", "No portraits yet")}</h3>
                   <p className="text-muted-foreground mb-6">{t("dashboard.noPortraitsDesc", "Upload a photo to get started")}</p>
-                  <Button className="rounded-full" asChild>
+                  <Button className="rounded-full shadow-md" asChild>
                     <Link to="/generate">{t("dashboard.uploadPhoto", "Upload Photo")}</Link>
                   </Button>
                 </div>
@@ -291,12 +291,12 @@ const Dashboard = () => {
               <p className="text-muted-foreground mb-8">{t("dashboard.historyDesc", "All your generated portraits")}</p>
               {generationsLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square rounded-xl" />)}
+                  {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
               ) : generations && generations.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {generations.map((gen) => (
-                    <div key={gen.id} className="rounded-xl bg-card border border-border overflow-hidden">
+                    <div key={gen.id} className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
                       <div className="aspect-square relative group">
                         {gen.storage_path ? (
                           <img src={gen.storage_path} alt="Portrait" className="w-full h-full object-cover" loading="lazy" />
@@ -338,9 +338,9 @@ const Dashboard = () => {
                         <p className="text-sm font-medium truncate">{(gen as Record<string, { name?: string }>).styles?.name || "Portrait"}</p>
                         <div className="flex items-center justify-between mt-1">
                           <span className={`text-xs px-2 py-0.5 rounded-full ${
-                            gen.status === "completed" ? "bg-green-100 text-green-700" :
-                            gen.status === "failed" ? "bg-red-100 text-red-700" :
-                            "bg-yellow-100 text-yellow-700"
+                            gen.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
+                            gen.status === "failed" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                            "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
                           }`}>
                             {gen.status}
                           </span>
@@ -353,7 +353,7 @@ const Dashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 border border-dashed border-border rounded-xl bg-card/50">
+                <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/50">
                   <History className="h-10 w-10 text-muted-foreground/40 mx-auto mb-4" />
                   <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{t("dashboard.noHistory", "No history yet")}</h3>
                   <p className="text-muted-foreground">{t("dashboard.noHistoryDesc", "Your generated portraits will appear here")}</p>
@@ -368,7 +368,7 @@ const Dashboard = () => {
               <p className="text-muted-foreground mb-8">{t("dashboard.settingsDesc", "Manage your account")}</p>
               <div className="space-y-6">
                 {/* Plan info */}
-                <div className="p-6 rounded-xl bg-card border border-border space-y-4">
+                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 space-y-4">
                   <h3 className="font-serif text-lg font-semibold">{t("dashboard.plan", "Plan")}</h3>
                   <div className="flex items-center justify-between">
                     <div>
@@ -382,7 +382,7 @@ const Dashboard = () => {
                       </p>
                     </div>
                     {!isPremium && (
-                      <Button size="sm" className="rounded-full gap-2" onClick={() => setCreditModalOpen(true)}>
+                      <Button size="sm" className="rounded-full gap-2 shadow-sm" onClick={() => setCreditModalOpen(true)}>
                         <Crown className="h-3.5 w-3.5" />
                         {t("dashboard.upgrade", "Upgrade")}
                       </Button>
@@ -391,7 +391,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Profile */}
-                <div className="p-6 rounded-xl bg-card border border-border space-y-4">
+                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 space-y-4">
                   <h3 className="font-serif text-lg font-semibold">{t("dashboard.profile", "Profile")}</h3>
                   <div className="space-y-2">
                     <Label>Email</Label>
@@ -401,11 +401,11 @@ const Dashboard = () => {
                     <Label>{t("dashboard.displayName", "Display Name")}</Label>
                     {editingName ? (
                       <div className="flex gap-2">
-                        <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Your name" />
-                        <Button size="sm" onClick={handleSaveName} disabled={updateProfile.isPending}>
+                        <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Your name" className="rounded-lg" />
+                        <Button size="sm" className="rounded-full" onClick={handleSaveName} disabled={updateProfile.isPending}>
                           {t("dashboard.save", "Save")}
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => setEditingName(false)}>
+                        <Button size="sm" variant="ghost" className="rounded-full" onClick={() => setEditingName(false)}>
                           {t("dashboard.cancel", "Cancel")}
                         </Button>
                       </div>
@@ -415,6 +415,7 @@ const Dashboard = () => {
                         <Button
                           size="sm"
                           variant="ghost"
+                          className="rounded-full"
                           onClick={() => {
                             setEditName(profile?.display_name || "");
                             setEditingName(true);
@@ -428,12 +429,12 @@ const Dashboard = () => {
                 </div>
 
                 {/* Danger zone */}
-                <div className="p-6 rounded-xl border border-destructive/30 space-y-4">
+                <div className="rounded-2xl border border-destructive/30 p-6 space-y-4">
                   <h3 className="font-serif text-lg font-semibold text-destructive">{t("dashboard.dangerZone", "Danger Zone")}</h3>
                   <p className="text-sm text-muted-foreground">
                     {t("dashboard.deleteWarning", "Permanently delete your account and all associated data. This action cannot be undone.")}
                   </p>
-                  <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+                  <Button variant="destructive" size="sm" className="rounded-full" onClick={handleDeleteAccount}>
                     {t("dashboard.deleteAccount", "Delete Account")}
                   </Button>
                 </div>
@@ -443,7 +444,7 @@ const Dashboard = () => {
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="lg:hidden border-t border-border flex" aria-label="Dashboard navigation">
+        <nav className="lg:hidden border-t border-border bg-card flex" aria-label="Dashboard navigation">
           {tabs.map((tab) => (
             <button
               key={tab.id}

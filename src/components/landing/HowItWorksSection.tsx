@@ -3,38 +3,40 @@ import { motion } from "framer-motion";
 import { Upload, Palette, Download } from "lucide-react";
 
 const steps = [
-  { icon: Upload, titleKey: "howItWorks.step1Title", descKey: "howItWorks.step1Desc", num: "01" },
-  { icon: Palette, titleKey: "howItWorks.step2Title", descKey: "howItWorks.step2Desc", num: "02" },
-  { icon: Download, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc", num: "03" },
+  { icon: Upload, titleKey: "howItWorks.step1Title", descKey: "howItWorks.step1Desc" },
+  { icon: Palette, titleKey: "howItWorks.step2Title", descKey: "howItWorks.step2Desc" },
+  { icon: Download, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc" },
 ];
+
+const ease = [0.16, 1, 0.3, 1];
 
 const HowItWorksSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="sec-on-surface py-28 lg:py-36 relative">
+    <section className="py-24 bg-background">
       <div className="container px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-20">
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="sec-label mb-4"
           >
-            The Process
-          </motion.p>
+            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-4">
+              {t("howItWorks.label", "The Process")}
+            </span>
+          </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="font-serif text-4xl sm:text-5xl font-light"
-            style={{ color: "var(--text)" }}
+            transition={{ delay: 0.1, ease }}
+            className="font-serif font-bold text-4xl md:text-5xl tracking-tight text-foreground"
           >
             {t("howItWorks.title").split(" ").map((word, i, arr) =>
               i === arr.length - 1 ? (
-                <em key={i} className="text-accent-em">{word}</em>
+                <em key={i} className="italic text-primary">{word}</em>
               ) : (
                 <span key={i}>{word} </span>
               )
@@ -43,42 +45,35 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Steps grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2, duration: 0.6 }}
-              className="relative px-8 py-10 group"
-              style={{
-                borderRight: i < steps.length - 1 ? "1px solid var(--border)" : "none",
-              }}
-            >
-              {/* Step number */}
-              <div className="step-number mb-4">{step.num}</div>
-
-              {/* Title */}
-              <h3
-                className="font-serif text-2xl font-light mb-3"
-                style={{ color: "var(--text)" }}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.6, ease }}
+                className="group text-center"
               >
-                {t(step.titleKey)}
-              </h3>
+                {/* Icon circle */}
+                <div className="w-20 h-20 rounded-full bg-secondary/10 group-hover:bg-secondary/20 transition-colors duration-300 flex items-center justify-center mx-auto mb-6">
+                  <Icon className="h-8 w-8 text-secondary" />
+                </div>
 
-              {/* Description */}
-              <p
-                className="text-sm leading-relaxed"
-                style={{ color: "var(--muted)" }}
-              >
-                {t(step.descKey)}
-              </p>
+                {/* Title */}
+                <h3 className="font-serif font-bold text-xl text-foreground mb-3">
+                  {t(step.titleKey)}
+                </h3>
 
-              {/* Hover bar */}
-              <div className="step-bar group-hover:w-full" />
-            </motion.div>
-          ))}
+                {/* Description */}
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                  {t(step.descKey)}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

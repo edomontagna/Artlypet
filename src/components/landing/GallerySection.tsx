@@ -12,32 +12,34 @@ const fallbackStyles = [
   { id: "6", name: "Impressionist", description: "Dappled light & visible strokes", preview_url: "/images/impressionist.png" },
 ];
 
+const ease = [0.16, 1, 0.3, 1];
+
 const GallerySection = () => {
   const { t } = useTranslation();
   const { data: dbStyles, isLoading } = useStyles();
   const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
 
   return (
-    <section id="gallery" className="py-28 lg:py-36 relative" style={{ backgroundColor: "var(--bg)" }} aria-labelledby="gallery-heading">
+    <section id="gallery" className="py-24 lg:py-32 bg-background" aria-labelledby="gallery-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-20">
-          <motion.p
+        <div className="text-center mb-16">
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="sec-label mb-4"
           >
-            The Collection
-          </motion.p>
+            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-4">
+              {t("gallery.label", "The Collection")}
+            </span>
+          </motion.div>
           <motion.h2
             id="gallery-heading"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="font-serif text-4xl lg:text-5xl font-light mb-5"
-            style={{ color: "var(--text)" }}
+            transition={{ delay: 0.1, ease }}
+            className="font-serif font-bold text-4xl md:text-5xl tracking-tight text-foreground mb-5"
           >
             {t("gallery.title")}
           </motion.h2>
@@ -46,8 +48,7 @@ const GallerySection = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="max-w-xl text-lg font-light"
-            style={{ color: "var(--muted)" }}
+            className="max-w-xl mx-auto text-lg text-muted-foreground leading-relaxed"
           >
             {t("gallery.subtitle")}
           </motion.p>
@@ -55,76 +56,47 @@ const GallerySection = () => {
 
         {/* Grid */}
         {isLoading ? (
-          <div
-            className="grid grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto"
-            style={{ gap: "1.5px", backgroundColor: "var(--border)" }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-none" style={{ backgroundColor: "var(--surface)" }} />
+              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
             ))}
           </div>
         ) : (
-          <div
-            className="grid grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto"
-            style={{ gap: "1.5px", backgroundColor: "var(--border)" }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {styles.slice(0, 6).map((item, i) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
-                className="group relative"
-                style={{ backgroundColor: "var(--bg)" }}
+                transition={{ delay: i * 0.1, duration: 0.7, ease }}
+                className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
               >
-                {/* Card with bar */}
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  {/* Card-bar on left */}
-                  <div
-                    className="card-bar absolute left-0 top-0 w-[3px] z-20 transition-all duration-500 ease-out h-0 group-hover:h-full"
-                    style={{ backgroundColor: "var(--accent)" }}
+                {/* Image */}
+                {item.preview_url ? (
+                  <img
+                    src={item.preview_url}
+                    alt={`${item.name} pet portrait`}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
                   />
+                ) : (
+                  <div className="absolute inset-0 bg-secondary/10" />
+                )}
 
-                  {/* Image */}
-                  {item.preview_url ? (
-                    <img
-                      src={item.preview_url}
-                      alt={`${item.name} pet portrait`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform ease-out group-hover:scale-105"
-                      style={{ transitionDuration: "1.2s" }}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="absolute inset-0" style={{ backgroundColor: "var(--surface2)" }} />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+
+                {/* Content at bottom */}
+                <div className="absolute inset-x-0 bottom-0 p-5 z-10">
+                  <h3 className="font-serif font-bold text-xl text-white mb-1">
+                    {item.name}
+                  </h3>
+                  {item.description && (
+                    <p className="text-sm text-white/70 font-sans opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {item.description}
+                    </p>
                   )}
-
-                  {/* Corner accents */}
-                  <div
-                    className="absolute top-3 left-3 w-5 h-5 border-t border-l z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ borderColor: "var(--accent)" }}
-                  />
-                  <div
-                    className="absolute bottom-3 right-3 w-5 h-5 border-b border-r z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ borderColor: "var(--accent)" }}
-                  />
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500" />
-
-                  {/* Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 z-10">
-                    <h3
-                      className="font-serif text-xl lg:text-2xl font-light text-white mb-1 opacity-80 group-hover:opacity-100 transition-opacity duration-500"
-                    >
-                      {item.name}
-                    </h3>
-                    {item.description && (
-                      <p className="text-sm text-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 font-light" style={{ fontFamily: "var(--font-sans, Jost, sans-serif)" }}>
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
                 </div>
               </motion.div>
             ))}

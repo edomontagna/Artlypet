@@ -144,16 +144,16 @@ const Generate = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-8">
+      <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="rounded-full" asChild>
             <Link to="/dashboard"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
-          <h1 className="font-serif text-xl font-bold text-gradient-gold">{t("generate.title", "Create Portrait")}</h1>
+          <h1 className="font-serif text-xl font-bold text-primary">{t("generate.title", "Create Portrait")}</h1>
         </div>
         <div className="flex items-center gap-3 text-sm">
           {isPremium && (
-            <span className="flex items-center gap-1 text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded-full">
+            <span className="rounded-full bg-primary/10 text-primary px-3 py-1 flex items-center gap-1 text-xs font-medium">
               <Crown className="h-3 w-3" /> Premium
             </span>
           )}
@@ -179,7 +179,7 @@ const Generate = () => {
             </h2>
 
             {/* Image with optional watermark overlay */}
-            <div className="max-w-lg mx-auto rounded-xl overflow-hidden shadow-luxury border border-border relative">
+            <div className="max-w-lg mx-auto rounded-2xl overflow-hidden shadow-xl border border-border relative">
               <img
                 src={resultUrl}
                 alt="Generated portrait"
@@ -204,13 +204,13 @@ const Generate = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 rounded-xl border border-primary/20 bg-primary/5"
+                className="mt-4 p-4 rounded-2xl border border-primary/20 bg-primary/5"
               >
                 <p className="text-sm text-muted-foreground mb-3">
                   {t("generate.watermarkedPreview", "Preview with watermark — Unlock HD for full resolution without watermark")}
                 </p>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
-                  <Button onClick={handleUnlockHd} className="rounded-full gap-2">
+                  <Button onClick={handleUnlockHd} className="rounded-full gap-2 shadow-md">
                     <Lock className="h-4 w-4" />
                     {t("generate.unlockHd", "Unlock HD — €4.90")}
                   </Button>
@@ -227,7 +227,7 @@ const Generate = () => {
             {/* Download/Share for HD images */}
             {resultMode === "hd" && (
               <div className="flex items-center justify-center gap-3 mt-6">
-                <Button asChild className="rounded-full gap-2">
+                <Button asChild className="rounded-full gap-2 shadow-md">
                   <a href={resultUrl} download="artlypet-portrait.png">
                     <Download className="h-4 w-4" />
                     {t("generate.downloadHd", "Download HD")}
@@ -300,10 +300,10 @@ const Generate = () => {
 
               {previewUrl ? (
                 <div className="relative inline-block">
-                  <img src={previewUrl} alt="Preview" className="max-h-64 rounded-lg object-contain" />
+                  <img src={previewUrl} alt="Preview" className="max-h-64 rounded-2xl object-contain shadow-md" />
                   <button
                     onClick={removeFile}
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-sm"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -313,10 +313,10 @@ const Generate = () => {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${
+                  className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 cursor-pointer transition-colors ${
                     isDragging
                       ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50 hover:bg-primary/5"
+                      : "border-border hover:border-primary/50 hover:bg-muted/30"
                   }`}
                 >
                   <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
@@ -349,10 +349,10 @@ const Generate = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
                 <Card
                   onClick={() => setGenerationType("single")}
-                  className={`p-5 cursor-pointer transition-all ${
+                  className={`rounded-2xl border-2 p-5 cursor-pointer transition-all ${
                     generationType === "single"
-                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                      : "hover:shadow-luxury"
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/30 hover:shadow-sm"
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-2">
@@ -365,10 +365,10 @@ const Generate = () => {
 
                 <Card
                   onClick={() => setGenerationType("mix")}
-                  className={`p-5 cursor-pointer transition-all ${
+                  className={`rounded-2xl border-2 p-5 cursor-pointer transition-all ${
                     generationType === "mix"
-                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                      : "hover:shadow-luxury"
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/30 hover:shadow-sm"
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-2">
@@ -398,7 +398,7 @@ const Generate = () => {
               {stylesLoading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <Skeleton key={i} className="aspect-square rounded-xl" />
+                    <Skeleton key={i} className="aspect-square rounded-2xl" />
                   ))}
                 </div>
               ) : (
@@ -407,10 +407,10 @@ const Generate = () => {
                     <Card
                       key={style.id}
                       onClick={() => setSelectedStyleId(style.id)}
-                      className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-300 ${
+                      className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${
                         selectedStyleId === style.id
-                          ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.02]"
-                          : "hover:shadow-luxury"
+                          ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.02] shadow-md"
+                          : "hover:shadow-md"
                       }`}
                     >
                       {style.preview_url ? (
@@ -444,12 +444,12 @@ const Generate = () => {
               className="text-center"
             >
               {(creditBalance ?? 0) < creditCost ? (
-                <div className="p-6 rounded-xl border border-border bg-card mb-4">
+                <div className="p-6 rounded-2xl border border-border bg-card shadow-sm mb-4">
                   <p className="text-muted-foreground mb-3">
                     {t("generate.needCredits", "You need at least {{cost}} credits to generate this portrait", { cost: creditCost })}
                   </p>
                   <div className="flex items-center justify-center gap-3">
-                    <Button asChild className="rounded-full">
+                    <Button asChild className="rounded-full shadow-md">
                       <Link to="/dashboard?upgrade=true">
                         {t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
                       </Link>
@@ -461,7 +461,7 @@ const Generate = () => {
                   size="lg"
                   onClick={handleGenerate}
                   disabled={!uploadedFile || !selectedStyleId}
-                  className="rounded-full px-10 h-13 text-base shadow-luxury"
+                  className="rounded-full px-10 h-13 text-base shadow-xl"
                 >
                   <ImageIcon className="mr-2 h-5 w-5" />
                   {t("generate.generateBtn", "Generate Portrait ({{cost}} credits)", { cost: creditCost })}

@@ -10,27 +10,26 @@ const FAQSection = () => {
   return (
     <section
       id="faq"
-      className="py-28 lg:py-36 relative"
-      style={{ background: "var(--bg)" }}
+      className="py-24 bg-background"
       aria-labelledby="faq-heading"
     >
       <div className="container px-6 lg:px-8 max-w-3xl mx-auto">
-        <div className="text-center mb-20">
-          <motion.p
+        <div className="text-center mb-16">
+          <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="sec-label"
+            className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
           >
             Support
-          </motion.p>
+          </motion.span>
           <motion.h2
             id="faq-heading"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl md:text-5xl font-light"
-            style={{ color: "var(--text)" }}
+            transition={{ delay: 0.1 }}
+            className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground"
           >
             {t("faq.title")}
           </motion.h2>
@@ -47,18 +46,15 @@ const FAQSection = () => {
               <AccordionItem
                 key={key}
                 value={`faq-${i}`}
-                className="border-0 border-b px-0"
-                style={{ borderColor: "var(--border)" }}
+                className="border-0 border-b border-border"
               >
                 <AccordionTrigger
-                  className="text-left font-serif text-base md:text-lg font-normal hover:no-underline py-6 transition-colors duration-300 data-[state=open]:text-[var(--accent)]"
-                  style={{ color: "var(--text)", borderRadius: 0 }}
+                  className="text-left font-serif text-lg font-semibold text-foreground hover:no-underline py-6 transition-colors duration-300 data-[state=open]:text-primary"
                 >
                   {t(`faq.${key}`)}
                 </AccordionTrigger>
                 <AccordionContent
-                  className="font-sans text-sm leading-relaxed pb-6"
-                  style={{ color: "var(--muted)" }}
+                  className="text-muted-foreground leading-relaxed pb-6"
                 >
                   {t(`faq.a${key.slice(1)}`)}
                 </AccordionContent>

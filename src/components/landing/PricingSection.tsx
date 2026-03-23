@@ -68,26 +68,25 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-28 lg:py-36 relative" style={{ backgroundColor: "var(--bg)" }} aria-labelledby="pricing-heading">
+    <section id="pricing" className="py-24 lg:py-32 bg-background" aria-labelledby="pricing-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
-          <motion.p
+        <div className="text-center mb-16">
+          <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="sec-label mb-4"
+            className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
           >
             {t("pricing.label", "Pricing")}
-          </motion.p>
+          </motion.span>
           <motion.h2
             id="pricing-heading"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-serif text-4xl lg:text-5xl font-light mb-5"
-            style={{ color: "var(--text)" }}
+            className="font-serif text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5"
           >
             {t("pricing.title")}
           </motion.h2>
@@ -96,18 +95,14 @@ const PricingSection = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="max-w-xl mx-auto text-lg font-light"
-            style={{ color: "var(--muted)" }}
+            className="max-w-xl mx-auto text-lg text-muted-foreground"
           >
             {t("pricing.subtitle")}
           </motion.p>
         </div>
 
-        {/* Plans grid with visible border gaps */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
-          style={{ gap: "1.5px", backgroundColor: "var(--border)" }}
-        >
+        {/* Plans grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -115,101 +110,83 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
-              className="relative flex flex-col"
-              style={{
-                backgroundColor: plan.popular ? "var(--accent)" : "var(--bg)",
-              }}
+              className={`relative flex flex-col rounded-3xl p-8 sm:p-12 ${
+                plan.popular
+                  ? "bg-primary text-white shadow-xl"
+                  : "bg-background border border-border/50 shadow-sm"
+              }`}
             >
-              {/* Popular bar at top */}
+              {/* Popular badge */}
               {plan.popular && (
-                <div
-                  className="h-[3px] w-full"
-                  style={{ backgroundColor: "var(--text)" }}
-                />
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md">
+                  {t("pricing.popular")}
+                </span>
               )}
 
-              <div className="flex flex-col h-full p-8 lg:p-10">
-                {/* Popular label */}
-                {plan.popular && (
-                  <p
-                    className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-6"
-                    style={{ color: "var(--bg)" }}
-                  >
-                    {t("pricing.popular")}
+              {/* Plan header */}
+              <div className="mb-8">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
+                  plan.popular ? "bg-white/20" : "bg-secondary/10"
+                }`}>
+                  <plan.icon className={`h-5 w-5 ${plan.popular ? "text-white" : "text-primary"}`} />
+                </div>
+                <p className={`text-sm mb-1 ${plan.popular ? "text-white/70" : "text-muted-foreground"}`}>
+                  {plan.desc}
+                </p>
+                <h3 className={`font-serif text-2xl font-bold tracking-tight mb-4 ${
+                  plan.popular ? "text-white" : "text-foreground"
+                }`}>
+                  {plan.name}
+                </h3>
+                <div className="flex items-baseline gap-1">
+                  <span className={`font-serif text-5xl font-bold tracking-tight ${
+                    plan.popular ? "text-white" : "text-foreground"
+                  }`}>
+                    &euro;{plan.price}
+                  </span>
+                </div>
+                {plan.priceSuffix && (
+                  <p className={`text-sm mt-1 ${plan.popular ? "text-white/50" : "text-muted-foreground"}`}>
+                    {plan.priceSuffix}
                   </p>
                 )}
-
-                {/* Plan header */}
-                <div className="mb-8">
-                  <p
-                    className="text-[11px] tracking-[0.18em] uppercase mb-2"
-                    style={{ color: plan.popular ? "rgba(255,255,255,0.5)" : "var(--muted)" }}
-                  >
-                    {plan.desc}
-                  </p>
-                  <h3
-                    className="font-serif text-2xl font-light mb-6"
-                    style={{ color: plan.popular ? "var(--bg)" : "var(--text)" }}
-                  >
-                    {plan.name}
-                  </h3>
-                  <div className="flex items-baseline gap-1">
-                    <span
-                      className="font-serif text-5xl lg:text-6xl font-light tracking-tight"
-                      style={{ color: plan.popular ? "var(--bg)" : "var(--text)" }}
-                    >
-                      &euro;{plan.price}
-                    </span>
-                  </div>
-                  {plan.priceSuffix && (
-                    <p
-                      className="text-sm mt-2"
-                      style={{ color: plan.popular ? "rgba(255,255,255,0.4)" : "var(--muted)" }}
-                    >
-                      {plan.priceSuffix}
-                    </p>
-                  )}
-                </div>
-
-                {/* Divider */}
-                <div
-                  className="h-px mb-8"
-                  style={{ backgroundColor: plan.popular ? "rgba(255,255,255,0.15)" : "var(--border)" }}
-                />
-
-                {/* Features */}
-                <ul className="space-y-4 flex-1" role="list">
-                  {plan.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-3 text-sm"
-                      style={{ color: plan.popular ? "rgba(255,255,255,0.7)" : "var(--muted)" }}
-                    >
-                      <Check
-                        className="h-4 w-4 mt-0.5 shrink-0"
-                        style={{ color: plan.popular ? "var(--bg)" : "var(--accent)" }}
-                        strokeWidth={2.5}
-                      />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA Button — square, no gradient */}
-                <Button
-                  asChild
-                  className="mt-10 w-full h-12 font-semibold tracking-wide rounded-none transition-all duration-300"
-                  style={{
-                    backgroundColor: plan.popular ? "var(--bg)" : "transparent",
-                    color: plan.popular ? "var(--accent)" : "var(--text)",
-                    border: plan.popular ? "none" : "1.5px solid var(--border)",
-                    borderRadius: 0,
-                  }}
-                  variant={plan.popular ? "default" : "outline"}
-                >
-                  <Link to={plan.ctaLink}>{plan.cta}</Link>
-                </Button>
               </div>
+
+              {/* Divider */}
+              <div className={`h-px mb-8 ${plan.popular ? "bg-white/20" : "bg-border"}`} />
+
+              {/* Features */}
+              <ul className="space-y-4 flex-1" role="list">
+                {plan.features.map((f) => (
+                  <li
+                    key={f}
+                    className={`flex items-start gap-3 text-sm ${
+                      plan.popular ? "text-white/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    <Check
+                      className={`h-4 w-4 mt-0.5 shrink-0 ${
+                        plan.popular ? "text-white" : "text-secondary"
+                      }`}
+                      strokeWidth={2.5}
+                    />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              {/* CTA Button */}
+              <Button
+                asChild
+                className={`mt-10 w-full h-12 rounded-full font-medium transition-all duration-300 ${
+                  plan.popular
+                    ? "bg-white text-primary hover:bg-white/90"
+                    : ""
+                }`}
+                variant={plan.popular ? "default" : "outline"}
+              >
+                <Link to={plan.ctaLink}>{plan.cta}</Link>
+              </Button>
             </motion.div>
           ))}
         </div>

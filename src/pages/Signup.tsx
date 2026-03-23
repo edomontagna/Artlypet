@@ -38,13 +38,6 @@ const getStrengthLabel = (score: number) => {
   return "Strong";
 };
 
-const getStrengthBarColor = (score: number) => {
-  if (score < 30) return "var(--text)";
-  if (score < 60) return "var(--muted)";
-  if (score < 80) return "var(--accent)";
-  return "var(--accent)";
-};
-
 const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -81,62 +74,31 @@ const Signup = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "var(--bg)" }}
-    >
-      <Card
-        className="w-full max-w-md border"
-        style={{
-          borderRadius: 0,
-          background: "var(--surface)",
-          borderColor: "var(--border)",
-          boxShadow: "none",
-        }}
-      >
-        <CardHeader className="text-center pb-6">
-          <Link
-            to="/"
-            className="mx-auto mb-4 inline-block"
-            style={{ textDecoration: "none" }}
-          >
-            <span
-              className="font-serif"
-              style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.04em" }}
-            >
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+      <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
+        <CardHeader className="text-center pb-6 p-0 mb-6">
+          <Link to="/" className="mx-auto mb-4 inline-block no-underline">
+            <span className="font-serif text-2xl font-bold text-primary">
               Artly
             </span>
-            <span className="logo-accent" style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--accent)" }}>
+            <span className="font-serif text-2xl font-bold text-foreground">
               Pet
             </span>
           </Link>
-          <CardTitle
-            className="font-serif"
-            style={{ fontSize: "1.5rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.02em" }}
-          >
+          <CardTitle className="font-serif text-2xl font-bold text-foreground">
             Create Your Account
           </CardTitle>
-          <CardDescription
-            className="font-sans"
-            style={{ color: "var(--muted)", fontSize: "0.875rem" }}
-          >
+          <CardDescription className="font-sans text-sm text-muted-foreground">
             Start creating pet masterpieces
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0">
           <Button
             variant="outline"
-            className="w-full uppercase tracking-widest text-xs font-sans"
+            className="w-full rounded-full h-12 border border-border hover:bg-muted font-sans text-sm"
             onClick={handleGoogleSignUp}
             disabled={googleLoading}
-            style={{
-              borderRadius: 0,
-              borderColor: "var(--border)",
-              background: "transparent",
-              color: "var(--text)",
-              height: "2.75rem",
-            }}
           >
             {googleLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -152,11 +114,8 @@ const Signup = () => {
           </Button>
 
           <div className="relative">
-            <Separator style={{ background: "var(--border)" }} />
-            <span
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 text-xs font-sans uppercase tracking-widest"
-              style={{ background: "var(--surface)", color: "var(--muted)" }}
-            >
+            <Separator className="bg-border" />
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs font-sans text-muted-foreground">
               or
             </span>
           </div>
@@ -164,29 +123,20 @@ const Signup = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4 pt-0">
+            <CardContent className="space-y-4 p-0 pt-2">
               <FormField
                 control={form.control}
                 name="displayName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="font-sans uppercase tracking-widest text-xs"
-                      style={{ color: "var(--muted)" }}
-                    >
+                    <FormLabel className="font-sans text-sm text-muted-foreground">
                       Display Name
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
                         placeholder="Your name"
-                        className="font-sans"
-                        style={{
-                          borderRadius: 0,
-                          borderColor: "var(--border)",
-                          background: "transparent",
-                          color: "var(--text)",
-                        }}
+                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
                     </FormControl>
@@ -199,23 +149,14 @@ const Signup = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="font-sans uppercase tracking-widest text-xs"
-                      style={{ color: "var(--muted)" }}
-                    >
+                    <FormLabel className="font-sans text-sm text-muted-foreground">
                       Email
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="you@example.com"
-                        className="font-sans"
-                        style={{
-                          borderRadius: 0,
-                          borderColor: "var(--border)",
-                          background: "transparent",
-                          color: "var(--text)",
-                        }}
+                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
                     </FormControl>
@@ -228,23 +169,14 @@ const Signup = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="font-sans uppercase tracking-widest text-xs"
-                      style={{ color: "var(--muted)" }}
-                    >
+                    <FormLabel className="font-sans text-sm text-muted-foreground">
                       Password
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         placeholder="Min 10 characters"
-                        className="font-sans"
-                        style={{
-                          borderRadius: 0,
-                          borderColor: "var(--border)",
-                          background: "transparent",
-                          color: "var(--text)",
-                        }}
+                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
                     </FormControl>
@@ -252,21 +184,15 @@ const Signup = () => {
                     {password && password.length > 0 && (
                       <div className="space-y-1 pt-1">
                         <div className="flex items-center justify-between text-xs font-sans">
-                          <span style={{ color: "var(--muted)" }}>Password strength</span>
-                          <span style={{ color: strength >= 80 ? "var(--accent)" : "var(--muted)" }}>
+                          <span className="text-muted-foreground">Password strength</span>
+                          <span className={strength >= 80 ? "text-primary" : "text-muted-foreground"}>
                             {getStrengthLabel(strength)}
                           </span>
                         </div>
-                        <div
-                          className="h-0.5 w-full"
-                          style={{ background: "var(--border)" }}
-                        >
+                        <div className="rounded-full h-2 bg-muted overflow-hidden">
                           <div
-                            className="h-full transition-all duration-300"
-                            style={{
-                              width: `${strength}%`,
-                              background: getStrengthBarColor(strength),
-                            }}
+                            className="h-full bg-primary transition-all duration-300 rounded-full"
+                            style={{ width: `${strength}%` }}
                           />
                         </div>
                       </div>
@@ -275,28 +201,20 @@ const Signup = () => {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex flex-col gap-4">
+            <CardFooter className="flex flex-col gap-4 p-0 pt-6">
               <Button
                 type="submit"
-                className="btn-editorial w-full uppercase tracking-widest text-xs font-sans"
+                className="rounded-full h-12 w-full bg-primary text-primary-foreground font-sans text-sm shadow-md hover:bg-primary/90"
                 disabled={loading}
-                style={{
-                  borderRadius: 0,
-                  background: "var(--accent)",
-                  color: "var(--bg)",
-                  height: "2.75rem",
-                  boxShadow: "none",
-                }}
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Account
               </Button>
-              <p className="text-sm font-sans" style={{ color: "var(--muted)" }}>
+              <p className="text-sm font-sans text-muted-foreground">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-medium"
-                  style={{ color: "var(--accent)" }}
+                  className="font-medium text-primary hover:underline"
                 >
                   Sign in
                 </Link>

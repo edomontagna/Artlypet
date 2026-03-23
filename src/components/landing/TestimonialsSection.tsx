@@ -31,38 +31,34 @@ const TestimonialsSection = () => {
 
   return (
     <section
-      className="sec-on-surface py-28 lg:py-36 relative"
-      style={{ backgroundColor: "var(--surface)" }}
+      className="py-24 bg-muted/30"
       aria-labelledby="testimonials-heading"
     >
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-20">
-          <motion.p
+        <div className="text-center mb-16">
+          <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="sec-label mb-4"
+            className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
           >
             Testimonials
-          </motion.p>
+          </motion.span>
           <motion.h2
             id="testimonials-heading"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl lg:text-5xl font-light"
-            style={{ color: "var(--text)" }}
+            transition={{ delay: 0.1 }}
+            className="font-serif text-4xl lg:text-5xl font-bold tracking-tight text-foreground"
           >
             {t("testimonials.title")}
           </motion.h2>
         </div>
 
-        {/* Grid with border gaps */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
-          style={{ gap: "1.5px", backgroundColor: "var(--border)" }}
-        >
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {testimonials.map((item, i) => (
             <motion.div
               key={item.name}
@@ -70,47 +66,33 @@ const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
-              className="group relative"
-              style={{ backgroundColor: "var(--surface)" }}
+              className="bg-card rounded-2xl p-8 shadow-sm"
             >
-              <div className="relative p-8 lg:p-10">
-                {/* Card-bar on left */}
-                <div
-                  className="card-bar absolute left-0 top-0 w-[3px] transition-all duration-500 ease-out h-0 group-hover:h-full"
-                  style={{ backgroundColor: "var(--accent)" }}
-                />
+              {/* Stars */}
+              <div className="flex gap-0.5 mb-5">
+                {Array.from({ length: item.rating }).map((_, j) => (
+                  <Star
+                    key={j}
+                    className="h-4 w-4 fill-primary text-primary"
+                  />
+                ))}
+              </div>
 
-                {/* Stars */}
-                <div className="flex gap-0.5 mb-6">
-                  {Array.from({ length: item.rating }).map((_, j) => (
-                    <Star
-                      key={j}
-                      className="h-3 w-3"
-                      style={{ fill: "var(--accent)", color: "var(--accent)" }}
-                    />
-                  ))}
+              {/* Quote */}
+              <p className="font-serif text-lg italic text-foreground leading-relaxed mb-8">
+                &ldquo;{item.text}&rdquo;
+              </p>
+
+              {/* Attribution */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-sm font-semibold text-primary">{item.initials}</span>
                 </div>
-
-                {/* Quote */}
-                <p
-                  className="font-serif text-lg font-light italic leading-relaxed mb-8"
-                  style={{ color: "var(--text)" }}
-                >
-                  &ldquo;{item.text}&rdquo;
-                </p>
-
-                {/* Attribution */}
                 <div>
-                  <p
-                    className="text-sm font-medium"
-                    style={{ color: "var(--text)", fontFamily: "var(--font-sans, Jost, sans-serif)" }}
-                  >
+                  <p className="text-sm font-medium font-sans text-foreground">
                     {item.name}
                   </p>
-                  <p
-                    className="text-xs mt-0.5"
-                    style={{ color: "var(--muted)", fontFamily: "var(--font-sans, Jost, sans-serif)" }}
-                  >
+                  <p className="text-xs font-sans text-muted-foreground">
                     {item.location}
                   </p>
                 </div>

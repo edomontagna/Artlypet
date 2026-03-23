@@ -50,7 +50,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md rounded-2xl">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl flex items-center gap-2">
             <Crown className="h-6 w-6 text-primary" />
@@ -89,7 +89,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           </div>
 
           {/* Comparison */}
-          <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg space-y-1">
+          <div className="rounded-xl bg-muted p-4 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-foreground">{t("pricing.vsFreePlan", "vs. Free Plan:")}</p>
             <p>• {t("pricing.freeWatermark", "Free = watermarked low-res previews")}</p>
             <p>• {t("pricing.freeHdPrice", "HD unlock per image: €{{price}}", { price: HD_UNLOCK_PRICE.toFixed(2) })}</p>
@@ -99,7 +99,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           {/* CTA */}
           <Button
             size="lg"
-            className="w-full rounded-full h-12 text-base shadow-luxury gap-2"
+            className="w-full rounded-full h-12 bg-primary text-primary-foreground text-base shadow-md gap-2 hover:bg-primary/90"
             onClick={handlePurchasePremium}
             disabled={loading}
           >

@@ -51,62 +51,31 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "var(--bg)" }}
-    >
-      <Card
-        className="w-full max-w-md border"
-        style={{
-          borderRadius: 0,
-          background: "var(--surface)",
-          borderColor: "var(--border)",
-          boxShadow: "none",
-        }}
-      >
-        <CardHeader className="text-center pb-6">
-          <Link
-            to="/"
-            className="mx-auto mb-4 inline-block"
-            style={{ textDecoration: "none" }}
-          >
-            <span
-              className="font-serif"
-              style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.04em" }}
-            >
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+      <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
+        <CardHeader className="text-center pb-6 p-0 mb-6">
+          <Link to="/" className="mx-auto mb-4 inline-block no-underline">
+            <span className="font-serif text-2xl font-bold text-primary">
               Artly
             </span>
-            <span className="logo-accent" style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--accent)" }}>
+            <span className="font-serif text-2xl font-bold text-foreground">
               Pet
             </span>
           </Link>
-          <CardTitle
-            className="font-serif"
-            style={{ fontSize: "1.5rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.02em" }}
-          >
+          <CardTitle className="font-serif text-2xl font-bold text-foreground">
             Welcome Back
           </CardTitle>
-          <CardDescription
-            className="font-sans"
-            style={{ color: "var(--muted)", fontSize: "0.875rem" }}
-          >
+          <CardDescription className="font-sans text-sm text-muted-foreground">
             Sign in to your account
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0">
           <Button
             variant="outline"
-            className="w-full uppercase tracking-widest text-xs font-sans"
+            className="w-full rounded-full h-12 border border-border hover:bg-muted font-sans text-sm"
             onClick={handleGoogleSignIn}
             disabled={googleLoading}
-            style={{
-              borderRadius: 0,
-              borderColor: "var(--border)",
-              background: "transparent",
-              color: "var(--text)",
-              height: "2.75rem",
-            }}
           >
             {googleLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -122,11 +91,8 @@ const Login = () => {
           </Button>
 
           <div className="relative">
-            <Separator style={{ background: "var(--border)" }} />
-            <span
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 text-xs font-sans uppercase tracking-widest"
-              style={{ background: "var(--surface)", color: "var(--muted)" }}
-            >
+            <Separator className="bg-border" />
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs font-sans text-muted-foreground">
               or
             </span>
           </div>
@@ -134,29 +100,20 @@ const Login = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4 pt-0">
+            <CardContent className="space-y-4 p-0 pt-2">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="font-sans uppercase tracking-widest text-xs"
-                      style={{ color: "var(--muted)" }}
-                    >
+                    <FormLabel className="font-sans text-sm text-muted-foreground">
                       Email
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="you@example.com"
-                        className="font-sans"
-                        style={{
-                          borderRadius: 0,
-                          borderColor: "var(--border)",
-                          background: "transparent",
-                          color: "var(--text)",
-                        }}
+                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
                     </FormControl>
@@ -170,16 +127,12 @@ const Login = () => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between">
-                      <FormLabel
-                        className="font-sans uppercase tracking-widest text-xs"
-                        style={{ color: "var(--muted)" }}
-                      >
+                      <FormLabel className="font-sans text-sm text-muted-foreground">
                         Password
                       </FormLabel>
                       <Link
                         to="/forgot-password"
-                        className="text-xs font-sans"
-                        style={{ color: "var(--accent)" }}
+                        className="text-xs font-sans text-primary hover:underline"
                       >
                         Forgot Password?
                       </Link>
@@ -188,13 +141,7 @@ const Login = () => {
                       <Input
                         type="password"
                         placeholder="Enter your password"
-                        className="font-sans"
-                        style={{
-                          borderRadius: 0,
-                          borderColor: "var(--border)",
-                          background: "transparent",
-                          color: "var(--text)",
-                        }}
+                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
                     </FormControl>
@@ -203,28 +150,20 @@ const Login = () => {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex flex-col gap-4">
+            <CardFooter className="flex flex-col gap-4 p-0 pt-6">
               <Button
                 type="submit"
-                className="btn-editorial w-full uppercase tracking-widest text-xs font-sans"
+                className="rounded-full h-12 w-full bg-primary text-primary-foreground font-sans text-sm shadow-md hover:bg-primary/90"
                 disabled={loading}
-                style={{
-                  borderRadius: 0,
-                  background: "var(--accent)",
-                  color: "var(--bg)",
-                  height: "2.75rem",
-                  boxShadow: "none",
-                }}
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign In
               </Button>
-              <p className="text-sm font-sans" style={{ color: "var(--muted)" }}>
+              <p className="text-sm font-sans text-muted-foreground">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"
-                  className="font-medium"
-                  style={{ color: "var(--accent)" }}
+                  className="font-medium text-primary hover:underline"
                 >
                   Sign up
                 </Link>

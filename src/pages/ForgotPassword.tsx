@@ -39,83 +39,50 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "var(--bg)" }}
-    >
-      <Card
-        className="w-full max-w-md border"
-        style={{
-          borderRadius: 0,
-          background: "var(--surface)",
-          borderColor: "var(--border)",
-          boxShadow: "none",
-        }}
-      >
-        <CardHeader className="text-center pb-6">
-          <Link
-            to="/"
-            className="mx-auto mb-4 inline-block"
-            style={{ textDecoration: "none" }}
-          >
-            <span
-              className="font-serif"
-              style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.04em" }}
-            >
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+      <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
+        <CardHeader className="text-center pb-6 p-0 mb-6">
+          <Link to="/" className="mx-auto mb-4 inline-block no-underline">
+            <span className="font-serif text-2xl font-bold text-primary">
               Artly
             </span>
-            <span className="logo-accent" style={{ fontSize: "1.75rem", fontWeight: 300, color: "var(--accent)" }}>
+            <span className="font-serif text-2xl font-bold text-foreground">
               Pet
             </span>
           </Link>
-          <CardTitle
-            className="font-serif"
-            style={{ fontSize: "1.5rem", fontWeight: 300, color: "var(--text)", letterSpacing: "0.02em" }}
-          >
+          <CardTitle className="font-serif text-2xl font-bold text-foreground">
             Reset Password
           </CardTitle>
-          <CardDescription
-            className="font-sans"
-            style={{ color: "var(--muted)", fontSize: "0.875rem" }}
-          >
+          <CardDescription className="font-sans text-sm text-muted-foreground">
             {sent
               ? "Check your email for a reset link"
               : "Enter your email and we'll send you a reset link"}
           </CardDescription>
         </CardHeader>
         {sent ? (
-          <CardContent className="text-center pb-8">
-            <Mail className="h-12 w-12 mx-auto mb-4" style={{ color: "var(--accent)" }} />
-            <p className="text-sm font-sans" style={{ color: "var(--muted)" }}>
+          <CardContent className="text-center pb-8 p-0">
+            <Mail className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <p className="text-sm font-sans text-muted-foreground">
               If an account exists with that email, you'll receive a password reset link shortly.
             </p>
           </CardContent>
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 p-0">
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className="font-sans uppercase tracking-widest text-xs"
-                        style={{ color: "var(--muted)" }}
-                      >
+                      <FormLabel className="font-sans text-sm text-muted-foreground">
                         Email
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="email"
                           placeholder="you@example.com"
-                          className="font-sans"
-                          style={{
-                            borderRadius: 0,
-                            borderColor: "var(--border)",
-                            background: "transparent",
-                            color: "var(--text)",
-                          }}
+                          className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                           {...field}
                         />
                       </FormControl>
@@ -124,18 +91,11 @@ const ForgotPassword = () => {
                   )}
                 />
               </CardContent>
-              <CardFooter className="flex flex-col gap-4">
+              <CardFooter className="flex flex-col gap-4 p-0 pt-6">
                 <Button
                   type="submit"
-                  className="btn-editorial w-full uppercase tracking-widest text-xs font-sans"
+                  className="rounded-full h-12 w-full bg-primary text-primary-foreground font-sans text-sm shadow-md hover:bg-primary/90"
                   disabled={loading}
-                  style={{
-                    borderRadius: 0,
-                    background: "var(--accent)",
-                    color: "var(--bg)",
-                    height: "2.75rem",
-                    boxShadow: "none",
-                  }}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Send Reset Link
@@ -144,11 +104,10 @@ const ForgotPassword = () => {
             </form>
           </Form>
         )}
-        <div className="px-6 pb-6 text-center">
+        <div className="pt-6 text-center">
           <Link
             to="/login"
-            className="text-sm font-sans inline-flex items-center gap-1"
-            style={{ color: "var(--muted)" }}
+            className="text-sm font-sans inline-flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-3 w-3" />
             Back to Sign In
