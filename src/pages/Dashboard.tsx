@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Image as ImageIcon, Copy } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Image as ImageIcon, Copy, Printer } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -49,22 +49,22 @@ const Dashboard = () => {
     if (!editName.trim()) return;
     const result = await updateProfile.mutateAsync({ display_name: editName.trim() });
     if (result.error) {
-      toast.error("Failed to update name");
+      toast.error(t("dashboard.nameUpdateFailed", "Failed to update name"));
     } else {
-      toast.success("Name updated");
+      toast.success(t("dashboard.nameUpdated", "Name updated"));
       setEditingName(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.")) return;
+    if (!confirm(t("dashboard.confirmDelete", "Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted."))) return;
     await supabase.from("audit_log").insert({
       user_id: user?.id,
       event_type: "account_deleted" as const,
       metadata: { requested_at: new Date().toISOString() },
     });
     await signOut();
-    toast.success("Account deletion requested. Your data will be removed shortly.");
+    toast.success(t("dashboard.deletionRequested", "Account deletion requested. Your data will be removed shortly."));
     navigate("/");
   };
 
@@ -301,7 +301,12 @@ const Dashboard = () => {
                             {!isPremium && !gen.is_hd_unlocked && (
                               <Button size="sm" className="rounded-full gap-1" onClick={() => handleUnlockHd(gen.id)}>
                                 <Lock className="h-3 w-3" />
-                                HD €4.90
+                                {t("dashboard.unlockHd", "HD €4.90")}
+                              </Button>
+                            )}
+                            {(isPremium || gen.is_hd_unlocked) && (
+                              <Button size="sm" variant="secondary" className="rounded-full gap-1" asChild>
+                                <Link to="/prints"><Printer className="h-3 w-3" /></Link>
                               </Button>
                             )}
                           </div>
@@ -389,6 +394,11 @@ const Dashboard = () => {
                             {!isPremium && !gen.is_hd_unlocked && (
                               <Button size="sm" className="rounded-full gap-1" onClick={() => handleUnlockHd(gen.id)}>
                                 <Lock className="h-3 w-3" /> HD
+                              </Button>
+                            )}
+                            {(isPremium || gen.is_hd_unlocked) && (
+                              <Button size="sm" variant="secondary" className="rounded-full gap-1" asChild>
+                                <Link to="/prints"><Printer className="h-3 w-3" /></Link>
                               </Button>
                             )}
                           </div>

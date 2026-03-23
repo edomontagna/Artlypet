@@ -31,7 +31,7 @@ const PrintShopSection = () => {
                 viewport={{ once: true }}
                 className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
               >
-                Physical Prints
+                {t("printShop.badge", "Physical Prints")}
               </motion.span>
               <motion.h2
                 id="prints-heading"

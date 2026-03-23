@@ -172,7 +172,7 @@ const Blog = () => {
                         <Calendar className="h-3.5 w-3.5" />
                         {formatDate(article.date)}
                       </span>
-                      <span className="text-primary text-sm font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-primary text-sm font-medium flex items-center gap-1 opacity-100 transition-opacity">
                         {t("blog.readMore", "Read")}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </span>

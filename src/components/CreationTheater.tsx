@@ -8,14 +8,6 @@ interface CreationTheaterProps {
   startTime: number;
 }
 
-const FUN_FACTS = [
-  "Renaissance painters spent months on a single portrait. We need just 60 seconds.",
-  "Your portrait is being created with the same attention to detail as museum masterpieces.",
-  "Did you know? Pet portraits have been popular since Ancient Egypt.",
-  "Each portrait is unique — no two are ever the same.",
-  "Over 10,000 pet owners have transformed their pets into art.",
-];
-
 const STAGES = [
   { threshold: 15, key: "analyzing" as const, fallback: "Analyzing your photo..." },
   { threshold: 35, key: "choosingElements" as const, fallback: "Choosing artistic elements..." },
@@ -33,8 +25,17 @@ const getStageLabel = (progress: number, t: (key: string, fallback: string) => s
   return t("generate.theater.almostReady", "Almost ready!");
 };
 
+const getFunFacts = (t: (key: string, fallback: string) => string) => [
+  t("creation.fact1", "Renaissance painters spent months on a single portrait. We need just 60 seconds."),
+  t("creation.fact2", "Your portrait is being created with the same attention to detail as museum masterpieces."),
+  t("creation.fact3", "Did you know? Pet portraits have been popular since Ancient Egypt."),
+  t("creation.fact4", "Each portrait is unique — no two are ever the same."),
+  t("creation.fact5", "Over 10,000 pet owners have transformed their pets into art."),
+];
+
 export const CreationTheater = ({ previewUrl, styleName, startTime }: CreationTheaterProps) => {
   const { t } = useTranslation();
+  const funFacts = getFunFacts(t);
   const [progress, setProgress] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(50);
@@ -65,7 +66,7 @@ export const CreationTheater = ({ previewUrl, styleName, startTime }: CreationTh
   // Fun facts carousel every 8 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setFactIndex((prev) => (prev + 1) % FUN_FACTS.length);
+      setFactIndex((prev) => (prev + 1) % funFacts.length);
     }, 8000);
     return () => clearInterval(interval);
   }, []);
@@ -146,7 +147,7 @@ export const CreationTheater = ({ previewUrl, styleName, startTime }: CreationTh
             transition={{ duration: 0.5 }}
             className="text-sm text-muted-foreground/80 text-center italic font-sans"
           >
-            {FUN_FACTS[factIndex]}
+            {funFacts[factIndex]}
           </motion.p>
         </AnimatePresence>
       </div>

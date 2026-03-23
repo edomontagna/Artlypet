@@ -91,7 +91,7 @@ const StylesGallery = () => {
                           {style.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-2 text-white/90 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex items-center gap-2 text-white/90 text-sm font-medium sm:opacity-70 sm:group-hover:opacity-100 transition-opacity duration-300">
                         {t("stylesGallery.tryStyle", "Try this style")}
                         <ArrowRight className="h-4 w-4" />
                       </div>

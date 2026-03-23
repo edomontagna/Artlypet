@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users, AlertCircle } from "lucide-react";
+import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Share2, Lock, Crown, Users, AlertCircle, Printer } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -323,6 +323,26 @@ const Generate = () => {
                   {t("generate.shareHeading", "Share your masterpiece!")}
                 </h3>
                 <SharePanel imageUrl={resultUrl} />
+
+                {/* Canvas Print Upsell */}
+                <div className="mt-6 p-5 rounded-2xl border border-border bg-card text-center">
+                  <Printer className="h-6 w-6 text-secondary mx-auto mb-2" />
+                  <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
+                    {t("generate.printCta", "Love it? Get it on canvas")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {t("generate.printDesc", "Museum-quality canvas print, shipped to your door")}
+                  </p>
+                  <p className="text-lg font-bold text-foreground mb-3">
+                    {isPremium ? "€59.90" : "€79.90"}
+                  </p>
+                  <Button variant="outline" className="rounded-full gap-2" asChild>
+                    <Link to="/prints">
+                      <Printer className="h-4 w-4" />
+                      {t("generate.orderPrint", "Order Canvas Print")}
+                    </Link>
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -341,6 +361,29 @@ const Generate = () => {
                   {t("generate.shareHeading", "Share your masterpiece!")}
                 </h3>
                 <SharePanel imageUrl={resultUrl} />
+
+                {/* Canvas Print Upsell */}
+                <div className="mt-6 p-5 rounded-2xl border border-border bg-card text-center">
+                  <Printer className="h-6 w-6 text-secondary mx-auto mb-2" />
+                  <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
+                    {t("generate.printCta", "Love it? Get it on canvas")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {t("generate.printDesc", "Museum-quality canvas print, shipped to your door")}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {t("generate.printRequiresHd", "Unlock HD first to order a canvas print")}
+                  </p>
+                  <p className="text-lg font-bold text-foreground mb-3">
+                    {isPremium ? "€59.90" : "€79.90"}
+                  </p>
+                  <Button variant="outline" className="rounded-full gap-2" asChild>
+                    <Link to="/prints">
+                      <Printer className="h-4 w-4" />
+                      {t("generate.orderPrint", "Order Canvas Print")}
+                    </Link>
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -442,7 +485,7 @@ const Generate = () => {
                     >
                       <Upload className="h-10 w-10 text-muted-foreground/40 mb-4" />
                       <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                      <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
+                      <span className="text-xs text-muted-foreground/60 mt-1">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
                       <input
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
@@ -480,7 +523,7 @@ const Generate = () => {
                       >
                         <Users className="h-10 w-10 text-muted-foreground/40 mb-4" />
                         <span className="text-sm text-muted-foreground">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                        <span className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP — max 10MB</span>
+                        <span className="text-xs text-muted-foreground/60 mt-1">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/webp"
