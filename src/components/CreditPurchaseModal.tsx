@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer } from "lucide-react";
+import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer, Shield } from "lucide-react";
 import { PREMIUM_CREDITS, PREMIUM_PRICE, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_PREMIUM, HD_UNLOCK_PRICE } from "@/lib/constants";
 
 interface Props {
@@ -69,6 +69,9 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
               <span className="font-serif text-5xl font-bold text-foreground">€{PREMIUM_PRICE}</span>
               <span className="text-sm text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {t("pricing.anchor", "That's just €0.30 per portrait")}
+            </p>
             <p className="text-sm text-muted-foreground mt-1">
               {t("pricing.creditsInfo", "= {{single}} single or {{mix}} mixed portraits", {
                 single: Math.floor(PREMIUM_CREDITS / CREDIT_COST_SINGLE),
@@ -109,6 +112,12 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
             <p>• {t("pricing.freePrintPrice", "Canvas prints: €79.90")}</p>
           </div>
 
+          {/* Guarantee */}
+          <div className="flex items-center justify-center gap-2 mb-3 text-sm">
+            <Shield className="h-4 w-4 text-primary" />
+            <span className="font-medium text-foreground">{t("pricing.guaranteeBold", "30-day money-back guarantee")}</span>
+          </div>
+
           {/* CTA */}
           <Button
             size="lg"
@@ -125,6 +134,12 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
               </>
             )}
           </Button>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="w-full text-center mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("pricing.continueFree", "Not ready? Continue with free plan →")}
+          </button>
         </div>
       </DialogContent>
     </Dialog>

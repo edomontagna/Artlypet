@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const faqKeys = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
 
@@ -62,6 +64,16 @@ const FAQSection = () => {
             ))}
           </Accordion>
         </motion.div>
+
+        <div className="text-center mt-16">
+          <Button asChild className="btn-press rounded-full h-14 px-10 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+            <Link to="/signup">{t("faq.cta", "Create Your Portrait")}</Link>
+          </Button>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {t("faq.contact", "Still have questions?")}{" "}
+            <Link to="/contact" className="text-primary hover:underline">{t("faq.contactLink", "Contact us")}</Link>
+          </p>
+        </div>
       </div>
     </section>
   );

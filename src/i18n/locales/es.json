@@ -12,7 +12,8 @@
     "prints": "Impresiones",
     "contact": "Contacto",
     "signIn": "Iniciar Sesión",
-    "getStarted": "Comenzar"
+    "getStarted": "Comenzar",
+    "announcement": "300 créditos gratis para nuevos miembros — ¡Empieza a crear hoy!"
   },
   "hero": {
     "badge": "Retratos de Mascotas con IA",
@@ -34,13 +35,21 @@
     "step2Title": "Elegir Estilo",
     "step2Desc": "Selecciona de nuestra colección curada de estilos artísticos",
     "step3Title": "Descargar",
-    "step3Desc": "Obtén tu retrato de alta resolución en segundos"
+    "step3Desc": "Obtén tu retrato de alta resolución en segundos",
+    "cta": "Empieza a Crear — Es Gratis",
+    "ctaSub": "Listo en menos de 1 minuto · Sin tarjeta",
+    "time1": "10 seg",
+    "time2": "30 seg",
+    "time3": "Instantáneo"
   },
   "gallery": {
     "title": "Galería de Estilos Artísticos",
     "subtitle": "Explora nuestra colección curada de estilos artísticos de clase mundial, cada uno diseñado para resaltar la personalidad única de tu mascota.",
     "popular": "Más Popular",
-    "new": "Nuevo"
+    "new": "Nuevo",
+    "forGifts": "Perfecto para Regalar",
+    "romantic": "Soñador y Romántico",
+    "tryCta": "Crea este estilo — Gratis"
   },
   "pricing": {
     "title": "Precios Simples y Transparentes",
@@ -60,6 +69,10 @@
     "goPremium": "Ir a Premium",
     "bestValue": "Mejor Oferta",
     "guarantee": "Garantía de devolución de 30 días",
+    "testimonial": "¡Los mejores 15 € que he gastado!",
+    "anchor": "Solo €0,30 por retrato",
+    "guaranteeBold": "Garantía de devolución de 30 días",
+    "continueFree": "¿No estás listo? Continúa con el plan gratuito →",
     "contactUs": "Contáctanos",
     "premiumSubtitle": "Desbloquea la experiencia completa de Artlypet",
     "premiumFeature1": "{{credits}} créditos incluidos",
@@ -100,13 +113,18 @@
     "shippingDesc": "Entrega rápida y asegurada en toda la UE. Cuidadosamente empaquetado para llegar perfecto.",
     "secure": "Pago Seguro",
     "secureDesc": "Paga de forma segura con Stripe. Tus datos de pago siempre están protegidos.",
-    "cta": "Comenzar e Imprimir"
+    "cta": "Comenzar e Imprimir",
+    "delivered": "5.000+ impresiones enviadas por toda Europa",
+    "shipping": "Envío en 7-10 días · Gratis a partir de 50 €",
+    "giftCta": "El regalo perfecto para los amantes de mascotas"
   },
   "testimonials": {
     "title": "Amado por Dueños de Mascotas",
     "subtitle": "Descubre lo que nuestros clientes dicen sobre sus retratos Artlypet",
     "count": "Más de 2.000 dueños satisfechos",
-    "label": "Testimonios"
+    "label": "Testimonios",
+    "cta": "Únete a 10.000+ Amantes de Mascotas",
+    "ctaSub": "Empieza gratis, sin tarjeta"
   },
   "faq": {
     "title": "Preguntas Frecuentes",
@@ -124,7 +142,10 @@
     "q6": "¿Qué pasa si la generación IA falla?",
     "a6": "Si una generación falla por cualquier razón, tu crédito se reembolsa automáticamente. Puedes intentar de nuevo con la misma foto o con una diferente.",
     "q7": "¿Puedo eliminar mi cuenta?",
-    "a7": "Sí, puedes eliminar tu cuenta en cualquier momento desde la configuración de tu panel de control. Todos tus datos, incluidas las fotos subidas y los retratos generados, serán eliminados permanentemente de acuerdo con el RGPD."
+    "a7": "Sí, puedes eliminar tu cuenta en cualquier momento desde la configuración de tu panel de control. Todos tus datos, incluidas las fotos subidas y los retratos generados, serán eliminados permanentemente de acuerdo con el RGPD.",
+    "cta": "Crea Tu Retrato",
+    "contact": "¿Aún tienes preguntas?",
+    "contactLink": "Contáctanos"
   },
   "footer": {
     "description": "Retratos de mascotas con IA de lujo creados con tecnología de vanguardia y excelencia artística.",
@@ -135,7 +156,11 @@
     "privacy": "Política de Privacidad",
     "terms": "Términos de Servicio",
     "createPortrait": "Crear retrato",
-    "madeWith": "Hecho con amor para amantes de mascotas en la UE"
+    "madeWith": "Hecho con amor para amantes de mascotas en la UE",
+    "newsletterTitle": "Recibe Consejos y Ofertas Exclusivas",
+    "newsletterDesc": "Únete a 5.000+ amantes de mascotas. Sin spam, cancela cuando quieras.",
+    "emailPlaceholder": "tu@email.es",
+    "subscribe": "Suscribirse"
   },
   "auth": {
     "welcomeBack": "Bienvenido de Nuevo",

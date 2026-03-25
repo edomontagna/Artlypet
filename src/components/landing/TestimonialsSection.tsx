@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const testimonials = [
   {
@@ -128,6 +130,19 @@ const TestimonialsSection = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="text-center mt-16"
+        >
+          <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md">
+            <Link to="/signup">{t("testimonials.cta", "Join 10,000+ Happy Pet Owners")}</Link>
+          </Button>
+          <p className="mt-3 text-sm text-muted-foreground">{t("testimonials.ctaSub", "Start free, no card needed")}</p>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Truck, ShieldCheck, Frame } from "lucide-react";
+import { Truck, ShieldCheck, Frame, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -48,10 +48,16 @@ const PrintShopSection = () => {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="text-lg font-sans text-muted-foreground leading-relaxed mb-10"
+                className="text-lg font-sans text-muted-foreground leading-relaxed mb-6"
               >
                 {t("printShop.subtitle")}
               </motion.p>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(i => <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />)}
+                </div>
+                <span className="text-sm text-muted-foreground">{t("printShop.delivered", "5,000+ prints delivered across Europe")}</span>
+              </div>
 
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -69,6 +75,12 @@ const PrintShopSection = () => {
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("printShop.shipping", "Ships in 7-10 days · Free shipping over €50")}
+                </p>
+                <p className="mt-1 text-sm text-primary font-medium">
+                  {t("printShop.giftCta", "Perfect as a gift for any pet lover")}
+                </p>
               </motion.div>
             </div>
 

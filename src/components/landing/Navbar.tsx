@@ -47,6 +47,10 @@ const Navbar = () => {
     "text-sm text-muted-foreground hover:text-primary transition-colors duration-200";
 
   return (
+    <>
+    <div className="bg-primary text-primary-foreground text-center text-xs py-2 px-4 font-medium">
+      <span>✨ {t("nav.announcement", "300 free credits for new members — Start creating today!")}</span>
+    </div>
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -268,6 +272,7 @@ const Navbar = () => {
         </div>
       )}
     </motion.nav>
+    </>
   );
 };
 

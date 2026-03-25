@@ -91,7 +91,12 @@ const GallerySection = () => {
                 {/* Badges */}
                 {i === 0 && (
                   <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
-                    {t("gallery.popular", "Most Popular")}
+                    {t("gallery.forGifts", "Perfect for Gifts")}
+                  </span>
+                )}
+                {i === 1 && (
+                  <span className="absolute top-3 left-3 z-10 bg-card/90 text-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm">
+                    {t("gallery.romantic", "Dreamy & Romantic")}
                   </span>
                 )}
                 {i === 4 && (
@@ -129,7 +134,7 @@ const GallerySection = () => {
                     to={session ? "/generate" : "/signup"}
                     className="inline-block mt-2 text-xs font-medium text-white/90 hover:text-white transition-colors duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                   >
-                    {t("gallery.tryStyle", "Try this style")} &rarr;
+                    {t("gallery.tryCta", "Create this look — Free")} &rarr;
                   </Link>
                 </div>
               </motion.div>

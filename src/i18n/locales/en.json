@@ -12,7 +12,8 @@
     "prints": "Prints",
     "contact": "Contact",
     "signIn": "Sign In",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "announcement": "300 free credits for new members — Start creating today!"
   },
   "hero": {
     "badge": "AI-Powered Pet Portraits",
@@ -34,13 +35,21 @@
     "step2Title": "Choose Style",
     "step2Desc": "Select from our curated collection of artistic styles",
     "step3Title": "Download",
-    "step3Desc": "Get your high-resolution portrait in seconds"
+    "step3Desc": "Get your high-resolution portrait in seconds",
+    "cta": "Start Creating — It's Free",
+    "ctaSub": "Ready in under 1 minute · No card needed",
+    "time1": "10 sec",
+    "time2": "30 sec",
+    "time3": "Instant"
   },
   "gallery": {
     "title": "Art Styles Gallery",
     "subtitle": "Explore our curated collection of world-class artistic styles, each crafted to bring out the unique personality of your pet.",
     "popular": "Most Popular",
-    "new": "New"
+    "new": "New",
+    "forGifts": "Perfect for Gifts",
+    "romantic": "Dreamy & Romantic",
+    "tryCta": "Create this look — Free"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
@@ -60,6 +69,10 @@
     "goPremium": "Go Premium",
     "bestValue": "Best Value",
     "guarantee": "30-day money-back guarantee",
+    "testimonial": "Best €15 I ever spent!",
+    "anchor": "That's just €0.30 per portrait",
+    "guaranteeBold": "30-day money-back guarantee",
+    "continueFree": "Not ready? Continue with free plan →",
     "contactUs": "Contact Us",
     "premiumSubtitle": "Unlock the full Artlypet experience",
     "premiumFeature1": "{{credits}} credits included",
@@ -100,13 +113,18 @@
     "shippingDesc": "Fast, insured delivery across the EU. Carefully packaged to arrive perfect.",
     "secure": "Secure Checkout",
     "secureDesc": "Pay safely with Stripe. Your payment details are always protected.",
-    "cta": "Get Started & Print"
+    "cta": "Get Started & Print",
+    "delivered": "5,000+ prints delivered across Europe",
+    "shipping": "Ships in 7-10 days · Free shipping over €50",
+    "giftCta": "Perfect as a gift for any pet lover"
   },
   "testimonials": {
     "title": "Loved by Pet Owners",
     "subtitle": "See what our customers say about their Artlypet portraits",
     "count": "2,000+ happy pet owners",
-    "label": "Testimonials"
+    "label": "Testimonials",
+    "cta": "Join 10,000+ Happy Pet Owners",
+    "ctaSub": "Start free, no card needed"
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -124,7 +142,10 @@
     "q6": "What if the AI generation fails?",
     "a6": "If a generation fails for any reason, your credit is automatically refunded. You can try again with the same or a different photo.",
     "q7": "Can I delete my account?",
-    "a7": "Yes, you can delete your account at any time from your dashboard settings. All your data, including uploaded photos and generated portraits, will be permanently removed in compliance with GDPR."
+    "a7": "Yes, you can delete your account at any time from your dashboard settings. All your data, including uploaded photos and generated portraits, will be permanently removed in compliance with GDPR.",
+    "cta": "Create Your Portrait",
+    "contact": "Still have questions?",
+    "contactLink": "Contact us"
   },
   "footer": {
     "description": "Luxury AI pet portraits crafted with cutting-edge technology and artistic excellence.",
@@ -137,7 +158,11 @@
     "createPortrait": "Create Portrait",
     "business": "Business",
     "allRights": "All rights reserved.",
-    "madeWith": "Made with love for pet lovers in the EU"
+    "madeWith": "Made with love for pet lovers in the EU",
+    "newsletterTitle": "Get Pet Art Tips & Exclusive Offers",
+    "newsletterDesc": "Join 5,000+ pet lovers. No spam, unsubscribe anytime.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe"
   },
   "auth": {
     "welcomeBack": "Welcome Back",

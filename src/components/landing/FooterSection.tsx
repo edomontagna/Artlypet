@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Instagram } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Button } from "@/components/ui/button";
 
 const FooterSection = () => {
   const { t } = useTranslation();
@@ -15,6 +16,23 @@ const FooterSection = () => {
       role="contentinfo"
     >
       <div className="container px-6 lg:px-8">
+        <div className="mb-12 pb-12 border-b border-border">
+          <div className="max-w-md mx-auto text-center">
+            <h3 className="font-serif text-xl font-bold text-foreground mb-2">{t("footer.newsletterTitle", "Get Pet Art Tips & Exclusive Offers")}</h3>
+            <p className="text-sm text-muted-foreground mb-4">{t("footer.newsletterDesc", "Join 5,000+ pet lovers. No spam, unsubscribe anytime.")}</p>
+            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2 max-w-sm mx-auto">
+              <input
+                type="email"
+                placeholder={t("footer.emailPlaceholder", "your@email.com")}
+                className="flex-1 h-10 px-4 rounded-full border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <Button type="submit" className="btn-press rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+                {t("footer.subscribe", "Subscribe")}
+              </Button>
+            </form>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           {/* Column 1: Logo + Description */}
           <div className="space-y-4">

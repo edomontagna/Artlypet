@@ -12,7 +12,8 @@
     "prints": "Drucke",
     "contact": "Kontakt",
     "signIn": "Anmelden",
-    "getStarted": "Jetzt Starten"
+    "getStarted": "Jetzt Starten",
+    "announcement": "300 Gratis-Credits für neue Mitglieder — Starte noch heute!"
   },
   "hero": {
     "badge": "KI-gestützte Haustier-Porträts",
@@ -34,13 +35,21 @@
     "step2Title": "Stil Wählen",
     "step2Desc": "Wähle aus unserer kuratierten Sammlung künstlerischer Stile",
     "step3Title": "Herunterladen",
-    "step3Desc": "Erhalte dein hochauflösendes Porträt in Sekunden"
+    "step3Desc": "Erhalte dein hochauflösendes Porträt in Sekunden",
+    "cta": "Jetzt Erstellen — Kostenlos",
+    "ctaSub": "Fertig in unter 1 Minute · Keine Karte nötig",
+    "time1": "10 Sek.",
+    "time2": "30 Sek.",
+    "time3": "Sofort"
   },
   "gallery": {
     "title": "Kunststil-Galerie",
     "subtitle": "Entdecke unsere kuratierte Sammlung erstklassiger Kunststile, die jeweils die einzigartige Persönlichkeit deines Haustieres hervorheben.",
     "popular": "Am beliebtesten",
-    "new": "Neu"
+    "new": "Neu",
+    "forGifts": "Perfekt zum Verschenken",
+    "romantic": "Verträumt & Romantisch",
+    "tryCta": "Diesen Look erstellen — Kostenlos"
   },
   "pricing": {
     "title": "Einfache, Transparente Preise",
@@ -60,6 +69,10 @@
     "goPremium": "Premium Wählen",
     "bestValue": "Bestes Angebot",
     "guarantee": "30 Tage Geld-zurück-Garantie",
+    "testimonial": "Die besten €15, die ich je ausgegeben habe!",
+    "anchor": "Nur €0,30 pro Porträt",
+    "guaranteeBold": "30 Tage Geld-zurück-Garantie",
+    "continueFree": "Noch nicht bereit? Weiter mit dem Gratis-Plan →",
     "contactUs": "Kontaktiere Uns",
     "premiumSubtitle": "Schalte das volle Artlypet-Erlebnis frei",
     "premiumFeature1": "{{credits}} Credits inklusive",
@@ -100,13 +113,18 @@
     "shippingDesc": "Schnelle, versicherte Lieferung in der gesamten EU. Sorgfältig verpackt.",
     "secure": "Sicherer Checkout",
     "secureDesc": "Bezahle sicher mit Stripe. Deine Zahlungsdaten sind immer geschützt.",
-    "cta": "Starten & Drucken"
+    "cta": "Starten & Drucken",
+    "delivered": "5.000+ Drucke in ganz Europa geliefert",
+    "shipping": "Lieferung in 7–10 Tagen · Ab €50 kostenloser Versand",
+    "giftCta": "Das perfekte Geschenk für Tierliebhaber"
   },
   "testimonials": {
     "title": "Geliebt von Tierbesitzern",
     "subtitle": "Erfahre, was unsere Kunden über ihre Artlypet-Porträts sagen",
     "count": "Über 2.000 zufriedene Tierbesitzer",
-    "label": "Kundenstimmen"
+    "label": "Kundenstimmen",
+    "cta": "Schließe dich 10.000+ Tierliebhabern an",
+    "ctaSub": "Starte kostenlos, keine Karte nötig"
   },
   "faq": {
     "title": "Häufig Gestellte Fragen",
@@ -124,7 +142,10 @@
     "q6": "Was passiert, wenn die KI-Generierung fehlschlägt?",
     "a6": "Wenn eine Generierung aus irgendeinem Grund fehlschlägt, wird dein Credit automatisch erstattet. Du kannst es mit demselben oder einem anderen Foto erneut versuchen.",
     "q7": "Kann ich mein Konto löschen?",
-    "a7": "Ja, du kannst dein Konto jederzeit in den Dashboard-Einstellungen löschen. Alle deine Daten, einschließlich hochgeladener Fotos und generierter Porträts, werden gemäß DSGVO dauerhaft entfernt."
+    "a7": "Ja, du kannst dein Konto jederzeit in den Dashboard-Einstellungen löschen. Alle deine Daten, einschließlich hochgeladener Fotos und generierter Porträts, werden gemäß DSGVO dauerhaft entfernt.",
+    "cta": "Erstelle dein Porträt",
+    "contact": "Noch Fragen?",
+    "contactLink": "Kontaktiere uns"
   },
   "footer": {
     "description": "Luxuriöse KI-Haustier-Porträts, erstellt mit modernster Technologie und künstlerischer Exzellenz.",
@@ -135,7 +156,11 @@
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
     "createPortrait": "Porträt erstellen",
-    "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht"
+    "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht",
+    "newsletterTitle": "Tipps & exklusive Angebote erhalten",
+    "newsletterDesc": "Schließe dich 5.000+ Tierliebhabern an. Kein Spam, jederzeit kündbar.",
+    "emailPlaceholder": "deine@email.de",
+    "subscribe": "Abonnieren"
   },
   "auth": {
     "welcomeBack": "Willkommen Zurück",

@@ -12,7 +12,8 @@
     "prints": "Impressions",
     "contact": "Contact",
     "signIn": "Connexion",
-    "getStarted": "Commencer"
+    "getStarted": "Commencer",
+    "announcement": "300 crédits gratuits pour les nouveaux membres — Commencez aujourd'hui !"
   },
   "hero": {
     "badge": "Portraits d'Animaux par IA",
@@ -34,13 +35,21 @@
     "step2Title": "Choisir le Style",
     "step2Desc": "Sélectionnez parmi notre collection soignée de styles artistiques",
     "step3Title": "Télécharger",
-    "step3Desc": "Obtenez votre portrait haute résolution en quelques secondes"
+    "step3Desc": "Obtenez votre portrait haute résolution en quelques secondes",
+    "cta": "Commencez à Créer — C'est Gratuit",
+    "ctaSub": "Prêt en moins d'1 minute · Pas de carte requise",
+    "time1": "10 sec",
+    "time2": "30 sec",
+    "time3": "Instantané"
   },
   "gallery": {
     "title": "Galerie de Styles Artistiques",
     "subtitle": "Explorez notre collection soignée de styles artistiques de classe mondiale, chacun conçu pour faire ressortir la personnalité unique de votre animal.",
     "popular": "Le plus populaire",
-    "new": "Nouveau"
+    "new": "Nouveau",
+    "forGifts": "Parfait pour Offrir",
+    "romantic": "Doux & Romantique",
+    "tryCta": "Créer ce style — Gratuit"
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
@@ -60,6 +69,10 @@
     "goPremium": "Passer à Premium",
     "bestValue": "Meilleure Offre",
     "guarantee": "Garantie de remboursement sous 30 jours",
+    "testimonial": "Les meilleurs 15 € jamais dépensés !",
+    "anchor": "Seulement 0,30 € par portrait",
+    "guaranteeBold": "Garantie de remboursement sous 30 jours",
+    "continueFree": "Pas encore prêt ? Continuez avec le plan gratuit →",
     "contactUs": "Contactez-Nous",
     "premiumSubtitle": "Débloquez l'expérience complète Artlypet",
     "premiumFeature1": "{{credits}} crédits inclus",
@@ -100,13 +113,18 @@
     "shippingDesc": "Livraison rapide et assurée dans toute l'UE. Soigneusement emballé pour arriver parfait.",
     "secure": "Paiement Sécurisé",
     "secureDesc": "Payez en toute sécurité avec Stripe. Vos données de paiement sont toujours protégées.",
-    "cta": "Commencer & Imprimer"
+    "cta": "Commencer & Imprimer",
+    "delivered": "5 000+ impressions livrées en Europe",
+    "shipping": "Livraison en 7-10 jours · Gratuite dès 50 €",
+    "giftCta": "Le cadeau parfait pour les amoureux des animaux"
   },
   "testimonials": {
     "title": "Adoré par les Propriétaires d'Animaux",
     "subtitle": "Découvrez ce que nos clients disent de leurs portraits Artlypet",
     "count": "Plus de 2 000 propriétaires satisfaits",
-    "label": "Témoignages"
+    "label": "Témoignages",
+    "cta": "Rejoignez 10 000+ Amoureux des Animaux",
+    "ctaSub": "Commencez gratuitement, pas de carte requise"
   },
   "faq": {
     "title": "Questions Fréquentes",
@@ -124,7 +142,10 @@
     "q6": "Que se passe-t-il si la génération IA échoue ?",
     "a6": "Si une génération échoue pour quelque raison que ce soit, votre crédit est automatiquement remboursé. Vous pouvez réessayer avec la même photo ou une photo différente.",
     "q7": "Puis-je supprimer mon compte ?",
-    "a7": "Oui, vous pouvez supprimer votre compte à tout moment depuis les paramètres de votre tableau de bord. Toutes vos données, y compris les photos téléchargées et les portraits générés, seront définitivement supprimées conformément au RGPD."
+    "a7": "Oui, vous pouvez supprimer votre compte à tout moment depuis les paramètres de votre tableau de bord. Toutes vos données, y compris les photos téléchargées et les portraits générés, seront définitivement supprimées conformément au RGPD.",
+    "cta": "Créez Votre Portrait",
+    "contact": "Encore des questions ?",
+    "contactLink": "Contactez-nous"
   },
   "footer": {
     "description": "Portraits d'animaux IA de luxe créés avec une technologie de pointe et une excellence artistique.",
@@ -135,7 +156,11 @@
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions d'Utilisation",
     "createPortrait": "Créer un portrait",
-    "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE"
+    "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE",
+    "newsletterTitle": "Recevez des Conseils et Offres Exclusives",
+    "newsletterDesc": "Rejoignez 5 000+ amoureux des animaux. Pas de spam, désinscription à tout moment.",
+    "emailPlaceholder": "votre@email.fr",
+    "subscribe": "S'abonner"
   },
   "auth": {
     "welcomeBack": "Bon Retour",

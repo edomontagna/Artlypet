@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Crown, Building2 } from "lucide-react";
+import { Check, Sparkles, Crown, Building2, Shield } from "lucide-react";
 import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM, BUSINESS_PRICE_MONTHLY } from "@/lib/constants";
 
 const PricingSection = () => {
@@ -202,9 +202,17 @@ const PricingSection = () => {
               >
                 <Link to={plan.ctaLink}>{plan.cta}</Link>
               </Button>
-              <p className="text-xs text-center mt-3 opacity-80">
-                {t("pricing.guarantee", "30-day money-back guarantee")}
-              </p>
+              <div className="flex items-center justify-center gap-1.5 mt-4 text-xs">
+                <Shield className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                <span className={plan.popular ? "text-white/80" : "text-muted-foreground"}>
+                  {t("pricing.guarantee", "30-day money-back guarantee")}
+                </span>
+              </div>
+              {plan.popular && (
+                <p className="text-center text-[11px] mt-3 text-white/60 italic">
+                  &ldquo;{t("pricing.testimonial", "Best €15 I ever spent!")}&rdquo; — Sarah, Berlin
+                </p>
+              )}
             </motion.div>
           ))}
         </div>

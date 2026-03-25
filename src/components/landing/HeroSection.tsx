@@ -177,6 +177,21 @@ const HeroSection = () => {
                 />
               </AnimatePresence>
             </div>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {heroImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentImage(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    i === currentImage ? "bg-primary scale-125" : "bg-muted-foreground/30"
+                  }`}
+                  aria-label={img.alt}
+                />
+              ))}
+            </div>
+            <p className="text-center text-xs text-muted-foreground mt-2">
+              {heroImages[currentImage].alt}
+            </p>
           </motion.div>
         </div>
       </div>
