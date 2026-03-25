@@ -145,8 +145,18 @@
     "continueWithGoogle": "Continue with Google",
     "or": "or",
     "createBtn": "Create Account",
+    "enterPassword": "Enter your password",
+    "yourName": "Your name",
+    "minChars": "Min 10 characters",
+    "referralBanner": "You've been invited! Sign up and get 150 bonus credits",
+    "agreeTerms": "I agree to the",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "checkEmailConfirmation": "Check your email for a confirmation link to complete your registration.",
     "resetPassword": "Reset Password",
     "resetDesc": "Enter your email and we'll send you a reset link",
+    "resetSent": "If an account exists with that email, a reset link has been sent. Check your inbox.",
     "checkEmail": "Check your email for a reset link",
     "sendResetLink": "Send Reset Link",
     "backToSignIn": "Back to Sign In",
@@ -155,6 +165,21 @@
     "fair": "Fair",
     "good": "Good",
     "strong": "Strong"
+  },
+  "validation": {
+    "invalidEmail": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 10 characters",
+    "nameMin": "Name must be at least 2 characters",
+    "termsRequired": "You must accept the Terms of Service and Privacy Policy",
+    "messageMin": "Message must be at least 10 characters",
+    "nameRequired": "Name is required",
+    "businessNameRequired": "Business name is required"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "desc": "An unexpected error occurred. Please try again.",
+    "backHome": "Back to Home"
   },
   "dashboard": {
     "tabDashboard": "Dashboard",

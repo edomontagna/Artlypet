@@ -6,12 +6,22 @@ const CREDIT_COSTS: Record<string, number> = {
   mix: 150,
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUUID = (v: unknown): v is string => typeof v === "string" && UUID_RE.test(v);
+
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",");
+
+const getCorsHeaders = (req: Request) => {
+  const origin = req.headers.get("origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
 };
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
@@ -28,7 +38,14 @@ serve(async (req) => {
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const { original_id, style_id, generation_type = "single", original_id_2 } = await req.json();
-    if (!original_id || !style_id) return new Response(JSON.stringify({ error: "Missing original_id or style_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Validate UUID format on all IDs
+    if (!isUUID(original_id) || !isUUID(style_id)) {
+      return new Response(JSON.stringify({ error: "Invalid ID format" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (original_id_2 && !isUUID(original_id_2)) {
+      return new Response(JSON.stringify({ error: "Invalid original_id_2 format" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const creditCost = CREDIT_COSTS[generation_type] || CREDIT_COSTS.single;
 
@@ -37,23 +54,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Check credits
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("credit_balance")
-      .eq("user_id", user.id)
-      .single();
+    // Atomic credit deduction — prevents race conditions
+    const { data: newBalance, error: deductError } = await supabase.rpc("deduct_credits", {
+      p_user_id: user.id,
+      p_cost: creditCost,
+    });
 
-    if (!profile || profile.credit_balance < creditCost) {
-      return new Response(JSON.stringify({ error: "Insufficient credits", required: creditCost, current: profile?.credit_balance || 0 }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (deductError || newBalance === -1) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", required: creditCost }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
-    // Deduct credits
-    const newBalance = profile.credit_balance - creditCost;
-    await supabase
-      .from("profiles")
-      .update({ credit_balance: newBalance, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
 
     // Record deduction
     await supabase.from("credit_transactions").insert({
@@ -95,17 +104,18 @@ serve(async (req) => {
           .update({ status: "processing" })
           .eq("id", generation.id);
 
-        // Fetch original image
+        // Fetch original image — verify ownership
         const { data: original } = await supabase
           .from("image_originals")
           .select("storage_path")
           .eq("id", original_id)
+          .eq("user_id", user.id)
           .single();
 
         if (!original) throw new Error("Original image not found");
 
         const { data: imageData } = await supabase.storage
-          .from("original-images")
+          .from("pet-originals")
           .download(original.storage_path);
 
         if (!imageData) throw new Error("Failed to download original image");
@@ -149,12 +159,13 @@ serve(async (req) => {
             .from("image_originals")
             .select("storage_path")
             .eq("id", original_id_2)
+            .eq("user_id", user.id)
             .single();
 
           if (!original2) throw new Error("Second original image not found");
 
           const { data: imageData2 } = await supabase.storage
-            .from("original-images")
+            .from("pet-originals")
             .download(original2.storage_path);
 
           if (!imageData2) throw new Error("Failed to download second original image");
@@ -177,13 +188,16 @@ serve(async (req) => {
           });
         }
 
-        // Call Gemini API
+        // Call Gemini API — key in header, not URL
         const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
         const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${geminiApiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": geminiApiKey!,
+            },
             body: JSON.stringify({
               contents: [{
                 parts: contentParts,
@@ -245,30 +259,23 @@ serve(async (req) => {
           metadata: { generation_id: generation.id },
         });
       } catch (err) {
-        // Mark as failed and refund
+        // Mark as failed and refund atomically
         await supabase
           .from("generated_images")
           .update({ status: "failed", error_message: err.message })
           .eq("id", generation.id);
 
-        // Refund credits
-        const { data: currentProfile } = await supabase
-          .from("profiles")
-          .select("credit_balance")
-          .eq("user_id", user.id)
-          .single();
-
-        const refundBalance = (currentProfile?.credit_balance || 0) + creditCost;
-        await supabase
-          .from("profiles")
-          .update({ credit_balance: refundBalance, updated_at: new Date().toISOString() })
-          .eq("user_id", user.id);
+        // Atomic refund
+        const { data: refundBalance } = await supabase.rpc("refund_credits", {
+          p_user_id: user.id,
+          p_amount: creditCost,
+        });
 
         await supabase.from("credit_transactions").insert({
           user_id: user.id,
           type: "refund",
           amount: creditCost,
-          balance_after: refundBalance,
+          balance_after: refundBalance ?? 0,
           description: `Generation failed — automatic refund (${creditCost} credits)`,
         });
 
@@ -287,7 +294,7 @@ serve(async (req) => {
   } catch (err) {
     return new Response(
       JSON.stringify({ error: err.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } },
     );
   }
 });

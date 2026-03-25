@@ -24,6 +24,27 @@ const testimonials = [
     rating: 5,
     initials: "CD",
   },
+  {
+    name: "David K.",
+    location: "London, UK",
+    text: "I never expected AI art to capture my cat's personality so perfectly. The oil painting style is incredible.",
+    rating: 5,
+    initials: "DK",
+  },
+  {
+    name: "Chiara R.",
+    location: "Roma, Italia",
+    text: "Ho regalato un ritratto rinascimentale del mio labrador a mia madre. Ha pianto dalla gioia!",
+    rating: 5,
+    initials: "CR",
+  },
+  {
+    name: "Ana P.",
+    location: "Barcelona, España",
+    text: "El estilo Art Nouveau transformó la foto de mi gato en una verdadera obra de arte. Increíble calidad.",
+    rating: 5,
+    initials: "AP",
+  },
 ];
 
 const TestimonialsSection = () => {
@@ -55,10 +76,17 @@ const TestimonialsSection = () => {
           >
             {t("testimonials.title")}
           </motion.h2>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+            </div>
+            <span className="text-sm font-medium text-foreground">4.9/5</span>
+            <span className="text-sm text-muted-foreground">— {t("testimonials.count", "2,000+ happy pet owners")}</span>
+          </div>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {testimonials.map((item, i) => (
             <motion.div
               key={item.name}
@@ -69,7 +97,7 @@ const TestimonialsSection = () => {
               className="bg-card rounded-2xl p-8 shadow-sm"
             >
               {/* Stars */}
-              <div className="flex gap-0.5 mb-5">
+              <div className="flex gap-0.5 mb-5" role="img" aria-label={`${item.rating} out of 5 stars`}>
                 {Array.from({ length: item.rating }).map((_, j) => (
                   <Star
                     key={j}

@@ -7,14 +7,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const fallbackStyles = [
   { id: "1", name: "Oil Painting", description: "Rich textures & golden tones", preview_url: "/images/oil-painting.jpg" },
-  { id: "2", name: "Watercolor", description: "Soft washes & gentle blending", preview_url: "/images/watercolor.png" },
-  { id: "3", name: "Pop Art", description: "Bold colors & graphic energy", preview_url: "/images/pop-art.png" },
-  { id: "4", name: "Renaissance", description: "Noble bearing & dramatic light", preview_url: "/images/renaissance.png" },
-  { id: "5", name: "Art Nouveau", description: "Flowing lines & organic forms", preview_url: "/images/art-nouveau.png" },
-  { id: "6", name: "Impressionist", description: "Dappled light & visible strokes", preview_url: "/images/impressionist.png" },
+  { id: "2", name: "Watercolor", description: "Soft washes & gentle blending", preview_url: "/images/watercolor.webp" },
+  { id: "3", name: "Pop Art", description: "Bold colors & graphic energy", preview_url: "/images/pop-art.webp" },
+  { id: "4", name: "Renaissance", description: "Noble bearing & dramatic light", preview_url: "/images/renaissance.webp" },
+  { id: "5", name: "Art Nouveau", description: "Flowing lines & organic forms", preview_url: "/images/art-nouveau.webp" },
+  { id: "6", name: "Impressionist", description: "Dappled light & visible strokes", preview_url: "/images/impressionist.webp" },
 ];
 
 const ease = [0.16, 1, 0.3, 1];
+
+const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  e.currentTarget.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+};
+const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
+  e.currentTarget.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+};
 
 const GallerySection = () => {
   const { t } = useTranslation();
@@ -74,13 +84,28 @@ const GallerySection = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.7, ease }}
                 className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
+                onMouseMove={handleTilt}
+                onMouseLeave={handleTiltReset}
+                style={{ transition: 'transform 0.3s ease' }}
               >
+                {/* Badges */}
+                {i === 0 && (
+                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
+                    {t("gallery.popular", "Most Popular")}
+                  </span>
+                )}
+                {i === 4 && (
+                  <span className="absolute top-3 left-3 z-10 bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
+                    {t("gallery.new", "New")}
+                  </span>
+                )}
+
                 {/* Image */}
                 {item.preview_url ? (
                   <img
                     src={item.preview_url}
                     alt={`${item.name} pet portrait`}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
                     loading="lazy"
                   />
                 ) : (

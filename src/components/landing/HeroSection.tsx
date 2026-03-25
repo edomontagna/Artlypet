@@ -1,16 +1,33 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
+
+const heroImages = [
+  { src: "/images/renaissance.webp", alt: "Renaissance pet portrait" },
+  { src: "/images/watercolor.webp", alt: "Watercolor pet portrait" },
+  { src: "/images/pop-art.webp", alt: "Pop Art pet portrait" },
+  { src: "/images/art-nouveau.webp", alt: "Art Nouveau pet portrait" },
+  { src: "/images/impressionist.webp", alt: "Impressionist pet portrait" },
+];
 
 const ease = [0.16, 1, 0.3, 1];
 
 const HeroSection = () => {
   const { t } = useTranslation();
   const { data: portraitCount } = usePortraitCount();
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative bg-background overflow-hidden">
@@ -61,7 +78,7 @@ const HeroSection = () => {
               transition={{ delay: 1.0, duration: 0.6, ease }}
               className="flex flex-col sm:flex-row items-start gap-4"
             >
-              <Button asChild className="rounded-full h-14 px-8 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+              <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-8 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
                 <Link to="/generate" className="inline-flex items-center gap-2 group">
                   {t("hero.cta")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -84,6 +101,39 @@ const HeroSection = () => {
               {t("hero.freeTier", "Start free — 300 credits, no card required")}
             </motion.p>
 
+            {/* Social Proof Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3, duration: 0.6, ease }}
+            >
+              <div className="flex items-center gap-3 mt-6">
+                <div className="flex -space-x-2">
+                  {["S", "M", "A", "L", "R"].map((letter, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center text-xs font-medium text-primary">
+                      {letter}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("hero.socialProof", "Loved by 10,000+ pet owners")}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Trust Badges */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.4, duration: 0.6, ease }}
+            >
+              <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.noSub", "No subscription")}</span>
+                <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
+                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-primary" /> {t("hero.freeCredits", "300 free credits")}</span>
+              </div>
+            </motion.div>
+
             {/* Portrait counter — social proof */}
             {portraitCount == null ? (
               <div className="mt-10 flex items-center gap-2">
@@ -94,7 +144,7 @@ const HeroSection = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.4, duration: 0.6, ease }}
+                transition={{ delay: 1.6, duration: 0.6, ease }}
                 className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
               >
                 <Sparkles className="h-4 w-4 text-primary" />
@@ -106,19 +156,26 @@ const HeroSection = () => {
             ) : null}
           </div>
 
-          {/* Right — Image */}
+          {/* Right — Image Carousel */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, duration: 1, ease }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10">
-              <img
-                src="/images/renaissance.png"
-                alt="Royal pet portrait in Renaissance style"
-                className="w-full h-full object-cover"
-              />
+            <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10 relative">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentImage}
+                  src={heroImages[currentImage].src}
+                  alt={heroImages[currentImage].alt}
+                  className="w-full h-full object-cover absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
+                />
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>

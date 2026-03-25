@@ -14,11 +14,11 @@ const DEMO_USER = {
 
 const DEMO_GENERATIONS = [
   { id: "1", status: "completed" as const, storage_path: "/images/oil-painting.jpg", style: "Oil Painting", created_at: "2026-02-25T10:00:00Z" },
-  { id: "2", status: "completed" as const, storage_path: "/images/watercolor.png", style: "Watercolor", created_at: "2026-02-24T14:30:00Z" },
-  { id: "3", status: "completed" as const, storage_path: "/images/pop-art.png", style: "Pop Art", created_at: "2026-02-23T09:15:00Z" },
-  { id: "4", status: "completed" as const, storage_path: "/images/renaissance.png", style: "Renaissance", created_at: "2026-02-22T16:45:00Z" },
-  { id: "5", status: "completed" as const, storage_path: "/images/art-nouveau.png", style: "Art Nouveau", created_at: "2026-02-21T11:20:00Z" },
-  { id: "6", status: "completed" as const, storage_path: "/images/impressionist.png", style: "Impressionist", created_at: "2026-02-20T08:00:00Z" },
+  { id: "2", status: "completed" as const, storage_path: "/images/watercolor.webp", style: "Watercolor", created_at: "2026-02-24T14:30:00Z" },
+  { id: "3", status: "completed" as const, storage_path: "/images/pop-art.webp", style: "Pop Art", created_at: "2026-02-23T09:15:00Z" },
+  { id: "4", status: "completed" as const, storage_path: "/images/renaissance.webp", style: "Renaissance", created_at: "2026-02-22T16:45:00Z" },
+  { id: "5", status: "completed" as const, storage_path: "/images/art-nouveau.webp", style: "Art Nouveau", created_at: "2026-02-21T11:20:00Z" },
+  { id: "6", status: "completed" as const, storage_path: "/images/impressionist.webp", style: "Impressionist", created_at: "2026-02-20T08:00:00Z" },
 ];
 
 const Demo = () => {

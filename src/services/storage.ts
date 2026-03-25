@@ -8,7 +8,7 @@ export const uploadOriginalImage = async (
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage
-    .from("original-images")
+    .from("pet-originals")
     .upload(path, file, {
       contentType: file.type,
       upsert: false,

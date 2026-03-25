@@ -12,6 +12,7 @@ export const useCreditBalance = () => {
       return creditsService.getCreditBalance(user.id);
     },
     enabled: !!user,
+    staleTime: 5000,
     refetchInterval: 10000, // Poll every 10s for real-time updates
   });
 };
@@ -28,5 +29,6 @@ export const useCreditTransactions = (page = 0) => {
       return data;
     },
     enabled: !!user,
+    staleTime: 30000,
   });
 };

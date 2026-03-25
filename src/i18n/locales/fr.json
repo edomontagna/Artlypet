@@ -133,8 +133,18 @@
     "continueWithGoogle": "Continuer avec Google",
     "or": "ou",
     "createBtn": "Créer un Compte",
+    "enterPassword": "Entrez votre mot de passe",
+    "yourName": "Votre nom",
+    "minChars": "Minimum 10 caractères",
+    "referralBanner": "Vous avez été invité ! Inscrivez-vous et obtenez 150 crédits bonus",
+    "agreeTerms": "J'accepte les",
+    "termsOfService": "Conditions d'Utilisation",
+    "and": "et",
+    "privacyPolicy": "Politique de Confidentialité",
+    "checkEmailConfirmation": "Vérifiez votre e-mail pour un lien de confirmation afin de finaliser votre inscription.",
     "resetPassword": "Réinitialiser le Mot de Passe",
     "resetDesc": "Entrez votre e-mail et nous vous enverrons un lien de réinitialisation",
+    "resetSent": "Si un compte existe avec cet e-mail, un lien de réinitialisation a été envoyé. Vérifiez votre boîte de réception.",
     "checkEmail": "Vérifiez votre e-mail pour le lien de réinitialisation",
     "sendResetLink": "Envoyer le Lien",
     "backToSignIn": "Retour à la Connexion",
@@ -143,6 +153,21 @@
     "fair": "Moyen",
     "good": "Bon",
     "strong": "Fort"
+  },
+  "validation": {
+    "invalidEmail": "Veuillez entrer une adresse e-mail valide",
+    "passwordRequired": "Le mot de passe est requis",
+    "passwordMin": "Le mot de passe doit contenir au moins 10 caractères",
+    "nameMin": "Le nom doit contenir au moins 2 caractères",
+    "termsRequired": "Vous devez accepter les Conditions d'Utilisation et la Politique de Confidentialité",
+    "messageMin": "Le message doit contenir au moins 10 caractères",
+    "nameRequired": "Le nom est requis",
+    "businessNameRequired": "Le nom de l'entreprise est requis"
+  },
+  "error": {
+    "title": "Une erreur est survenue",
+    "desc": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "backHome": "Retour à l'Accueil"
   },
   "dashboard": {
     "tabDashboard": "Tableau de Bord",

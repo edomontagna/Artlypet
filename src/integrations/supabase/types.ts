@@ -84,8 +84,11 @@ export type Database = {
           custom_prompt: string | null
           error_message: string | null
           expires_at: string
+          generation_type: Database["public"]["Enums"]["generation_type"]
+          hd_stripe_session_id: string | null
           id: string
           improved_prompt: string | null
+          is_hd_unlocked: boolean
           original_id: string | null
           status: Database["public"]["Enums"]["generation_status"]
           storage_path: string | null
@@ -98,8 +101,11 @@ export type Database = {
           custom_prompt?: string | null
           error_message?: string | null
           expires_at?: string
+          generation_type?: Database["public"]["Enums"]["generation_type"]
+          hd_stripe_session_id?: string | null
           id?: string
           improved_prompt?: string | null
+          is_hd_unlocked?: boolean
           original_id?: string | null
           status?: Database["public"]["Enums"]["generation_status"]
           storage_path?: string | null
@@ -112,8 +118,11 @@ export type Database = {
           custom_prompt?: string | null
           error_message?: string | null
           expires_at?: string
+          generation_type?: Database["public"]["Enums"]["generation_type"]
+          hd_stripe_session_id?: string | null
           id?: string
           improved_prompt?: string | null
+          is_hd_unlocked?: boolean
           original_id?: string | null
           status?: Database["public"]["Enums"]["generation_status"]
           storage_path?: string | null
@@ -227,6 +236,10 @@ export type Database = {
           credit_balance: number
           display_name: string | null
           id: string
+          plan_type: Database["public"]["Enums"]["plan_type"]
+          premium_purchased_at: string | null
+          referral_code: string | null
+          referred_by: string | null
           updated_at: string
           user_id: string
         }
@@ -236,6 +249,10 @@ export type Database = {
           credit_balance?: number
           display_name?: string | null
           id?: string
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+          premium_purchased_at?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
           updated_at?: string
           user_id: string
         }
@@ -245,6 +262,10 @@ export type Database = {
           credit_balance?: number
           display_name?: string | null
           id?: string
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+          premium_purchased_at?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -306,12 +327,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_credits: {
+        Args: {
+          p_user_id: string
+          p_amount: number
+          p_plan_upgrade?: string | null
+        }
+        Returns: number
+      }
+      deduct_credits: {
+        Args: {
+          p_user_id: string
+          p_cost: number
+        }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      refund_credits: {
+        Args: {
+          p_user_id: string
+          p_amount: number
+        }
+        Returns: number
       }
     }
     Enums: {
@@ -330,9 +373,16 @@ export type Database = {
         | "print_order_paid"
         | "account_locked"
         | "account_deleted"
+        | "signup_bonus_granted"
+        | "hd_unlock_purchased"
+        | "premium_purchased"
+        | "plan_upgraded"
+        | "referral_bonus_granted"
       generation_status: "pending" | "processing" | "completed" | "failed"
+      generation_type: "single" | "mix"
+      plan_type: "free" | "premium" | "business"
       print_order_status: "pending" | "paid" | "shipped" | "delivered"
-      transaction_type: "purchase" | "deduction" | "refund"
+      transaction_type: "purchase" | "deduction" | "refund" | "signup_bonus" | "referral_bonus"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -475,10 +525,17 @@ export const Constants = {
         "print_order_paid",
         "account_locked",
         "account_deleted",
+        "signup_bonus_granted",
+        "hd_unlock_purchased",
+        "premium_purchased",
+        "plan_upgraded",
+        "referral_bonus_granted",
       ],
       generation_status: ["pending", "processing", "completed", "failed"],
+      generation_type: ["single", "mix"],
+      plan_type: ["free", "premium", "business"],
       print_order_status: ["pending", "paid", "shipped", "delivered"],
-      transaction_type: ["purchase", "deduction", "refund"],
+      transaction_type: ["purchase", "deduction", "refund", "signup_bonus", "referral_bonus"],
     },
   },
 } as const

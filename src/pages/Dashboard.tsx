@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,9 +22,11 @@ import { CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
 const PortraitThumbnail = ({ storagePath, alt }: { storagePath: string; alt: string }) => {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
+    let cancelled = false;
     getSignedUrl("generated-images", storagePath, 3600)
-      .then(setUrl)
-      .catch(() => setUrl(null));
+      .then((u) => { if (!cancelled) setUrl(u); })
+      .catch(() => { if (!cancelled) setUrl(null); });
+    return () => { cancelled = true; };
   }, [storagePath]);
   if (!url) return <Skeleton className="w-full h-full" />;
   return <img src={url} alt={alt} className="w-full h-full object-cover" loading="lazy" />;
@@ -35,9 +38,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"dashboard" | "history" | "settings">("dashboard");
-  const { data: profile, isLoading: profileLoading } = useProfile();
-  const { data: creditBalance, isLoading: creditsLoading } = useCreditBalance();
-  const { data: generations, isLoading: generationsLoading } = useGenerations();
+  const { data: profile, isLoading: profileLoading, isError: profileError } = useProfile();
+  const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
+  const { data: generations, isLoading: generationsLoading, isError: generationsError } = useGenerations();
+  const hasError = profileError || creditsError || generationsError;
   const updateProfile = useUpdateProfile();
 
   const [editName, setEditName] = useState("");
@@ -45,6 +49,20 @@ const Dashboard = () => {
   const [creditModalOpen, setCreditModalOpen] = useState(false);
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success" || params.get("hd_unlock") === "success") {
+      import("canvas-confetti").then((confetti) => {
+        confetti.default({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#d4956a", "#c17d52", "#e8b896"],
+        });
+      });
+    }
+  }, []);
 
   // Auto-open upgrade modal from URL params
   useEffect(() => {
@@ -186,8 +204,15 @@ const Dashboard = () => {
         </header>
 
         <div className="flex-1 p-6 lg:p-10 overflow-auto">
+          {hasError && (
+            <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+              <p className="text-sm text-destructive">{t("dashboard.loadError", "Something went wrong loading your data. Please try refreshing the page.")}</p>
+            </div>
+          )}
+          <AnimatePresence mode="wait">
           {activeTab === "dashboard" && (
-            <div className="max-w-4xl">
+            <motion.div key="dashboard" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-4xl">
               <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
                 {t("dashboard.welcome", "Welcome")}, {displayName}
               </h2>
@@ -274,8 +299,14 @@ const Dashboard = () => {
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-foreground mb-4">{t("dashboard.recentPortraits", "Recent Portraits")}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {generations.slice(0, 6).map((gen) => (
-                      <div key={gen.id} className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group">
+                    {generations.slice(0, 6).map((gen, i) => (
+                      <motion.div
+                        key={gen.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08, duration: 0.4 }}
+                        className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group"
+                      >
                         {gen.storage_path ? (
                           <PortraitThumbnail storagePath={gen.storage_path} alt="Generated portrait" />
                         ) : (
@@ -330,7 +361,7 @@ const Dashboard = () => {
                             </Button>
                           </div>
                         )}
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                   {generations.length > 6 && (
@@ -355,11 +386,11 @@ const Dashboard = () => {
                   </Button>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {activeTab === "history" && (
-            <div className="max-w-4xl">
+            <motion.div key="history" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-4xl">
               <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabHistory", "History")}</h2>
               <p className="text-muted-foreground mb-8">{t("dashboard.historyDesc", "All your generated portraits")}</p>
               {generationsLoading ? (
@@ -368,8 +399,14 @@ const Dashboard = () => {
                 </div>
               ) : generations && generations.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {generations.map((gen) => (
-                    <div key={gen.id} className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+                  {generations.map((gen, i) => (
+                    <motion.div
+                      key={gen.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08, duration: 0.4 }}
+                      className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden"
+                    >
                       <div className="aspect-square relative group">
                         {gen.storage_path ? (
                           <PortraitThumbnail storagePath={gen.storage_path} alt="Portrait" />
@@ -435,7 +472,7 @@ const Dashboard = () => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               ) : (
@@ -445,11 +482,11 @@ const Dashboard = () => {
                   <p className="text-muted-foreground">{t("dashboard.noHistoryDesc", "Your generated portraits will appear here")}</p>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {activeTab === "settings" && (
-            <div className="max-w-2xl">
+            <motion.div key="settings" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-2xl">
               <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabSettings", "Settings")}</h2>
               <p className="text-muted-foreground mb-8">{t("dashboard.settingsDesc", "Manage your account")}</p>
               <div className="space-y-6">
@@ -525,8 +562,9 @@ const Dashboard = () => {
                   </Button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
         </div>
 
         {/* Mobile bottom nav */}

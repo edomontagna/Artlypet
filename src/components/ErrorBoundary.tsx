@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import i18n from "@/i18n";
 
 interface Props {
   children: ReactNode;
@@ -27,10 +28,10 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center bg-background px-4">
           <div className="text-center max-w-md">
             <h1 className="font-serif text-4xl font-bold text-foreground mb-2">
-              Something went wrong
+              {i18n.t("error.title", "Something went wrong")}
             </h1>
             <p className="text-muted-foreground mb-6">
-              An unexpected error occurred. Please try refreshing the page.
+              {i18n.t("error.desc", "An unexpected error occurred. Please try refreshing the page.")}
             </p>
             <Button
               onClick={() => {
@@ -39,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
               }}
               className="rounded-full"
             >
-              Back to Home
+              {i18n.t("error.backHome", "Back to Home")}
             </Button>
           </div>
         </div>

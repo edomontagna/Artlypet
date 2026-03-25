@@ -3,6 +3,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,14 +13,14 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 
 const schema = z.object({
-  displayName: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(10, "Password must be at least 10 characters"),
+  displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")),
+  email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
+  password: z.string().min(10, i18n.t("validation.passwordMinChars", "Password must be at least 10 characters")),
   termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Terms of Service and Privacy Policy" }),
+    errorMap: () => ({ message: i18n.t("validation.termsRequired", "You must accept the Terms of Service and Privacy Policy") }),
   }),
 });
 
@@ -34,14 +36,15 @@ const getPasswordStrength = (password: string) => {
   return Math.min(score, 100);
 };
 
-const getStrengthLabel = (score: number) => {
-  if (score < 30) return "Weak";
-  if (score < 60) return "Fair";
-  if (score < 80) return "Good";
-  return "Strong";
+const getStrengthLabel = (score: number, t: (key: string, fallback: string) => string) => {
+  if (score < 30) return t("auth.weak", "Weak");
+  if (score < 60) return t("auth.fair", "Fair");
+  if (score < 80) return t("auth.good", "Good");
+  return t("auth.strong", "Strong");
 };
 
 const Signup = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
@@ -71,7 +74,7 @@ const Signup = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Check your email for a confirmation link to complete your registration.");
+      toast.success(t("auth.checkEmailConfirmation", "Check your email for a confirmation link to complete your registration."));
       navigate("/login");
     }
     setLoading(false);
@@ -87,11 +90,13 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+    <div className="min-h-screen flex">
+      {/* Left — Form */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
         {hasReferral && (
           <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-center text-sm text-green-800 font-medium">
-            {"\uD83C\uDF89"} You've been invited! Sign up and get 150 bonus credits
+            {"\uD83C\uDF89"} {t("auth.referralBanner", "You've been invited! Sign up and get 150 bonus credits")}
           </div>
         )}
         <CardHeader className="text-center pb-6 p-0 mb-6">
@@ -104,10 +109,10 @@ const Signup = () => {
             </span>
           </Link>
           <CardTitle className="font-serif text-2xl font-bold text-foreground">
-            Create Your Account
+            {t("auth.createAccount", "Create Your Account")}
           </CardTitle>
           <CardDescription className="font-sans text-sm text-muted-foreground">
-            Start creating pet masterpieces
+            {t("auth.createAccountDesc", "Start creating pet masterpieces")}
           </CardDescription>
         </CardHeader>
 
@@ -128,13 +133,13 @@ const Signup = () => {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
             )}
-            Continue with Google
+            {t("auth.continueWithGoogle", "Continue with Google")}
           </Button>
 
           <div className="relative">
             <Separator className="bg-border" />
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs font-sans text-muted-foreground">
-              or
+              {t("auth.or", "or")}
             </span>
           </div>
         </CardContent>
@@ -148,12 +153,12 @@ const Signup = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-sans text-sm text-muted-foreground">
-                      Display Name
+                      {t("auth.displayName", "Display Name")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Your name"
+                        placeholder={t("auth.yourName", "Your name")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
@@ -168,7 +173,7 @@ const Signup = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-sans text-sm text-muted-foreground">
-                      Email
+                      {t("auth.email", "Email")}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -188,12 +193,12 @@ const Signup = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-sans text-sm text-muted-foreground">
-                      Password
+                      {t("auth.password", "Password")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Min 10 characters"
+                        placeholder={t("auth.minChars", "Min 10 characters")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
                         {...field}
                       />
@@ -202,9 +207,9 @@ const Signup = () => {
                     {password && password.length > 0 && (
                       <div className="space-y-1 pt-1">
                         <div className="flex items-center justify-between text-xs font-sans">
-                          <span className="text-muted-foreground">Password strength</span>
+                          <span className="text-muted-foreground">{t("auth.passwordStrength", "Password strength")}</span>
                           <span className={strength >= 80 ? "text-primary" : "text-muted-foreground"}>
-                            {getStrengthLabel(strength)}
+                            {getStrengthLabel(strength, t)}
                           </span>
                         </div>
                         <div className="rounded-full h-2 bg-muted overflow-hidden">
@@ -233,14 +238,13 @@ const Signup = () => {
                         />
                       </FormControl>
                       <FormLabel className="font-sans text-sm text-muted-foreground leading-snug cursor-pointer">
-                        I agree to the{" "}
-                        <Link to="/terms" className="text-primary hover:underline">
-                          Terms of Service
-                        </Link>{" "}
-                        and{" "}
-                        <Link to="/privacy" className="text-primary hover:underline">
-                          Privacy Policy
-                        </Link>
+                        {t("auth.agreeTerms", "I agree to the <termsLink>Terms of Service</termsLink> and <privacyLink>Privacy Policy</privacyLink>")
+                          .split(/<termsLink>|<\/termsLink>|<privacyLink>|<\/privacyLink>/)
+                          .map((part, i) => {
+                            if (i === 1) return <Link key="terms" to="/terms" className="text-primary hover:underline">{part}</Link>;
+                            if (i === 3) return <Link key="privacy" to="/privacy" className="text-primary hover:underline">{part}</Link>;
+                            return part;
+                          })}
                       </FormLabel>
                     </div>
                     <FormMessage />
@@ -255,21 +259,42 @@ const Signup = () => {
                 disabled={loading}
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Account
+                {t("auth.createBtn", "Create Account")}
               </Button>
               <p className="text-sm font-sans text-muted-foreground">
-                Already have an account?{" "}
+                {t("auth.hasAccount", "Already have an account?")}{" "}
                 <Link
                   to="/login"
                   className="font-medium text-primary hover:underline"
                 >
-                  Sign in
+                  {t("auth.signIn", "Sign in")}
                 </Link>
               </p>
             </CardFooter>
           </form>
         </Form>
       </Card>
+      </div>
+
+      {/* Right — Showcase (hidden on mobile) */}
+      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+        <div className="absolute inset-0 bg-noise" />
+        <div className="relative z-10 max-w-md px-8 text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">300 Free Credits</span>
+          </div>
+          <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden mb-8">
+            <img
+              src="/images/renaissance.webp"
+              alt="AI pet portrait example"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <h3 className="font-serif text-2xl font-bold text-foreground mb-2">{t("auth.showcaseTitle", "Transform Your Pet Into Art")}</h3>
+          <p className="text-muted-foreground text-sm">{t("auth.showcaseDesc", "Join thousands of pet lovers creating stunning AI portraits")}</p>
+        </div>
+      </div>
     </div>
   );
 };

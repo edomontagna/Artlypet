@@ -24,8 +24,8 @@ import { CreationTheater } from "@/components/CreationTheater";
 const Generate = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { data: creditBalance, isLoading: creditsLoading } = useCreditBalance();
-  const { data: profile } = useProfile();
+  const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
+  const { data: profile, isError: profileError } = useProfile();
   const { data: styles, isLoading: stylesLoading } = useStyles();
   const queryClient = useQueryClient();
 
@@ -166,6 +166,13 @@ const Generate = () => {
 
       <div className="container px-4 lg:px-8 py-8 max-w-4xl">
 
+        {(creditsError || profileError) && (
+          <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+            <p className="text-sm text-destructive">{t("generate.loadError", "Could not load your account data. Please refresh and try again.")}</p>
+          </div>
+        )}
+
         {/* ═══════════════════════════════════════ */}
         {/*  RESULT — Celebration & Next Steps     */}
         {/* ═══════════════════════════════════════ */}
@@ -188,6 +195,11 @@ const Generate = () => {
             </div>
 
             {/* Before / After — interactive drag slider */}
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(20px)", scale: 0.95 }}
+              animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            >
             {previewUrl ? (
               <div className="max-w-xl mx-auto">
                 <BeforeAfterSlider beforeUrl={previewUrl} afterUrl={resultUrl} />
@@ -208,6 +220,7 @@ const Generate = () => {
                 )}
               </div>
             )}
+            </motion.div>
 
             {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
             <div className="space-y-4 max-w-2xl mx-auto">
@@ -395,6 +408,32 @@ const Generate = () => {
         {/* ═══════════════════════════════════════ */}
         {!generating && !resultUrl && !showRetry && (
           <div className="space-y-10">
+
+            {/* Step Progress */}
+            {!generationId && !resultUrl && (
+              <div className="flex items-center justify-center gap-0 mb-10">
+                {[
+                  { num: 1, done: true },
+                  { num: 2, done: !!uploadedFile },
+                  { num: 3, done: !!selectedStyleId },
+                ].map((step, i) => (
+                  <div key={step.num} className="flex items-center">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                      step.done
+                        ? "bg-primary text-primary-foreground shadow-glow"
+                        : "bg-muted text-muted-foreground"
+                    }`}>
+                      {step.num}
+                    </div>
+                    {i < 2 && (
+                      <div className={`w-16 h-0.5 transition-all duration-500 ${
+                        step.done ? "bg-primary" : "bg-muted"
+                      }`} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* ── Step 1: Choose type ── */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -588,7 +627,7 @@ const Generate = () => {
                       size="lg"
                       onClick={handleGenerate}
                       disabled={!canGenerate}
-                      className="rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40"
+                      className={`rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate ? " shimmer-btn" : ""}`}
                     >
                       <Sparkles className="mr-3 h-6 w-6" />
                       {t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}

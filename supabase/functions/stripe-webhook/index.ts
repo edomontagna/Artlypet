@@ -96,8 +96,8 @@ serve(async (req) => {
     const packageId = session.metadata?.package_id;
     const planUpgrade = session.metadata?.plan_upgrade;
 
-    if (!credits) {
-      return new Response("Missing credits in metadata", { status: 400 });
+    if (!credits || isNaN(credits) || credits <= 0 || credits > 10000) {
+      return new Response("Invalid credits amount", { status: 400 });
     }
 
     // Idempotency: check if this session was already processed
@@ -113,31 +113,16 @@ serve(async (req) => {
       });
     }
 
-    // Get current balance
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("credit_balance")
-      .eq("user_id", userId)
-      .single();
+    // Atomic credit addition — prevents race conditions
+    const { data: newBalance, error: addError } = await supabase.rpc("add_credits", {
+      p_user_id: userId,
+      p_amount: credits,
+      p_plan_upgrade: planUpgrade || null,
+    });
 
-    const currentBalance = profile?.credit_balance || 0;
-    const newBalance = currentBalance + credits;
-
-    // Update balance + plan if premium
-    const updateData: Record<string, unknown> = {
-      credit_balance: newBalance,
-      updated_at: new Date().toISOString(),
-    };
-
-    if (planUpgrade === "premium") {
-      updateData.plan_type = "premium";
-      updateData.premium_purchased_at = new Date().toISOString();
+    if (addError || newBalance === -1) {
+      return new Response("Failed to add credits", { status: 500 });
     }
-
-    await supabase
-      .from("profiles")
-      .update(updateData)
-      .eq("user_id", userId);
 
     // Insert transaction record
     await supabase.from("credit_transactions").insert({

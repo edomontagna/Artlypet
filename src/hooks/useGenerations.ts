@@ -14,6 +14,7 @@ export const useGenerations = (page = 0) => {
       return data;
     },
     enabled: !!user,
+    staleTime: 10000,
   });
 };
 

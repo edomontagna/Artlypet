@@ -4,13 +4,16 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showCta, setShowCta] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const { t } = useTranslation();
+  const { session } = useAuth();
   const location = useLocation();
   const isHome = location.pathname === "/";
   const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -21,7 +24,10 @@ const Navbar = () => {
   });
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setShowCta(window.scrollY > 600);
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -139,6 +145,16 @@ const Navbar = () => {
           </button>
 
           <LanguageSwitcher />
+
+          <AnimatePresence>
+            {showCta && !session && (
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <Button className="rounded-full shimmer-btn btn-press" size="sm" asChild>
+                  <Link to="/signup">{t("nav.getStarted", "Get Started")}</Link>
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <Button variant="outline" asChild className="rounded-full h-10 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
             <Link to="/login">{t("nav.signIn")}</Link>

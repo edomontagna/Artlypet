@@ -59,6 +59,7 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
         ref={containerRef}
         tabIndex={0}
         role="slider"
+        aria-label={t("share.sliderLabel", "Compare before and after images")}
         aria-valuenow={Math.round(position)}
         aria-valuemin={0}
         aria-valuemax={100}

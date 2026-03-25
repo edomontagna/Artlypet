@@ -133,8 +133,18 @@
     "continueWithGoogle": "Continuar con Google",
     "or": "o",
     "createBtn": "Crear Cuenta",
+    "enterPassword": "Ingresa tu contraseña",
+    "yourName": "Tu nombre",
+    "minChars": "Mínimo 10 caracteres",
+    "referralBanner": "¡Has sido invitado! Regístrate y obtén 150 créditos de bonus",
+    "agreeTerms": "Acepto los",
+    "termsOfService": "Términos de Servicio",
+    "and": "y",
+    "privacyPolicy": "Política de Privacidad",
+    "checkEmailConfirmation": "Revisa tu correo para un enlace de confirmación para completar tu registro.",
     "resetPassword": "Restablecer Contraseña",
     "resetDesc": "Ingresa tu correo y te enviaremos un enlace para restablecer",
+    "resetSent": "Si existe una cuenta con ese correo, se ha enviado un enlace de restablecimiento. Revisa tu bandeja de entrada.",
     "checkEmail": "Revisa tu correo para el enlace de restablecimiento",
     "sendResetLink": "Enviar Enlace",
     "backToSignIn": "Volver al Inicio de Sesión",
@@ -143,6 +153,21 @@
     "fair": "Regular",
     "good": "Buena",
     "strong": "Fuerte"
+  },
+  "validation": {
+    "invalidEmail": "Por favor ingresa una dirección de correo válida",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordMin": "La contraseña debe tener al menos 10 caracteres",
+    "nameMin": "El nombre debe tener al menos 2 caracteres",
+    "termsRequired": "Debes aceptar los Términos de Servicio y la Política de Privacidad",
+    "messageMin": "El mensaje debe tener al menos 10 caracteres",
+    "nameRequired": "El nombre es obligatorio",
+    "businessNameRequired": "El nombre de la empresa es obligatorio"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "desc": "Ocurrió un error inesperado. Por favor inténtalo de nuevo.",
+    "backHome": "Volver al Inicio"
   },
   "dashboard": {
     "tabDashboard": "Panel",

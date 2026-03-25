@@ -14,6 +14,7 @@ export const useProfile = () => {
       return data;
     },
     enabled: !!user,
+    staleTime: 60000,
   });
 };
 

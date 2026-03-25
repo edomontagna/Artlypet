@@ -113,8 +113,8 @@ const PricingSection = () => {
               transition={{ delay: i * 0.15, duration: 0.6 }}
               className={`relative flex flex-col rounded-3xl p-8 sm:p-12 ${
                 plan.popular
-                  ? "bg-primary text-white shadow-xl"
-                  : "bg-background border border-border/50 shadow-sm"
+                  ? "bg-primary text-white shadow-2xl scale-105 relative z-10 border-gradient"
+                  : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
               }`}
             >
               {/* Popular badge */}
@@ -122,6 +122,15 @@ const PricingSection = () => {
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md">
                   {t("pricing.popular")}
                 </span>
+              )}
+
+              {/* Best Value ribbon */}
+              {plan.popular && (
+                <div className="absolute -top-3 -right-3 z-20">
+                  <div className="bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-glow animate-pulse-gold">
+                    {t("pricing.bestValue", "Best Value")}
+                  </div>
+                </div>
               )}
 
               {/* Plan header */}
@@ -184,7 +193,7 @@ const PricingSection = () => {
               {/* CTA Button */}
               <Button
                 asChild
-                className={`mt-10 w-full h-12 rounded-full font-medium transition-all duration-300 ${
+                className={`mt-10 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
                   plan.popular
                     ? "bg-white text-primary hover:bg-white/90"
                     : ""
@@ -193,6 +202,9 @@ const PricingSection = () => {
               >
                 <Link to={plan.ctaLink}>{plan.cta}</Link>
               </Button>
+              <p className="text-[10px] text-center mt-3 opacity-60">
+                {t("pricing.guarantee", "30-day money-back guarantee")}
+              </p>
             </motion.div>
           ))}
         </div>

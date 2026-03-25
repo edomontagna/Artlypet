@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,15 +77,27 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
             </p>
           </div>
 
+          {/* Social proof */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="flex -space-x-1.5">
+              {["J","K","M","S"].map((l, i) => (
+                <div key={i} className="w-6 h-6 rounded-full bg-primary/20 border-2 border-card flex items-center justify-center text-[9px] font-medium text-primary">{l}</div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">{t("pricing.socialProof", "Join 5,000+ premium members")}</p>
+          </div>
+
           {/* Features */}
           <div className="space-y-3">
             {features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="h-4 w-4 text-primary" />
+              <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.1 }}>
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="text-sm">{feature.text}</span>
                 </div>
-                <span className="text-sm">{feature.text}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -99,7 +112,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           {/* CTA */}
           <Button
             size="lg"
-            className="w-full rounded-full h-12 bg-primary text-primary-foreground text-base shadow-md gap-2 hover:bg-primary/90"
+            className="w-full rounded-full h-12 bg-primary text-primary-foreground text-base shadow-md gap-2 hover:bg-primary/90 shimmer-btn btn-press"
             onClick={handlePurchasePremium}
             disabled={loading}
           >

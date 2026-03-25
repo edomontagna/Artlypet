@@ -133,8 +133,18 @@
     "continueWithGoogle": "Weiter mit Google",
     "or": "oder",
     "createBtn": "Konto Erstellen",
+    "enterPassword": "Gib dein Passwort ein",
+    "yourName": "Dein Name",
+    "minChars": "Mindestens 10 Zeichen",
+    "referralBanner": "Du wurdest eingeladen! Registriere dich und erhalte 150 Bonus-Credits",
+    "agreeTerms": "Ich stimme den",
+    "termsOfService": "Nutzungsbedingungen",
+    "and": "und",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "checkEmailConfirmation": "Überprüfe deine E-Mail auf einen Bestätigungslink, um deine Registrierung abzuschließen.",
     "resetPassword": "Passwort Zurücksetzen",
     "resetDesc": "Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen",
+    "resetSent": "Falls ein Konto mit dieser E-Mail existiert, wurde ein Reset-Link gesendet. Überprüfe deinen Posteingang.",
     "checkEmail": "Überprüfe deine E-Mail für den Reset-Link",
     "sendResetLink": "Reset-Link Senden",
     "backToSignIn": "Zurück zur Anmeldung",
@@ -143,6 +153,21 @@
     "fair": "Mittel",
     "good": "Gut",
     "strong": "Stark"
+  },
+  "validation": {
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",
+    "passwordRequired": "Passwort ist erforderlich",
+    "passwordMin": "Das Passwort muss mindestens 10 Zeichen lang sein",
+    "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+    "termsRequired": "Du musst die Nutzungsbedingungen und die Datenschutzrichtlinie akzeptieren",
+    "messageMin": "Die Nachricht muss mindestens 10 Zeichen lang sein",
+    "nameRequired": "Name ist erforderlich",
+    "businessNameRequired": "Firmenname ist erforderlich"
+  },
+  "error": {
+    "title": "Etwas ist schiefgelaufen",
+    "desc": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "backHome": "Zurück zur Startseite"
   },
   "dashboard": {
     "tabDashboard": "Dashboard",
