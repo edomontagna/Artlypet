@@ -52,12 +52,12 @@ const TestimonialsSection = () => {
 
   return (
     <section
-      className="py-24 bg-muted/30"
+      className="py-28 lg:py-36 bg-muted/30"
       aria-labelledby="testimonials-heading"
     >
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -86,7 +86,7 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
           {testimonials.map((item, i) => (
             <motion.div
               key={item.name}
@@ -94,7 +94,7 @@ const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
-              className="bg-card rounded-2xl p-8 shadow-sm"
+              className="bg-card rounded-2xl p-8 lg:p-10 shadow-sm"
             >
               {/* Stars */}
               <div className="flex gap-0.5 mb-5" role="img" aria-label={`${item.rating} out of 5 stars`}>
@@ -107,7 +107,7 @@ const TestimonialsSection = () => {
               </div>
 
               {/* Quote */}
-              <p className="font-serif text-lg italic text-foreground leading-relaxed mb-8">
+              <p className="font-serif text-xl italic text-foreground leading-relaxed mb-8">
                 &ldquo;{item.text}&rdquo;
               </p>
 

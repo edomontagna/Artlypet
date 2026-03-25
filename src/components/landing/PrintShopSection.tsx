@@ -17,12 +17,12 @@ const PrintShopSection = () => {
   return (
     <section
       id="prints"
-      className="py-24 bg-muted/30"
+      className="py-28 lg:py-36 bg-muted/30"
       aria-labelledby="prints-heading"
     >
       <div className="container px-6 lg:px-8 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left: Text content */}
             <div>
               <motion.span

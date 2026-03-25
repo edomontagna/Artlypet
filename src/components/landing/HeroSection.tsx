@@ -34,8 +34,8 @@ const HeroSection = () => {
       {/* Decorative blur behind image */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container px-6 lg:px-8 pt-24 pb-32 lg:pt-36 lg:pb-40">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container px-6 lg:px-8 pt-28 pb-40 lg:pt-40 lg:pb-48">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left — Text */}
           <div>
             <motion.div
@@ -67,7 +67,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.7, ease }}
-              className="text-lg text-muted-foreground leading-relaxed max-w-lg mb-12"
+              className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-md mb-14"
             >
               {t("hero.subtitle")}
             </motion.p>
@@ -163,7 +163,7 @@ const HeroSection = () => {
             transition={{ delay: 0.5, duration: 1, ease }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10 relative">
+            <div className="aspect-[4/5] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden bg-secondary/10 relative">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={currentImage}

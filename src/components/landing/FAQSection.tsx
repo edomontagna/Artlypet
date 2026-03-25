@@ -10,10 +10,10 @@ const FAQSection = () => {
   return (
     <section
       id="faq"
-      className="py-24 bg-background"
+      className="py-28 lg:py-36 bg-background"
       aria-labelledby="faq-heading"
     >
-      <div className="container px-6 lg:px-8 max-w-3xl mx-auto">
+      <div className="container px-6 lg:px-8 max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0 }}

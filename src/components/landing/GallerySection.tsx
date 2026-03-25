@@ -33,10 +33,10 @@ const GallerySection = () => {
   const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
 
   return (
-    <section id="gallery" className="py-24 lg:py-32 bg-background" aria-labelledby="gallery-heading">
+    <section id="gallery" className="py-28 lg:py-40 bg-background" aria-labelledby="gallery-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -69,13 +69,13 @@ const GallerySection = () => {
 
         {/* Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-6xl mx-auto">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
+              <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-6xl mx-auto">
             {styles.slice(0, 6).map((item, i) => (
               <motion.div
                 key={item.id}
@@ -83,7 +83,7 @@ const GallerySection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.7, ease }}
-                className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
+                className="aspect-[3/4] rounded-3xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
                 style={{ transition: 'transform 0.3s ease-out' }}

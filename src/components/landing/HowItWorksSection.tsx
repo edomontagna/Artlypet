@@ -14,10 +14,10 @@ const HowItWorksSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-28 lg:py-36 bg-background">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-24">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -45,7 +45,7 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Steps grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
           {steps.map((step, i) => {
             const Icon = step.icon;
             return (
@@ -58,17 +58,17 @@ const HowItWorksSection = () => {
                 className="group text-center"
               >
                 {/* Icon circle */}
-                <div className="w-20 h-20 rounded-full bg-secondary/10 group-hover:bg-secondary/20 transition-colors duration-300 flex items-center justify-center mx-auto mb-6">
-                  <Icon className="h-8 w-8 text-secondary" />
+                <div className="w-24 h-24 rounded-full bg-secondary/10 group-hover:bg-secondary/20 transition-colors duration-300 flex items-center justify-center mx-auto mb-6">
+                  <Icon className="h-10 w-10 text-secondary" />
                 </div>
 
                 {/* Title */}
-                <h3 className="font-serif font-bold text-xl text-foreground mb-3">
+                <h3 className="font-serif font-bold text-2xl text-foreground mb-3">
                   {t(step.titleKey)}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                <p className="text-base text-muted-foreground leading-relaxed max-w-sm mx-auto">
                   {t(step.descKey)}
                 </p>
               </motion.div>

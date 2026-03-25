@@ -1,8 +1,16 @@
 {
   "nav": {
+    "home": "Inicio",
     "gallery": "Galería",
+    "styles": "Estilos",
+    "howItWorks": "Cómo funciona",
     "pricing": "Precios",
     "faq": "FAQ",
+    "more": "Más",
+    "about": "Sobre nosotros",
+    "blog": "Blog",
+    "prints": "Impresiones",
+    "contact": "Contacto",
     "signIn": "Iniciar Sesión",
     "getStarted": "Comenzar"
   },
@@ -12,7 +20,11 @@
     "subtitle": "Transforma la foto de tu querida mascota en un impresionante retrato artístico de calidad museo con IA de vanguardia. Elige entre una colección curada de estilos artísticos de clase mundial.",
     "cta": "Transforma Tu Mascota",
     "viewGallery": "Ver Galería",
-    "portraitsCreated": "retratos creados"
+    "portraitsCreated": "retratos creados",
+    "socialProof": "Amado por más de 10.000 dueños de mascotas",
+    "noSub": "Sin suscripción",
+    "cancelAnytime": "Cancela cuando quieras",
+    "freeCredits": "300 créditos gratis"
   },
   "howItWorks": {
     "title": "Cómo Funciona",
@@ -26,7 +38,9 @@
   },
   "gallery": {
     "title": "Galería de Estilos Artísticos",
-    "subtitle": "Explora nuestra colección curada de estilos artísticos de clase mundial, cada uno diseñado para resaltar la personalidad única de tu mascota."
+    "subtitle": "Explora nuestra colección curada de estilos artísticos de clase mundial, cada uno diseñado para resaltar la personalidad única de tu mascota.",
+    "popular": "Más Popular",
+    "new": "Nuevo"
   },
   "pricing": {
     "title": "Precios Simples y Transparentes",
@@ -44,6 +58,8 @@
     "credits": "créditos",
     "getStartedFree": "Empezar Gratis",
     "goPremium": "Ir a Premium",
+    "bestValue": "Mejor Oferta",
+    "guarantee": "Garantía de devolución de 30 días",
     "contactUs": "Contáctanos",
     "premiumSubtitle": "Desbloquea la experiencia completa de Artlypet",
     "premiumFeature1": "{{credits}} créditos incluidos",
@@ -88,7 +104,9 @@
   },
   "testimonials": {
     "title": "Amado por Dueños de Mascotas",
-    "subtitle": "Descubre lo que nuestros clientes dicen sobre sus retratos Artlypet"
+    "subtitle": "Descubre lo que nuestros clientes dicen sobre sus retratos Artlypet",
+    "count": "Más de 2.000 dueños satisfechos",
+    "label": "Testimonios"
   },
   "faq": {
     "title": "Preguntas Frecuentes",
@@ -111,10 +129,12 @@
   "footer": {
     "description": "Retratos de mascotas con IA de lujo creados con tecnología de vanguardia y excelencia artística.",
     "product": "Producto",
+    "company": "Empresa",
     "account": "Cuenta",
     "legal": "Legal",
     "privacy": "Política de Privacidad",
     "terms": "Términos de Servicio",
+    "createPortrait": "Crear retrato",
     "madeWith": "Hecho con amor para amantes de mascotas en la UE"
   },
   "auth": {
@@ -152,7 +172,9 @@
     "weak": "Débil",
     "fair": "Regular",
     "good": "Buena",
-    "strong": "Fuerte"
+    "strong": "Fuerte",
+    "showcaseTitle": "Transforma tu mascota en arte",
+    "showcaseDesc": "Únete a miles de amantes de mascotas que crean increíbles retratos con IA"
   },
   "validation": {
     "invalidEmail": "Por favor ingresa una dirección de correo válida",
@@ -202,7 +224,8 @@
     "edit": "Editar",
     "dangerZone": "Zona de Peligro",
     "deleteWarning": "Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.",
-    "deleteAccount": "Eliminar Cuenta"
+    "deleteAccount": "Eliminar Cuenta",
+    "loadError": "Algo salió mal al cargar tus datos. Intenta actualizar la página."
   },
   "generate": {
     "title": "Crear Retrato",
@@ -232,7 +255,8 @@
     "freeNote": "Plan gratis: vista previa con marca de agua. Desbloquea HD por €4,90/imagen o pasa a Premium.",
     "createAnother": "Crear Otro Retrato",
     "generationStarted": "¡Generación iniciada! Esto puede tomar hasta 60 segundos.",
-    "uploadCta": "Haz clic para subir o arrastra y suelta"
+    "uploadCta": "Haz clic para subir o arrastra y suelta",
+    "loadError": "No se pudieron cargar los datos de tu cuenta. Intenta actualizar la página."
   },
   "business": {
     "title": "Artlypet para Empresas",
@@ -287,7 +311,8 @@
     "shareOn": "Compartir en",
     "before": "Antes",
     "after": "Después",
-    "compareTitle": "La Transformación"
+    "compareTitle": "La Transformación",
+    "sliderLabel": "Comparar imágenes antes y después"
   },
   "referral": {
     "title": "Invita Amigos, Gana Créditos",

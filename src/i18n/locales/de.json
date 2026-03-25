@@ -1,8 +1,16 @@
 {
   "nav": {
+    "home": "Startseite",
     "gallery": "Galerie",
+    "styles": "Stile",
+    "howItWorks": "So funktioniert's",
     "pricing": "Preise",
     "faq": "FAQ",
+    "more": "Mehr",
+    "about": "Über uns",
+    "blog": "Blog",
+    "prints": "Drucke",
+    "contact": "Kontakt",
     "signIn": "Anmelden",
     "getStarted": "Jetzt Starten"
   },
@@ -12,7 +20,11 @@
     "subtitle": "Verwandle das Foto deines geliebten Haustieres in ein atemberaubendes, museumsreifes Kunstporträt mit modernster KI. Wähle aus einer kuratierten Sammlung erstklassiger Kunststile.",
     "cta": "Verwandle Dein Haustier",
     "viewGallery": "Galerie Ansehen",
-    "portraitsCreated": "erstellte Porträts"
+    "portraitsCreated": "erstellte Porträts",
+    "socialProof": "Geliebt von über 10.000 Tierbesitzern",
+    "noSub": "Kein Abonnement",
+    "cancelAnytime": "Jederzeit kündbar",
+    "freeCredits": "300 kostenlose Credits"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -26,7 +38,9 @@
   },
   "gallery": {
     "title": "Kunststil-Galerie",
-    "subtitle": "Entdecke unsere kuratierte Sammlung erstklassiger Kunststile, die jeweils die einzigartige Persönlichkeit deines Haustieres hervorheben."
+    "subtitle": "Entdecke unsere kuratierte Sammlung erstklassiger Kunststile, die jeweils die einzigartige Persönlichkeit deines Haustieres hervorheben.",
+    "popular": "Am beliebtesten",
+    "new": "Neu"
   },
   "pricing": {
     "title": "Einfache, Transparente Preise",
@@ -44,6 +58,8 @@
     "credits": "Credits",
     "getStartedFree": "Kostenlos Starten",
     "goPremium": "Premium Wählen",
+    "bestValue": "Bestes Angebot",
+    "guarantee": "30 Tage Geld-zurück-Garantie",
     "contactUs": "Kontaktiere Uns",
     "premiumSubtitle": "Schalte das volle Artlypet-Erlebnis frei",
     "premiumFeature1": "{{credits}} Credits inklusive",
@@ -88,7 +104,9 @@
   },
   "testimonials": {
     "title": "Geliebt von Tierbesitzern",
-    "subtitle": "Erfahre, was unsere Kunden über ihre Artlypet-Porträts sagen"
+    "subtitle": "Erfahre, was unsere Kunden über ihre Artlypet-Porträts sagen",
+    "count": "Über 2.000 zufriedene Tierbesitzer",
+    "label": "Kundenstimmen"
   },
   "faq": {
     "title": "Häufig Gestellte Fragen",
@@ -111,10 +129,12 @@
   "footer": {
     "description": "Luxuriöse KI-Haustier-Porträts, erstellt mit modernster Technologie und künstlerischer Exzellenz.",
     "product": "Produkt",
+    "company": "Unternehmen",
     "account": "Konto",
     "legal": "Rechtliches",
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
+    "createPortrait": "Porträt erstellen",
     "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht"
   },
   "auth": {
@@ -152,7 +172,9 @@
     "weak": "Schwach",
     "fair": "Mittel",
     "good": "Gut",
-    "strong": "Stark"
+    "strong": "Stark",
+    "showcaseTitle": "Verwandle dein Haustier in Kunst",
+    "showcaseDesc": "Schließe dich Tausenden von Tierliebhabern an, die atemberaubende KI-Porträts erstellen"
   },
   "validation": {
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",
@@ -202,7 +224,8 @@
     "edit": "Bearbeiten",
     "dangerZone": "Gefahrenzone",
     "deleteWarning": "Lösche dein Konto und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
-    "deleteAccount": "Konto Löschen"
+    "deleteAccount": "Konto Löschen",
+    "loadError": "Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte aktualisiere die Seite."
   },
   "generate": {
     "title": "Porträt Erstellen",
@@ -232,7 +255,8 @@
     "freeNote": "Kostenloser Plan: Vorschau mit Wasserzeichen. HD freischalten für €4,90/Bild oder Premium wählen.",
     "createAnother": "Weiteres Porträt Erstellen",
     "generationStarted": "Generierung gestartet! Dies kann bis zu 60 Sekunden dauern.",
-    "uploadCta": "Klicke zum Hochladen oder ziehe hierher"
+    "uploadCta": "Klicke zum Hochladen oder ziehe hierher",
+    "loadError": "Kontodaten konnten nicht geladen werden. Bitte aktualisiere die Seite."
   },
   "business": {
     "title": "Artlypet für Unternehmen",
@@ -287,7 +311,8 @@
     "shareOn": "Teilen auf",
     "before": "Vorher",
     "after": "Nachher",
-    "compareTitle": "Die Verwandlung"
+    "compareTitle": "Die Verwandlung",
+    "sliderLabel": "Vorher-Nachher-Bilder vergleichen"
   },
   "referral": {
     "title": "Freunde einladen, Credits verdienen",

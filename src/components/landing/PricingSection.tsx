@@ -69,10 +69,10 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-24 lg:py-32 bg-background" aria-labelledby="pricing-heading">
+    <section id="pricing" className="py-28 lg:py-40 bg-background" aria-labelledby="pricing-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -103,7 +103,7 @@ const PricingSection = () => {
         </div>
 
         {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}

@@ -1,8 +1,16 @@
 {
   "nav": {
+    "home": "Accueil",
     "gallery": "Galerie",
+    "styles": "Styles",
+    "howItWorks": "Comment ça marche",
     "pricing": "Tarifs",
     "faq": "FAQ",
+    "more": "Plus",
+    "about": "À propos",
+    "blog": "Blog",
+    "prints": "Impressions",
+    "contact": "Contact",
     "signIn": "Connexion",
     "getStarted": "Commencer"
   },
@@ -12,7 +20,11 @@
     "subtitle": "Transformez la photo de votre animal bien-aimé en un superbe portrait artistique de qualité muséale grâce à l'IA de pointe. Choisissez parmi une collection soignée de styles artistiques de renommée mondiale.",
     "cta": "Transformez Votre Animal",
     "viewGallery": "Voir la Galerie",
-    "portraitsCreated": "portraits créés"
+    "portraitsCreated": "portraits créés",
+    "socialProof": "Adoré par plus de 10 000 propriétaires d'animaux",
+    "noSub": "Sans abonnement",
+    "cancelAnytime": "Annulation à tout moment",
+    "freeCredits": "300 crédits gratuits"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -26,7 +38,9 @@
   },
   "gallery": {
     "title": "Galerie de Styles Artistiques",
-    "subtitle": "Explorez notre collection soignée de styles artistiques de classe mondiale, chacun conçu pour faire ressortir la personnalité unique de votre animal."
+    "subtitle": "Explorez notre collection soignée de styles artistiques de classe mondiale, chacun conçu pour faire ressortir la personnalité unique de votre animal.",
+    "popular": "Le plus populaire",
+    "new": "Nouveau"
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
@@ -44,6 +58,8 @@
     "credits": "crédits",
     "getStartedFree": "Commencer Gratuitement",
     "goPremium": "Passer à Premium",
+    "bestValue": "Meilleure Offre",
+    "guarantee": "Garantie de remboursement sous 30 jours",
     "contactUs": "Contactez-Nous",
     "premiumSubtitle": "Débloquez l'expérience complète Artlypet",
     "premiumFeature1": "{{credits}} crédits inclus",
@@ -88,7 +104,9 @@
   },
   "testimonials": {
     "title": "Adoré par les Propriétaires d'Animaux",
-    "subtitle": "Découvrez ce que nos clients disent de leurs portraits Artlypet"
+    "subtitle": "Découvrez ce que nos clients disent de leurs portraits Artlypet",
+    "count": "Plus de 2 000 propriétaires satisfaits",
+    "label": "Témoignages"
   },
   "faq": {
     "title": "Questions Fréquentes",
@@ -111,10 +129,12 @@
   "footer": {
     "description": "Portraits d'animaux IA de luxe créés avec une technologie de pointe et une excellence artistique.",
     "product": "Produit",
+    "company": "Entreprise",
     "account": "Compte",
     "legal": "Mentions Légales",
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions d'Utilisation",
+    "createPortrait": "Créer un portrait",
     "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE"
   },
   "auth": {
@@ -152,7 +172,9 @@
     "weak": "Faible",
     "fair": "Moyen",
     "good": "Bon",
-    "strong": "Fort"
+    "strong": "Fort",
+    "showcaseTitle": "Transformez votre animal en œuvre d'art",
+    "showcaseDesc": "Rejoignez des milliers d'amoureux des animaux qui créent de superbes portraits IA"
   },
   "validation": {
     "invalidEmail": "Veuillez entrer une adresse e-mail valide",
@@ -202,7 +224,8 @@
     "edit": "Modifier",
     "dangerZone": "Zone Dangereuse",
     "deleteWarning": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
-    "deleteAccount": "Supprimer le Compte"
+    "deleteAccount": "Supprimer le Compte",
+    "loadError": "Un problème est survenu lors du chargement de vos données. Veuillez rafraîchir la page."
   },
   "generate": {
     "title": "Créer un Portrait",
@@ -232,7 +255,8 @@
     "freeNote": "Plan gratuit : aperçu avec filigrane. Débloquez HD pour €4,90/image ou passez à Premium.",
     "createAnother": "Créer un Autre Portrait",
     "generationStarted": "Génération lancée ! Cela peut prendre jusqu'à 60 secondes.",
-    "uploadCta": "Cliquez pour télécharger ou glissez-déposez"
+    "uploadCta": "Cliquez pour télécharger ou glissez-déposez",
+    "loadError": "Impossible de charger les données de votre compte. Veuillez rafraîchir la page."
   },
   "business": {
     "title": "Artlypet pour les Entreprises",
@@ -287,7 +311,8 @@
     "shareOn": "Partager sur",
     "before": "Avant",
     "after": "Après",
-    "compareTitle": "La Transformation"
+    "compareTitle": "La Transformation",
+    "sliderLabel": "Comparer les images avant et après"
   },
   "referral": {
     "title": "Invitez vos Amis, Gagnez des Crédits",

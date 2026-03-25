@@ -20,7 +20,11 @@
     "subtitle": "Transform your beloved pet's photo into a stunning, museum-quality artistic portrait using cutting-edge AI. Choose from a curated collection of world-class art styles.",
     "cta": "Transform Your Pet",
     "viewGallery": "View Gallery",
-    "portraitsCreated": "portraits created"
+    "portraitsCreated": "portraits created",
+    "socialProof": "Loved by 10,000+ pet owners",
+    "noSub": "No subscription",
+    "cancelAnytime": "Cancel anytime",
+    "freeCredits": "300 free credits"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -34,7 +38,9 @@
   },
   "gallery": {
     "title": "Art Styles Gallery",
-    "subtitle": "Explore our curated collection of world-class artistic styles, each crafted to bring out the unique personality of your pet."
+    "subtitle": "Explore our curated collection of world-class artistic styles, each crafted to bring out the unique personality of your pet.",
+    "popular": "Most Popular",
+    "new": "New"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
@@ -52,6 +58,8 @@
     "credits": "credits",
     "getStartedFree": "Get Started Free",
     "goPremium": "Go Premium",
+    "bestValue": "Best Value",
+    "guarantee": "30-day money-back guarantee",
     "contactUs": "Contact Us",
     "premiumSubtitle": "Unlock the full Artlypet experience",
     "premiumFeature1": "{{credits}} credits included",
@@ -96,7 +104,9 @@
   },
   "testimonials": {
     "title": "Loved by Pet Owners",
-    "subtitle": "See what our customers say about their Artlypet portraits"
+    "subtitle": "See what our customers say about their Artlypet portraits",
+    "count": "2,000+ happy pet owners",
+    "label": "Testimonials"
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -164,7 +174,9 @@
     "weak": "Weak",
     "fair": "Fair",
     "good": "Good",
-    "strong": "Strong"
+    "strong": "Strong",
+    "showcaseTitle": "Transform Your Pet Into Art",
+    "showcaseDesc": "Join thousands of pet lovers creating stunning AI portraits"
   },
   "validation": {
     "invalidEmail": "Please enter a valid email address",
@@ -214,7 +226,8 @@
     "edit": "Edit",
     "dangerZone": "Danger Zone",
     "deleteWarning": "Permanently delete your account and all associated data. This action cannot be undone.",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "loadError": "Something went wrong loading your data. Please try refreshing the page."
   },
   "generate": {
     "title": "Create Portrait",
@@ -244,7 +257,8 @@
     "freeNote": "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.",
     "createAnother": "Create Another Portrait",
     "generationStarted": "Generation started! This may take up to 60 seconds.",
-    "uploadCta": "Click to upload or drag & drop"
+    "uploadCta": "Click to upload or drag & drop",
+    "loadError": "Could not load your account data. Please refresh and try again."
   },
   "business": {
     "title": "Artlypet for Business",
@@ -299,7 +313,8 @@
     "shareOn": "Share on",
     "before": "Before",
     "after": "After",
-    "compareTitle": "The Transformation"
+    "compareTitle": "The Transformation",
+    "sliderLabel": "Compare before and after images"
   },
   "referral": {
     "title": "Invite Friends, Earn Credits",
