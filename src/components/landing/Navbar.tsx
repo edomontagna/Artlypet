@@ -146,23 +146,25 @@ const Navbar = () => {
 
           <LanguageSwitcher />
 
-          <AnimatePresence>
-            {showCta && !session && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <Button className="rounded-full shimmer-btn btn-press" size="sm" asChild>
-                  <Link to="/signup">{t("nav.getStarted", "Get Started")}</Link>
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           <Button variant="outline" asChild className="rounded-full h-10 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
             <Link to="/login">{t("nav.signIn")}</Link>
           </Button>
 
-          <Button asChild className="rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link to="/signup">{t("nav.getStarted")}</Link>
-          </Button>
+          <AnimatePresence mode="wait">
+            {showCta && !session ? (
+              <motion.div key="sticky-cta" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <Button className="rounded-full shimmer-btn btn-press text-primary-foreground" size="sm" asChild>
+                  <Link to="/signup">{t("nav.getStarted", "Get Started")}</Link>
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.div key="default-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <Button asChild className="rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <Link to="/signup">{t("nav.getStarted")}</Link>
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Mobile Toggle */}

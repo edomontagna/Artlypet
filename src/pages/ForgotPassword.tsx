@@ -122,7 +122,7 @@ const ForgotPassword = () => {
       </div>
 
       {/* Right — Showcase (hidden on mobile) */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background dark:from-primary/20 dark:via-primary/10 dark:to-card">
         <div className="absolute inset-0 bg-noise" />
         <div className="relative z-10 max-w-md px-8 text-center">
           <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden mb-8">

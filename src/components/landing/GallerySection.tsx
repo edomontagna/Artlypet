@@ -86,7 +86,7 @@ const GallerySection = () => {
                 className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
-                style={{ transition: 'transform 0.3s ease' }}
+                style={{ transition: 'transform 0.3s ease-out' }}
               >
                 {/* Badges */}
                 {i === 0 && (

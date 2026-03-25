@@ -112,7 +112,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           {/* CTA */}
           <Button
             size="lg"
-            className="w-full rounded-full h-12 bg-primary text-primary-foreground text-base shadow-md gap-2 hover:bg-primary/90 shimmer-btn btn-press"
+            className={`w-full rounded-full h-12 bg-primary text-primary-foreground text-base shadow-md gap-2 hover:bg-primary/90 btn-press${!loading ? " shimmer-btn" : ""}`}
             onClick={handlePurchasePremium}
             disabled={loading}
           >

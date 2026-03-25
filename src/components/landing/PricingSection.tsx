@@ -113,7 +113,7 @@ const PricingSection = () => {
               transition={{ delay: i * 0.15, duration: 0.6 }}
               className={`relative flex flex-col rounded-3xl p-8 sm:p-12 ${
                 plan.popular
-                  ? "bg-primary text-white shadow-2xl scale-105 relative z-10 border-gradient"
+                  ? "bg-primary text-white shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
                   : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
               }`}
             >
@@ -124,10 +124,10 @@ const PricingSection = () => {
                 </span>
               )}
 
-              {/* Best Value ribbon */}
+              {/* Best Value badge */}
               {plan.popular && (
-                <div className="absolute -top-3 -right-3 z-20">
-                  <div className="bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-glow animate-pulse-gold">
+                <div className="absolute -top-3 right-4 z-20">
+                  <div className="bg-foreground text-background text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
                     {t("pricing.bestValue", "Best Value")}
                   </div>
                 </div>
@@ -202,7 +202,7 @@ const PricingSection = () => {
               >
                 <Link to={plan.ctaLink}>{plan.cta}</Link>
               </Button>
-              <p className="text-[10px] text-center mt-3 opacity-60">
+              <p className="text-xs text-center mt-3 opacity-80">
                 {t("pricing.guarantee", "30-day money-back guarantee")}
               </p>
             </motion.div>

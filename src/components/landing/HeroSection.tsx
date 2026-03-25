@@ -78,7 +78,7 @@ const HeroSection = () => {
               transition={{ delay: 1.0, duration: 0.6, ease }}
               className="flex flex-col sm:flex-row items-start gap-4"
             >
-              <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-8 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+              <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-8 text-base font-medium text-primary-foreground shadow-md">
                 <Link to="/generate" className="inline-flex items-center gap-2 group">
                   {t("hero.cta")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -110,7 +110,7 @@ const HeroSection = () => {
               <div className="flex items-center gap-3 mt-6">
                 <div className="flex -space-x-2">
                   {["S", "M", "A", "L", "R"].map((letter, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center text-xs font-medium text-primary">
+                    <div key={i} className="w-8 h-8 rounded-full bg-primary/15 border-2 border-background flex items-center justify-center text-xs font-medium text-foreground">
                       {letter}
                     </div>
                   ))}
@@ -127,7 +127,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4, duration: 0.6, ease }}
             >
-              <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-foreground/70">
                 <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.noSub", "No subscription")}</span>
                 <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
                 <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-primary" /> {t("hero.freeCredits", "300 free credits")}</span>

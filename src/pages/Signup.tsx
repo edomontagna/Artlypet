@@ -277,7 +277,7 @@ const Signup = () => {
       </div>
 
       {/* Right — Showcase (hidden on mobile) */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background dark:from-primary/20 dark:via-primary/10 dark:to-card">
         <div className="absolute inset-0 bg-noise" />
         <div className="relative z-10 max-w-md px-8 text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2">
