@@ -226,38 +226,63 @@ const Dashboard = () => {
               </h2>
               <p className="text-muted-foreground mb-8">{t("dashboard.subtitle", "Create your next pet masterpiece")}</p>
 
-              {/* Plan + Credits card */}
-              <div className="rounded-2xl bg-card border border-border shadow-md p-6 mb-8">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm text-muted-foreground">{t("dashboard.creditBalance", "Credit Balance")}</p>
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        isPremium
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}>
-                        {isPremium ? "Premium" : t("dashboard.freePlan", "Free Plan")}
-                      </span>
+              {/* Stats row */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {/* Credits */}
+                <div className="rounded-2xl bg-card border border-border p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-primary" />
                     </div>
-                    <p className="font-serif text-4xl font-bold text-foreground">
-                      {creditsLoading ? <Skeleton className="h-10 w-16" /> : creditBalance ?? 0}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t("dashboard.creditCosts", "Single: {{single}} credits · Mix: {{mix}} credits", { single: CREDIT_COST_SINGLE, mix: CREDIT_COST_MIX })}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t("dashboard.creditBalance", "Credit Balance")}</p>
                   </div>
-                  {!isPremium ? (
-                    <Button className="rounded-full gap-2 shadow-md" onClick={() => setCreditModalOpen(true)}>
-                      <Crown className="h-4 w-4" />
-                      {t("dashboard.goPremium", "Go Premium — €15")}
-                    </Button>
-                  ) : (
-                    <Button variant="outline" className="rounded-full" asChild>
-                      <Link to="/generate">{t("dashboard.createPortrait", "Create Portrait")}</Link>
-                    </Button>
-                  )}
+                  <p className="font-serif text-3xl font-bold text-foreground">
+                    {creditsLoading ? <Skeleton className="h-8 w-14" /> : creditBalance ?? 0}
+                  </p>
                 </div>
+                {/* Portraits */}
+                <div className="rounded-2xl bg-card border border-border p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <ImageIcon className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">{t("dashboard.totalPortraits", "Portraits")}</p>
+                  </div>
+                  <p className="font-serif text-3xl font-bold text-foreground">
+                    {generationsLoading ? <Skeleton className="h-8 w-10" /> : generations?.filter(g => g.status === "completed").length ?? 0}
+                  </p>
+                </div>
+                {/* Plan */}
+                <div className="rounded-2xl bg-card border border-border p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Crown className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">{t("dashboard.plan", "Plan")}</p>
+                  </div>
+                  <p className="font-serif text-lg font-bold text-foreground">
+                    {isPremium ? "Premium" : t("dashboard.freePlan", "Free Plan")}
+                  </p>
+                </div>
+                {/* Quick action */}
+                <button
+                  onClick={() => isPremium ? navigate("/generate") : setCreditModalOpen(true)}
+                  className="rounded-2xl bg-primary/5 border border-primary/20 p-5 text-left hover:bg-primary/10 transition-colors group"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      {isPremium ? <ImageIcon className="h-4 w-4 text-primary" /> : <Crown className="h-4 w-4 text-primary" />}
+                    </div>
+                  </div>
+                  <p className="font-serif text-sm font-bold text-primary group-hover:underline">
+                    {isPremium ? t("dashboard.createPortrait", "Create Portrait") : t("dashboard.goPremium", "Go Premium — €15")}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    {isPremium
+                      ? t("dashboard.creditCosts", "Single: {{single}} credits · Mix: {{mix}} credits", { single: CREDIT_COST_SINGLE, mix: CREDIT_COST_MIX })
+                      : t("dashboard.premiumPerks", "All HD · No watermarks · Discount prints")}
+                  </p>
+                </button>
               </div>
 
               {/* Referral card */}

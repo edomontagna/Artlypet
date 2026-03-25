@@ -253,7 +253,9 @@
     "loadError": "Algo salió mal al cargar tus datos. Intenta actualizar la página.",
     "emptyTitle": "Tu galería te espera",
     "emptyDesc": "Sube tu primera foto de mascota y mira cómo sucede la magia",
-    "emptyBtn": "Crea tu primer retrato"
+    "emptyBtn": "Crea tu primer retrato",
+    "totalPortraits": "Retratos",
+    "premiumPerks": "Todo HD · Sin marca de agua · Impresiones con descuento"
   },
   "generate": {
     "title": "Crear Retrato",
@@ -358,7 +360,9 @@
     "mix": "Retrato mix",
     "preview": "Vista previa",
     "premiumBanner": "Hazte Premium — €{{price}}",
-    "premiumDesc": "50 retratos · Full HD · Impresiones desde €{{price}}"
+    "premiumDesc": "50 retratos · Full HD · Impresiones desde €{{price}}",
+    "printNeedsHd": "Desbloquea HD para pedir impresiones",
+    "hdClearDesc": "Calidad cristalina, lista para imprimir"
   },
   "referral": {
     "title": "Invita Amigos, Gana Créditos",

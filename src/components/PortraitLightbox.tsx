@@ -134,8 +134,8 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                 </Button>
               )}
 
-              {/* Order Print — only if HD or premium */}
-              {(isPremium || generation.is_hd_unlocked) && (
+              {/* Order Print — always visible, different messaging based on HD status */}
+              {(isPremium || generation.is_hd_unlocked) ? (
                 <Button
                   className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
                   variant="outline"
@@ -148,6 +148,18 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                       <p className="text-[10px] text-muted-foreground">{t("lightbox.orderPrintFrom", "from \u20AC{{price}}", { price: PRINT_PRICE_PREMIUM })}</p>
                     </div>
                   </a>
+                </Button>
+              ) : (
+                <Button
+                  className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
+                  variant="outline"
+                  onClick={() => onUnlockHd(generation.id)}
+                >
+                  <Printer className="h-4 w-4 text-muted-foreground" />
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-muted-foreground">{t("lightbox.orderPrint", "Order Canvas Print")}</p>
+                    <p className="text-[10px] text-muted-foreground">{t("lightbox.printNeedsHd", "Unlock HD first to order prints")}</p>
+                  </div>
                 </Button>
               )}
 
@@ -182,7 +194,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-foreground">{t("lightbox.hdCompare", "See the difference HD makes")}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Crystal-clear, print-ready quality</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t("lightbox.hdClearDesc", "Crystal-clear, print-ready quality")}</p>
                   </div>
                 </div>
               </div>

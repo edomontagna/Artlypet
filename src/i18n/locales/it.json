@@ -253,7 +253,9 @@
     "loadError": "Qualcosa è andato storto nel caricamento dei tuoi dati. Riprova aggiornando la pagina.",
     "emptyTitle": "La tua galleria ti aspetta",
     "emptyDesc": "Carica la prima foto del tuo animale e guarda la magia",
-    "emptyBtn": "Crea il Tuo Primo Ritratto"
+    "emptyBtn": "Crea il Tuo Primo Ritratto",
+    "totalPortraits": "Ritratti",
+    "premiumPerks": "Tutto HD · Senza watermark · Stampe scontate"
   },
   "generate": {
     "title": "Crea Ritratto",
@@ -358,7 +360,9 @@
     "mix": "Ritratto Mix",
     "preview": "Anteprima",
     "premiumBanner": "Passa a Premium — €{{price}}",
-    "premiumDesc": "50 ritratti · Full HD · Stampe da €{{price}}"
+    "premiumDesc": "50 ritratti · Full HD · Stampe da €{{price}}",
+    "printNeedsHd": "Sblocca HD per ordinare le stampe",
+    "hdClearDesc": "Qualità cristallina, pronta per la stampa"
   },
   "referral": {
     "title": "Invita Amici, Guadagna Crediti",

@@ -253,7 +253,9 @@
     "loadError": "Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte aktualisiere die Seite.",
     "emptyTitle": "Deine Galerie wartet",
     "emptyDesc": "Lade dein erstes Tierfoto hoch und erlebe die Magie",
-    "emptyBtn": "Erstelle dein erstes Porträt"
+    "emptyBtn": "Erstelle dein erstes Porträt",
+    "totalPortraits": "Porträts",
+    "premiumPerks": "Alles HD · Kein Wasserzeichen · Vergünstigte Drucke"
   },
   "generate": {
     "title": "Porträt Erstellen",
@@ -358,7 +360,9 @@
     "mix": "Mix-Porträt",
     "preview": "Vorschau",
     "premiumBanner": "Premium werden — €{{price}}",
-    "premiumDesc": "50 Porträts · Full HD · Drucke ab €{{price}}"
+    "premiumDesc": "50 Porträts · Full HD · Drucke ab €{{price}}",
+    "printNeedsHd": "Erst HD freischalten, um Drucke zu bestellen",
+    "hdClearDesc": "Kristallklare, druckfertige Qualität"
   },
   "referral": {
     "title": "Freunde einladen, Credits verdienen",

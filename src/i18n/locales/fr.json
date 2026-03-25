@@ -253,7 +253,9 @@
     "loadError": "Un problème est survenu lors du chargement de vos données. Veuillez rafraîchir la page.",
     "emptyTitle": "Votre galerie vous attend",
     "emptyDesc": "Téléchargez votre première photo et regardez la magie opérer",
-    "emptyBtn": "Créez votre premier portrait"
+    "emptyBtn": "Créez votre premier portrait",
+    "totalPortraits": "Portraits",
+    "premiumPerks": "Tout en HD · Sans filigrane · Impressions à prix réduit"
   },
   "generate": {
     "title": "Créer un Portrait",
@@ -358,7 +360,9 @@
     "mix": "Portrait mix",
     "preview": "Aperçu",
     "premiumBanner": "Passer Premium — €{{price}}",
-    "premiumDesc": "50 portraits · Full HD · Impressions dès €{{price}}"
+    "premiumDesc": "50 portraits · Full HD · Impressions dès €{{price}}",
+    "printNeedsHd": "Débloquez HD pour commander des impressions",
+    "hdClearDesc": "Qualité cristalline, prête à imprimer"
   },
   "referral": {
     "title": "Invitez vos Amis, Gagnez des Crédits",

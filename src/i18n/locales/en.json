@@ -255,7 +255,9 @@
     "loadError": "Something went wrong loading your data. Please try refreshing the page.",
     "emptyTitle": "Your gallery is waiting",
     "emptyDesc": "Upload your first pet photo and watch the magic happen",
-    "emptyBtn": "Create Your First Portrait"
+    "emptyBtn": "Create Your First Portrait",
+    "totalPortraits": "Portraits",
+    "premiumPerks": "All HD · No watermarks · Discount prints"
   },
   "generate": {
     "title": "Create Portrait",
@@ -360,7 +362,9 @@
     "mix": "Mix Portrait",
     "preview": "Preview",
     "premiumBanner": "Go Premium — €{{price}}",
-    "premiumDesc": "50 portraits · Full HD · Prints from €{{price}}"
+    "premiumDesc": "50 portraits · Full HD · Prints from €{{price}}",
+    "printNeedsHd": "Unlock HD first to order prints",
+    "hdClearDesc": "Crystal-clear, print-ready quality"
   },
   "referral": {
     "title": "Invite Friends, Earn Credits",
