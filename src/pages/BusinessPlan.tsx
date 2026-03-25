@@ -11,7 +11,7 @@ import {
   BarChart3,
   Headphones,
   Printer,
-  Infinity,
+  Infinity as InfinityIcon,
   ImageIcon,
   Upload,
   Sparkles,
@@ -89,7 +89,7 @@ const BusinessPlan = () => {
 
   const features = [
     { icon: Palette, title: t("business.featWhiteLabel", "White-Label Branding"), desc: t("business.featWhiteLabelDesc", "Your logo, colors, and domain. Customers see only your brand.") },
-    { icon: Infinity, title: t("business.featUnlimited", "Unlimited Generations"), desc: t("business.featUnlimitedDesc", "No per-image fees. Generate as many portraits as you want.") },
+    { icon: InfinityIcon, title: t("business.featUnlimited", "Unlimited Generations"), desc: t("business.featUnlimitedDesc", "No per-image fees. Generate as many portraits as you want.") },
     { icon: ImageIcon, title: t("business.featStyles", "All 12 Art Styles"), desc: t("business.featStylesDesc", "Renaissance, Pop Art, Watercolor, and more. Every style included.") },
     { icon: Printer, title: t("business.featPrints", "Print Fulfillment"), desc: t("business.featPrintsDesc", "Canvas and framed prints shipped directly to your customers.") },
     { icon: BarChart3, title: t("business.featAnalytics", "Analytics Dashboard"), desc: t("business.featAnalyticsDesc", "Track generations, revenue, and customer engagement in real time.") },

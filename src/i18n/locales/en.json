@@ -319,6 +319,7 @@
     "title": "Page Not Found",
     "desc": "The page you're looking for doesn't exist or has been moved.",
     "home": "Back to Home",
+    "create": "Create Portrait",
     "createPortrait": "Create Portrait",
     "looking": "Looking for something specific? Try these:"
   },

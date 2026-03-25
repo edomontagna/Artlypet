@@ -314,11 +314,12 @@
     "ctaButton": "Contactez-Nous — business@artlypet.com"
   },
   "notFound": {
-    "title": "Page Non Trouvée",
-    "desc": "La page que vous cherchez n'existe pas ou a été déplacée.",
-    "home": "Retour à l'Accueil",
+    "title": "Page introuvable",
+    "desc": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "home": "Retour à l'accueil",
+    "create": "Créer un portrait",
     "createPortrait": "Créer un Portrait",
-    "looking": "Vous cherchez quelque chose de spécifique ? Essayez :"
+    "looking": "Vous cherchez quelque chose de précis ? Essayez ceux-ci :"
   },
   "cookie": {
     "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez l'utilisation des cookies.",

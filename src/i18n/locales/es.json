@@ -314,9 +314,10 @@
     "ctaButton": "Contáctanos — business@artlypet.com"
   },
   "notFound": {
-    "title": "Página No Encontrada",
+    "title": "Página no encontrada",
     "desc": "La página que buscas no existe o ha sido movida.",
-    "home": "Volver al Inicio",
+    "home": "Volver al inicio",
+    "create": "Crear retrato",
     "createPortrait": "Crear Retrato",
     "looking": "¿Buscas algo específico? Prueba estos:"
   },

@@ -17,6 +17,8 @@ export const CookieBanner = () => {
   const handleAccept = () => {
     localStorage.setItem(COOKIE_KEY, "accepted");
     setVisible(false);
+    // Reload to trigger useAnalytics with consent
+    window.dispatchEvent(new Event("cookie-consent-changed"));
   };
 
   const handleDecline = () => {
@@ -27,7 +29,7 @@ export const CookieBanner = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-4">
+    <div className="fixed bottom-0 inset-x-0 z-50 p-4 animate-slide-up">
       <div className="max-w-lg mx-auto bg-card border border-border rounded-xl shadow-luxury p-4 flex flex-col sm:flex-row items-center gap-3">
         <p className="text-sm text-muted-foreground flex-1">
           {t("cookie.message")}{" "}

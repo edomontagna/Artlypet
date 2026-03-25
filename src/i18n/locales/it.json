@@ -315,8 +315,9 @@
   },
   "notFound": {
     "title": "Pagina Non Trovata",
-    "desc": "La pagina che cerchi non esiste o è stata spostata.",
+    "desc": "La pagina che stai cercando non esiste o è stata spostata.",
     "home": "Torna alla Home",
+    "create": "Crea Ritratto",
     "createPortrait": "Crea Ritratto",
     "looking": "Cerchi qualcosa di specifico? Prova questi:"
   },

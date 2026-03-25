@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Home, ImageIcon, HelpCircle } from "lucide-react";
+import { Home, ImageIcon } from "lucide-react";
 
 const NotFound = () => {
+  const { t } = useTranslation();
   const location = useLocation();
 
   useEffect(() => {
@@ -14,34 +16,36 @@ const NotFound = () => {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="text-center max-w-md">
         <h1 className="font-serif text-7xl font-bold text-gradient-gold mb-4">404</h1>
-        <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">Page Not Found</h2>
+        <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">
+          {t("notFound.title", "Page Not Found")}
+        </h2>
         <p className="text-muted-foreground mb-8">
-          The page you're looking for doesn't exist or has been moved.
+          {t("notFound.desc", "The page you're looking for doesn't exist or has been moved.")}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild className="rounded-full gap-2">
             <Link to="/">
               <Home className="h-4 w-4" />
-              Back to Home
+              {t("notFound.home", "Back to Home")}
             </Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full gap-2">
             <Link to="/generate">
               <ImageIcon className="h-4 w-4" />
-              Create Portrait
+              {t("notFound.create", "Create Portrait")}
             </Link>
           </Button>
         </div>
         <div className="mt-8 pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            Looking for something specific? Try these:
+            {t("notFound.looking", "Looking for something specific? Try these:")}
           </p>
           <div className="flex flex-wrap gap-2 justify-center mt-3">
-            <Link to="/#pricing" className="text-sm text-primary hover:underline">Pricing</Link>
+            <Link to="/#pricing" className="text-sm text-primary hover:underline">{t("nav.pricing", "Pricing")}</Link>
             <span className="text-muted-foreground">·</span>
             <Link to="/#faq" className="text-sm text-primary hover:underline">FAQ</Link>
             <span className="text-muted-foreground">·</span>
-            <Link to="/login" className="text-sm text-primary hover:underline">Sign In</Link>
+            <Link to="/login" className="text-sm text-primary hover:underline">{t("nav.signIn", "Sign In")}</Link>
           </div>
         </div>
       </div>
