@@ -17,6 +17,7 @@ import { getServedImage, purchaseHdImage } from "@/services/generations";
 import { getSignedUrl } from "@/services/storage";
 import { useTranslation } from "react-i18next";
 import { CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
+import { PortraitLightbox } from "@/components/PortraitLightbox";
 
 // Thumbnail component that loads signed URL from storage path
 const PortraitThumbnail = ({ storagePath, alt }: { storagePath: string; alt: string }) => {
@@ -47,6 +48,13 @@ const Dashboard = () => {
   const [editName, setEditName] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [creditModalOpen, setCreditModalOpen] = useState(false);
+  const [selectedGeneration, setSelectedGeneration] = useState<typeof generations extends (infer T)[] | undefined ? T | null : null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const openLightbox = (gen: NonNullable<typeof generations>[number]) => {
+    setSelectedGeneration(gen);
+    setLightboxOpen(true);
+  };
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
 
@@ -305,7 +313,8 @@ const Dashboard = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.08, duration: 0.4 }}
-                        className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group"
+                        className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
+                        onClick={() => openLightbox(gen)}
                       >
                         {gen.storage_path ? (
                           <PortraitThumbnail storagePath={gen.storage_path} alt="Generated portrait" />
@@ -330,24 +339,9 @@ const Dashboard = () => {
                             )}
                           </div>
                         )}
-                        {/* Action buttons — always visible for mobile */}
                         {gen.status === "completed" && (
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent pt-8 pb-2 px-2 flex items-end justify-center gap-2">
-                            <Button size="sm" variant="secondary" className="rounded-full gap-1" onClick={() => handleDownload(gen)}>
-                              <Download className="h-3 w-3" />
-                              {t("dashboard.download", "Download")}
-                            </Button>
-                            {!isPremium && !gen.is_hd_unlocked && (
-                              <Button size="sm" className="rounded-full gap-1" onClick={() => handleUnlockHd(gen.id)}>
-                                <Lock className="h-3 w-3" />
-                                {t("dashboard.unlockHd", "HD €4.90")}
-                              </Button>
-                            )}
-                            {(isPremium || gen.is_hd_unlocked) && (
-                              <Button size="sm" variant="secondary" className="rounded-full gap-1" asChild>
-                                <Link to="/prints"><Printer className="h-3 w-3" /></Link>
-                              </Button>
-                            )}
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
+                            <p className="text-xs font-medium text-white truncate">{(gen as any)?.styles?.name || "Portrait"}</p>
                           </div>
                         )}
                         {/* Failed generation — actionable text */}
@@ -377,12 +371,14 @@ const Dashboard = () => {
                   )}
                 </div>
               ) : (
-                <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/50">
-                  <Upload className="h-10 w-10 text-muted-foreground/40 mx-auto mb-4" />
-                  <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{t("dashboard.noPortraits", "No portraits yet")}</h3>
-                  <p className="text-muted-foreground mb-6">{t("dashboard.noPortraitsDesc", "Upload a photo to get started")}</p>
-                  <Button className="rounded-full shadow-md" asChild>
-                    <Link to="/generate">{t("dashboard.uploadPhoto", "Upload Photo")}</Link>
+                <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("dashboard.emptyTitle", "Your gallery is waiting")}</h3>
+                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t("dashboard.emptyDesc", "Upload your first pet photo and watch the magic happen")}</p>
+                  <Button className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md" asChild>
+                    <Link to="/generate">{t("dashboard.emptyBtn", "Create Your First Portrait")}</Link>
                   </Button>
                 </div>
               )}
@@ -405,7 +401,8 @@ const Dashboard = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.08, duration: 0.4 }}
-                      className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden"
+                      className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
+                      onClick={() => openLightbox(gen)}
                     >
                       <div className="aspect-square relative group">
                         {gen.storage_path ? (
@@ -428,23 +425,6 @@ const Dashboard = () => {
                               <span className="text-[10px] font-medium bg-black/60 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
                                 <Lock className="h-2.5 w-2.5" /> SD
                               </span>
-                            )}
-                          </div>
-                        )}
-                        {gen.status === "completed" && (
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent pt-8 pb-2 px-2 flex items-end justify-center gap-2">
-                            <Button size="sm" variant="secondary" className="rounded-full gap-1" onClick={() => handleDownload(gen)}>
-                              <Download className="h-3 w-3" />
-                            </Button>
-                            {!isPremium && !gen.is_hd_unlocked && (
-                              <Button size="sm" className="rounded-full gap-1" onClick={() => handleUnlockHd(gen.id)}>
-                                <Lock className="h-3 w-3" /> HD
-                              </Button>
-                            )}
-                            {(isPremium || gen.is_hd_unlocked) && (
-                              <Button size="sm" variant="secondary" className="rounded-full gap-1" asChild>
-                                <Link to="/prints"><Printer className="h-3 w-3" /></Link>
-                              </Button>
                             )}
                           </div>
                         )}
@@ -476,10 +456,15 @@ const Dashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/50">
-                  <History className="h-10 w-10 text-muted-foreground/40 mx-auto mb-4" />
-                  <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{t("dashboard.noHistory", "No history yet")}</h3>
-                  <p className="text-muted-foreground">{t("dashboard.noHistoryDesc", "Your generated portraits will appear here")}</p>
+                <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("dashboard.emptyTitle", "Your gallery is waiting")}</h3>
+                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t("dashboard.emptyDesc", "Upload your first pet photo and watch the magic happen")}</p>
+                  <Button className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md" asChild>
+                    <Link to="/generate">{t("dashboard.emptyBtn", "Create Your First Portrait")}</Link>
+                  </Button>
                 </div>
               )}
             </motion.div>
@@ -584,6 +569,16 @@ const Dashboard = () => {
           ))}
         </nav>
       </div>
+
+      <PortraitLightbox
+        generation={selectedGeneration}
+        open={lightboxOpen}
+        onOpenChange={setLightboxOpen}
+        isPremium={isPremium}
+        onUnlockHd={handleUnlockHd}
+        onDownload={handleDownload}
+        onOpenUpgrade={() => setCreditModalOpen(true)}
+      />
 
       <CreditPurchaseModal open={creditModalOpen} onOpenChange={setCreditModalOpen} />
     </div>

@@ -250,7 +250,10 @@
     "dangerZone": "Zona Pericolosa",
     "deleteWarning": "Elimina permanentemente il tuo account e tutti i dati associati. Questa azione non può essere annullata.",
     "deleteAccount": "Elimina Account",
-    "loadError": "Qualcosa è andato storto nel caricamento dei tuoi dati. Riprova aggiornando la pagina."
+    "loadError": "Qualcosa è andato storto nel caricamento dei tuoi dati. Riprova aggiornando la pagina.",
+    "emptyTitle": "La tua galleria ti aspetta",
+    "emptyDesc": "Carica la prima foto del tuo animale e guarda la magia",
+    "emptyBtn": "Crea il Tuo Primo Ritratto"
   },
   "generate": {
     "title": "Crea Ritratto",
@@ -339,6 +342,23 @@
     "after": "Dopo",
     "compareTitle": "La Trasformazione",
     "sliderLabel": "Confronta le immagini prima e dopo"
+  },
+  "lightbox": {
+    "download": "Scarica Ritratto",
+    "downloadHd": "Qualità Full HD",
+    "downloadPreview": "Qualità Anteprima",
+    "unlockHd": "Sblocca Full HD — €{{price}}",
+    "unlockHdDesc": "Rimuovi watermark, risoluzione completa",
+    "orderPrint": "Ordina Stampa su Tela",
+    "orderPrintFrom": "da €{{price}}",
+    "share": "Condividi Ritratto",
+    "hdCompare": "Scopri la differenza dell'HD",
+    "portrait": "Ritratto",
+    "single": "Ritratto Singolo",
+    "mix": "Ritratto Mix",
+    "preview": "Anteprima",
+    "premiumBanner": "Passa a Premium — €{{price}}",
+    "premiumDesc": "50 ritratti · Full HD · Stampe da €{{price}}"
   },
   "referral": {
     "title": "Invita Amici, Guadagna Crediti",

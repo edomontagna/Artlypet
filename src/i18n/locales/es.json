@@ -250,7 +250,10 @@
     "dangerZone": "Zona de Peligro",
     "deleteWarning": "Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.",
     "deleteAccount": "Eliminar Cuenta",
-    "loadError": "Algo salió mal al cargar tus datos. Intenta actualizar la página."
+    "loadError": "Algo salió mal al cargar tus datos. Intenta actualizar la página.",
+    "emptyTitle": "Tu galería te espera",
+    "emptyDesc": "Sube tu primera foto de mascota y mira cómo sucede la magia",
+    "emptyBtn": "Crea tu primer retrato"
   },
   "generate": {
     "title": "Crear Retrato",
@@ -339,6 +342,23 @@
     "after": "Después",
     "compareTitle": "La Transformación",
     "sliderLabel": "Comparar imágenes antes y después"
+  },
+  "lightbox": {
+    "download": "Descargar retrato",
+    "downloadHd": "Calidad Full HD",
+    "downloadPreview": "Calidad de vista previa",
+    "unlockHd": "Desbloquear Full HD — €{{price}}",
+    "unlockHdDesc": "Eliminar marca de agua, resolución completa",
+    "orderPrint": "Pedir impresión en lienzo",
+    "orderPrintFrom": "desde €{{price}}",
+    "share": "Compartir retrato",
+    "hdCompare": "Descubre la diferencia HD",
+    "portrait": "Retrato",
+    "single": "Retrato individual",
+    "mix": "Retrato mix",
+    "preview": "Vista previa",
+    "premiumBanner": "Hazte Premium — €{{price}}",
+    "premiumDesc": "50 retratos · Full HD · Impresiones desde €{{price}}"
   },
   "referral": {
     "title": "Invita Amigos, Gana Créditos",

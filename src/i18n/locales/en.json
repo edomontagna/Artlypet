@@ -252,7 +252,10 @@
     "dangerZone": "Danger Zone",
     "deleteWarning": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteAccount": "Delete Account",
-    "loadError": "Something went wrong loading your data. Please try refreshing the page."
+    "loadError": "Something went wrong loading your data. Please try refreshing the page.",
+    "emptyTitle": "Your gallery is waiting",
+    "emptyDesc": "Upload your first pet photo and watch the magic happen",
+    "emptyBtn": "Create Your First Portrait"
   },
   "generate": {
     "title": "Create Portrait",
@@ -341,6 +344,23 @@
     "after": "After",
     "compareTitle": "The Transformation",
     "sliderLabel": "Compare before and after images"
+  },
+  "lightbox": {
+    "download": "Download Portrait",
+    "downloadHd": "Full HD Quality",
+    "downloadPreview": "Preview Quality",
+    "unlockHd": "Unlock Full HD — €{{price}}",
+    "unlockHdDesc": "Remove watermark, full resolution",
+    "orderPrint": "Order Canvas Print",
+    "orderPrintFrom": "from €{{price}}",
+    "share": "Share Portrait",
+    "hdCompare": "See the difference HD makes",
+    "portrait": "Portrait",
+    "single": "Single Portrait",
+    "mix": "Mix Portrait",
+    "preview": "Preview",
+    "premiumBanner": "Go Premium — €{{price}}",
+    "premiumDesc": "50 portraits · Full HD · Prints from €{{price}}"
   },
   "referral": {
     "title": "Invite Friends, Earn Credits",

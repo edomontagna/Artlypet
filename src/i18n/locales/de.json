@@ -250,7 +250,10 @@
     "dangerZone": "Gefahrenzone",
     "deleteWarning": "Lösche dein Konto und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
     "deleteAccount": "Konto Löschen",
-    "loadError": "Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte aktualisiere die Seite."
+    "loadError": "Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte aktualisiere die Seite.",
+    "emptyTitle": "Deine Galerie wartet",
+    "emptyDesc": "Lade dein erstes Tierfoto hoch und erlebe die Magie",
+    "emptyBtn": "Erstelle dein erstes Porträt"
   },
   "generate": {
     "title": "Porträt Erstellen",
@@ -339,6 +342,23 @@
     "after": "Nachher",
     "compareTitle": "Die Verwandlung",
     "sliderLabel": "Vorher-Nachher-Bilder vergleichen"
+  },
+  "lightbox": {
+    "download": "Porträt herunterladen",
+    "downloadHd": "Volle HD-Qualität",
+    "downloadPreview": "Vorschau-Qualität",
+    "unlockHd": "Full HD freischalten — €{{price}}",
+    "unlockHdDesc": "Wasserzeichen entfernen, volle Auflösung",
+    "orderPrint": "Leinwanddruck bestellen",
+    "orderPrintFrom": "ab €{{price}}",
+    "share": "Porträt teilen",
+    "hdCompare": "Erlebe den HD-Unterschied",
+    "portrait": "Porträt",
+    "single": "Einzelporträt",
+    "mix": "Mix-Porträt",
+    "preview": "Vorschau",
+    "premiumBanner": "Premium werden — €{{price}}",
+    "premiumDesc": "50 Porträts · Full HD · Drucke ab €{{price}}"
   },
   "referral": {
     "title": "Freunde einladen, Credits verdienen",

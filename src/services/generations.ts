@@ -8,7 +8,7 @@ export const getGenerations = (
 ) =>
   supabase
     .from("generated_images")
-    .select("*, styles(name, preview_url)")
+    .select("*, styles(name)")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .range(page * pageSize, (page + 1) * pageSize - 1);
@@ -16,7 +16,7 @@ export const getGenerations = (
 export const getGeneration = (id: string) =>
   supabase
     .from("generated_images")
-    .select("*, styles(name, preview_url)")
+    .select("*, styles(name)")
     .eq("id", id)
     .single();
 

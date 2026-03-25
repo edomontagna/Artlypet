@@ -250,7 +250,10 @@
     "dangerZone": "Zone Dangereuse",
     "deleteWarning": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
     "deleteAccount": "Supprimer le Compte",
-    "loadError": "Un problème est survenu lors du chargement de vos données. Veuillez rafraîchir la page."
+    "loadError": "Un problème est survenu lors du chargement de vos données. Veuillez rafraîchir la page.",
+    "emptyTitle": "Votre galerie vous attend",
+    "emptyDesc": "Téléchargez votre première photo et regardez la magie opérer",
+    "emptyBtn": "Créez votre premier portrait"
   },
   "generate": {
     "title": "Créer un Portrait",
@@ -339,6 +342,23 @@
     "after": "Après",
     "compareTitle": "La Transformation",
     "sliderLabel": "Comparer les images avant et après"
+  },
+  "lightbox": {
+    "download": "Télécharger le portrait",
+    "downloadHd": "Qualité Full HD",
+    "downloadPreview": "Qualité aperçu",
+    "unlockHd": "Débloquer Full HD — €{{price}}",
+    "unlockHdDesc": "Supprimer le filigrane, pleine résolution",
+    "orderPrint": "Commander une impression toile",
+    "orderPrintFrom": "à partir de €{{price}}",
+    "share": "Partager le portrait",
+    "hdCompare": "Découvrez la différence HD",
+    "portrait": "Portrait",
+    "single": "Portrait simple",
+    "mix": "Portrait mix",
+    "preview": "Aperçu",
+    "premiumBanner": "Passer Premium — €{{price}}",
+    "premiumDesc": "50 portraits · Full HD · Impressions dès €{{price}}"
   },
   "referral": {
     "title": "Invitez vos Amis, Gagnez des Crédits",
