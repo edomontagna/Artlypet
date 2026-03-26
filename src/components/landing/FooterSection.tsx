@@ -35,7 +35,7 @@ const FooterSection = () => {
               to="/"
               className="font-serif text-xl font-bold text-primary"
             >
-              Artly<span className="text-foreground">Pet</span>
+              ArtlyPet
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {t(

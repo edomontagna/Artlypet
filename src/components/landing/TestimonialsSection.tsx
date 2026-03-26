@@ -4,49 +4,13 @@ import { Star, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const testimonials = [
-  {
-    name: "Sophie M.",
-    location: "Berlin, DE",
-    text: "I couldn't believe how realistic the oil painting style looked. My golden retriever looks like a true aristocrat!",
-    rating: 5,
-    initials: "SM",
-  },
-  {
-    name: "Marco R.",
-    location: "Milano, IT",
-    text: "Ho regalato un ritratto pop art del mio gatto alla mia ragazza. Era entusiasta! Qualita' incredibile.",
-    rating: 5,
-    initials: "MR",
-  },
-  {
-    name: "Claire D.",
-    location: "Paris, FR",
-    text: "The watercolor style is absolutely gorgeous. I ordered a canvas print and it looks museum-worthy on my wall.",
-    rating: 5,
-    initials: "CD",
-  },
-  {
-    name: "David K.",
-    location: "London, UK",
-    text: "The oil painting style is incredible — it really captures my cat's personality. I'd love to see even more style options in the future!",
-    rating: 4,
-    initials: "DK",
-  },
-  {
-    name: "Chiara R.",
-    location: "Roma, Italia",
-    text: "Ho regalato un ritratto rinascimentale del mio labrador a mia madre. Ha pianto dalla gioia!",
-    rating: 5,
-    initials: "CR",
-  },
-  {
-    name: "Ana P.",
-    location: "Barcelona, España",
-    text: "El estilo Art Nouveau transformó la foto de mi gato en una verdadera obra de arte. Me encantaría más opciones de fondo, pero la calidad es excelente.",
-    rating: 4,
-    initials: "AP",
-  },
+const testimonialMeta = [
+  { name: "Sophie M.", location: "Berlin, DE", rating: 5, initials: "SM", key: "t1" },
+  { name: "Marco R.", location: "Milano, IT", rating: 5, initials: "MR", key: "t2" },
+  { name: "Claire D.", location: "Paris, FR", rating: 5, initials: "CD", key: "t3" },
+  { name: "David K.", location: "London, UK", rating: 4, initials: "DK", key: "t4" },
+  { name: "Chiara R.", location: "Roma, Italia", rating: 5, initials: "CR", key: "t5" },
+  { name: "Ana P.", location: "Barcelona, ES", rating: 4, initials: "AP", key: "t6" },
 ];
 
 const TestimonialsSection = () => {
@@ -54,12 +18,12 @@ const TestimonialsSection = () => {
 
   return (
     <section
-      className="py-28 lg:py-36 bg-muted/30"
+      className="py-16 lg:py-24 bg-muted/30"
       aria-labelledby="testimonials-heading"
     >
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -89,7 +53,7 @@ const TestimonialsSection = () => {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
-          {testimonials.map((item, i) => (
+          {testimonialMeta.map((item, i) => (
             <motion.div
               key={item.name}
               initial={{ opacity: 0, y: 30 }}
@@ -110,7 +74,7 @@ const TestimonialsSection = () => {
 
               {/* Quote */}
               <p className="font-serif text-xl italic text-foreground leading-relaxed mb-8">
-                &ldquo;{item.text}&rdquo;
+                &ldquo;{t(`testimonials.${item.key}`)}&rdquo;
               </p>
 
               {/* Attribution */}
@@ -138,7 +102,7 @@ const TestimonialsSection = () => {
           transition={{ delay: 0.3 }}
           className="text-center mt-16"
         >
-          <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("testimonials.cta", "Join 10,000+ Happy Pet Owners")}</Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">{t("testimonials.ctaSub", "Start free, no card needed")}</p>

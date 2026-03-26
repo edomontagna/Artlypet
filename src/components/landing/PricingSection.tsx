@@ -69,10 +69,10 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-28 lg:py-40 bg-background" aria-labelledby="pricing-heading">
+    <section id="pricing" className="py-16 lg:py-24 bg-background" aria-labelledby="pricing-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -113,7 +113,7 @@ const PricingSection = () => {
               transition={{ delay: i * 0.15, duration: 0.6 }}
               className={`relative flex flex-col rounded-3xl p-8 sm:p-12 ${
                 plan.popular
-                  ? "bg-primary text-white shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
+                  ? "bg-primary text-primary-foreground shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
                   : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
               }`}
             >
@@ -136,32 +136,32 @@ const PricingSection = () => {
               {/* Plan header */}
               <div className="mb-8">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
-                  plan.popular ? "bg-white/20" : "bg-secondary/10"
+                  plan.popular ? "bg-primary-foreground/20" : "bg-secondary/10"
                 }`}>
-                  <plan.icon className={`h-5 w-5 ${plan.popular ? "text-white" : "text-primary"}`} />
+                  <plan.icon className={`h-5 w-5 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
                 </div>
-                <p className={`text-sm mb-1 ${plan.popular ? "text-white/70" : "text-muted-foreground"}`}>
+                <p className={`text-sm mb-1 ${plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                   {plan.desc}
                 </p>
                 <h3 className={`font-serif text-2xl font-bold tracking-tight mb-4 ${
-                  plan.popular ? "text-white" : "text-foreground"
+                  plan.popular ? "text-primary-foreground" : "text-foreground"
                 }`}>
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline gap-1">
                   <span className={`font-serif text-5xl font-bold tracking-tight ${
-                    plan.popular ? "text-white" : "text-foreground"
+                    plan.popular ? "text-primary-foreground" : "text-foreground"
                   }`}>
                     &euro;{plan.price}
                   </span>
                 </div>
                 {plan.priceSuffix && (
-                  <p className={`text-sm mt-1 ${plan.popular ? "text-white/50" : "text-muted-foreground"}`}>
+                  <p className={`text-sm mt-1 ${plan.popular ? "text-primary-foreground/50" : "text-muted-foreground"}`}>
                     {plan.priceSuffix}
                   </p>
                 )}
                 {plan.popular && (
-                  <p className="text-xs mt-2 text-white/50">
+                  <p className="text-xs mt-2 text-primary-foreground/50">
                     {t("pricing.needMore", "Need more? Purchase again anytime.")}
                   </p>
                 )}
@@ -176,12 +176,12 @@ const PricingSection = () => {
                   <li
                     key={f}
                     className={`flex items-start gap-3 text-sm ${
-                      plan.popular ? "text-white/80" : "text-muted-foreground"
+                      plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"
                     }`}
                   >
                     <Check
                       className={`h-4 w-4 mt-0.5 shrink-0 ${
-                        plan.popular ? "text-white" : "text-secondary"
+                        plan.popular ? "text-primary-foreground" : "text-secondary"
                       }`}
                       strokeWidth={2.5}
                     />
@@ -204,12 +204,12 @@ const PricingSection = () => {
               </Button>
               <div className="flex items-center justify-center gap-1.5 mt-4 text-xs">
                 <Shield className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                <span className={plan.popular ? "text-white/80" : "text-muted-foreground"}>
+                <span className={plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}>
                   {t("pricing.guarantee", "30-day money-back guarantee")}
                 </span>
               </div>
               {plan.popular && (
-                <p className="text-center text-[11px] mt-3 text-white/60 italic">
+                <p className="text-center text-[11px] mt-3 text-primary-foreground/60 italic">
                   &ldquo;{t("pricing.testimonial", "Best €15 I ever spent!")}&rdquo; — Sarah, Berlin
                 </p>
               )}

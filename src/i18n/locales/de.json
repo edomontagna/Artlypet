@@ -115,7 +115,7 @@
     "secureDesc": "Bezahle sicher mit Stripe. Deine Zahlungsdaten sind immer geschützt.",
     "cta": "Starten & Drucken",
     "delivered": "5.000+ Drucke in ganz Europa geliefert",
-    "shipping": "Lieferung in 7–10 Tagen · Ab €50 kostenloser Versand",
+    "shippingInfo": "Lieferung in 7–10 Tagen · Ab €50 kostenloser Versand",
     "giftCta": "Das perfekte Geschenk für Tierliebhaber"
   },
   "testimonials": {
@@ -124,9 +124,16 @@
     "count": "Über 2.000 zufriedene Tierbesitzer",
     "label": "Kundenstimmen",
     "cta": "Schließe dich 10.000+ Tierliebhabern an",
-    "ctaSub": "Starte kostenlos, keine Karte nötig"
+    "ctaSub": "Starte kostenlos, keine Karte nötig",
+    "t1": "Ich konnte nicht glauben, wie realistisch der Ölgemälde-Stil aussah. Mein Golden Retriever sieht aus wie ein wahrer Aristokrat!",
+    "t2": "Ich habe meiner Freundin ein Pop-Art-Porträt meiner Katze geschenkt. Sie war begeistert! Unglaubliche Qualität.",
+    "t3": "Der Aquarell-Stil ist absolut wunderschön. Ich habe einen Leinwanddruck bestellt und er sieht an meiner Wand aus wie im Museum.",
+    "t4": "Der Ölgemälde-Stil ist unglaublich — er fängt die Persönlichkeit meiner Katze wirklich ein. Ich würde mir in Zukunft noch mehr Stiloptionen wünschen!",
+    "t5": "Ich habe meiner Mutter ein Renaissance-Porträt meines Labradors geschenkt. Sie hat vor Freude geweint!",
+    "t6": "Der Jugendstil hat das Foto meiner Katze in ein wahres Kunstwerk verwandelt. Mehr Hintergrundoptionen wären toll, aber die Qualität ist ausgezeichnet."
   },
   "faq": {
+    "label": "Hilfe",
     "title": "Häufig Gestellte Fragen",
     "subtitle": "Alles, was du über Artlypet wissen musst",
     "q1": "Wie funktioniert Artlypet?",
@@ -158,7 +165,9 @@
     "createPortrait": "Porträt erstellen",
     "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht",
     "ctaTitle": "Bereit, dein Haustier zu verwandeln?",
-    "ctaDesc": "Erstelle atemberaubende KI-Porträts deines Haustieres in Sekunden. Kostenlos starten."
+    "ctaDesc": "Erstelle atemberaubende KI-Porträts deines Haustieres in Sekunden. Kostenlos starten.",
+    "business": "Unternehmen",
+    "allRights": "Alle Rechte vorbehalten."
   },
   "auth": {
     "welcomeBack": "Willkommen Zurück",
@@ -253,7 +262,26 @@
     "emptyDesc": "Lade dein erstes Tierfoto hoch und erlebe die Magie",
     "emptyBtn": "Erstelle dein erstes Porträt",
     "totalPortraits": "Porträts",
-    "premiumPerks": "Alles HD · Kein Wasserzeichen · Vergünstigte Drucke"
+    "premiumPerks": "Alles HD · Kein Wasserzeichen · Vergünstigte Drucke",
+    "failedRefunded": "Fehlgeschlagen — Guthaben erstattet",
+    "retryGenerate": "Erneut versuchen",
+    "viewAll": "Alle Porträts ansehen",
+    "browseStyles": "Stile durchsuchen",
+    "nameUpdateFailed": "Name konnte nicht aktualisiert werden",
+    "nameUpdated": "Name aktualisiert",
+    "confirmDelete": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten werden dauerhaft gelöscht.",
+    "deletionRequested": "Kontolöschung beantragt. Ihre Daten werden in Kürze entfernt.",
+    "printCta": "Ihre Porträts würden auf Leinwand fantastisch aussehen",
+    "printCtaDesc": "Museumsqualität ab €59,90 — direkt an Ihre Tür geliefert",
+    "printCtaBtn": "Drucke ansehen"
+  },
+  "demo": {
+    "banner": "Demo-Modus — Dies ist eine Vorschau mit Beispieldaten.",
+    "createRealAccount": "Echtes Konto erstellen",
+    "exitDemo": "Demo beenden",
+    "buyCredits": "Guthaben kaufen",
+    "ctaTitle": "Bereit, Ihr eigenes zu erstellen?",
+    "ctaSub": "3 kostenlose Porträts, keine Karte nötig"
   },
   "generate": {
     "title": "Porträt Erstellen",

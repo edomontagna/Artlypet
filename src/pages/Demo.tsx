@@ -27,17 +27,17 @@ const Demo = () => {
   const [activeTab, setActiveTab] = useState<"dashboard" | "history" | "settings">("dashboard");
 
   const tabs = [
-    { id: "dashboard" as const, label: "Dashboard", icon: Upload },
-    { id: "history" as const, label: "History", icon: History },
-    { id: "settings" as const, label: "Settings", icon: Settings },
+    { id: "dashboard" as const, label: t("dashboard.tabDashboard", "Dashboard"), icon: Upload },
+    { id: "history" as const, label: t("dashboard.tabHistory", "History"), icon: History },
+    { id: "settings" as const, label: t("dashboard.tabSettings", "Settings"), icon: Settings },
   ];
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* Demo banner */}
       <div className="fixed top-0 inset-x-0 z-50 bg-primary text-primary-foreground text-center text-xs py-1.5 font-medium">
-        Demo Mode — This is a preview with sample data.{" "}
-        <Link to="/signup" className="underline">Create a real account</Link>
+        {t("demo.banner", "Demo Mode — This is a preview with sample data.")}{" "}
+        <Link to="/signup" className="underline">{t("demo.createRealAccount", "Create a real account")}</Link>
       </div>
 
       {/* Left sidebar */}
@@ -74,7 +74,7 @@ const Demo = () => {
           <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" asChild>
             <Link to="/">
               <LogOut className="h-4 w-4" />
-              Exit Demo
+              {t("demo.exitDemo", "Exit Demo")}
             </Link>
           </Button>
         </div>
@@ -88,12 +88,12 @@ const Demo = () => {
           <div className="flex items-center gap-3 ml-auto">
             <div className="flex items-center gap-1.5 text-sm">
               <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-medium">{DEMO_USER.creditBalance} credits</span>
+              <span className="font-medium">{DEMO_USER.creditBalance} {t("dashboard.credits", "credits")}</span>
             </div>
             <Button variant="outline" size="sm" className="rounded-full gap-2 border-primary/30 text-primary hover:bg-primary/5" asChild>
               <Link to="/signup">
                 <Crown className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Create Portrait</span>
+                <span className="hidden sm:inline">{t("dashboard.createPortrait", "Create Portrait")}</span>
               </Link>
             </Button>
           </div>
@@ -104,26 +104,26 @@ const Demo = () => {
           {activeTab === "dashboard" && (
             <div className="max-w-4xl">
               <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
-                Welcome, {DEMO_USER.displayName}
+                {t("dashboard.welcome", "Welcome")}, {DEMO_USER.displayName}
               </h2>
-              <p className="text-muted-foreground mb-8">Create your next pet masterpiece</p>
+              <p className="text-muted-foreground mb-8">{t("dashboard.subtitle", "Create your next pet masterpiece")}</p>
 
               {/* Credits card */}
               <div className="p-6 rounded-xl bg-card border border-border shadow-luxury mb-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Credit Balance</p>
+                    <p className="text-sm text-muted-foreground">{t("dashboard.creditBalance", "Credit Balance")}</p>
                     <p className="font-serif text-4xl font-bold text-foreground">{DEMO_USER.creditBalance}</p>
                   </div>
                   <Button className="rounded-full" asChild>
-                    <Link to="/signup">Buy Credits</Link>
+                    <Link to="/signup">{t("demo.buyCredits", "Buy Credits")}</Link>
                   </Button>
                 </div>
               </div>
 
               {/* Recent generations */}
               <div>
-                <h3 className="font-serif text-xl font-semibold text-foreground mb-4">Recent Portraits</h3>
+                <h3 className="font-serif text-xl font-semibold text-foreground mb-4">{t("dashboard.recentPortraits", "Recent Portraits")}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {DEMO_GENERATIONS.map((gen) => (
                     <div key={gen.id} className="aspect-square rounded-xl bg-card border border-border overflow-hidden relative group">
@@ -136,7 +136,7 @@ const Demo = () => {
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Button size="sm" variant="secondary" className="rounded-full gap-1">
                           <Download className="h-3 w-3" />
-                          Download
+                          {t("dashboard.download", "Download")}
                         </Button>
                       </div>
                     </div>
@@ -148,8 +148,8 @@ const Demo = () => {
 
           {activeTab === "history" && (
             <div className="max-w-4xl">
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">History</h2>
-              <p className="text-muted-foreground mb-8">All your generated portraits</p>
+              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabHistory", "History")}</h2>
+              <p className="text-muted-foreground mb-8">{t("dashboard.historyDesc", "All your generated portraits")}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {DEMO_GENERATIONS.map((gen) => (
                   <div key={gen.id} className="rounded-xl bg-card border border-border overflow-hidden">
@@ -175,31 +175,31 @@ const Demo = () => {
 
           {activeTab === "settings" && (
             <div className="max-w-2xl">
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">Settings</h2>
-              <p className="text-muted-foreground mb-8">Manage your account</p>
+              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabSettings", "Settings")}</h2>
+              <p className="text-muted-foreground mb-8">{t("dashboard.settingsDesc", "Manage your account")}</p>
               <div className="space-y-6">
                 <div className="p-6 rounded-xl bg-card border border-border space-y-4">
-                  <h3 className="font-serif text-lg font-semibold">Profile</h3>
+                  <h3 className="font-serif text-lg font-semibold">{t("dashboard.profile", "Profile")}</h3>
                   <div className="space-y-2">
-                    <Label>Email</Label>
+                    <Label>{t("auth.email", "Email")}</Label>
                     <p className="text-sm text-muted-foreground">{DEMO_USER.email}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Display Name</Label>
+                    <Label>{t("dashboard.displayName", "Display Name")}</Label>
                     <div className="flex items-center gap-2">
                       <p className="text-sm">{DEMO_USER.displayName}</p>
-                      <Button size="sm" variant="ghost">Edit</Button>
+                      <Button size="sm" variant="ghost">{t("dashboard.edit", "Edit")}</Button>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-6 rounded-xl border border-destructive/30 space-y-4">
-                  <h3 className="font-serif text-lg font-semibold text-destructive">Danger Zone</h3>
+                  <h3 className="font-serif text-lg font-semibold text-destructive">{t("dashboard.dangerZone", "Danger Zone")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Permanently delete your account and all associated data. This action cannot be undone.
+                    {t("dashboard.deleteWarning", "Permanently delete your account and all associated data. This action cannot be undone.")}
                   </p>
                   <Button variant="destructive" size="sm" disabled>
-                    Delete Account
+                    {t("dashboard.deleteAccount", "Delete Account")}
                   </Button>
                 </div>
               </div>

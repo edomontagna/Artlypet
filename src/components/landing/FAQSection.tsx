@@ -12,18 +12,18 @@ const FAQSection = () => {
   return (
     <section
       id="faq"
-      className="py-28 lg:py-36 bg-background"
+      className="py-16 lg:py-24 bg-background"
       aria-labelledby="faq-heading"
     >
       <div className="container px-6 lg:px-8 max-w-4xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4"
           >
-            Support
+            {t("faq.label", "Support")}
           </motion.span>
           <motion.h2
             id="faq-heading"
@@ -66,7 +66,7 @@ const FAQSection = () => {
         </motion.div>
 
         <div className="text-center mt-16">
-          <Button asChild className="btn-press rounded-full h-14 px-10 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("faq.cta", "Create Your Portrait")}</Link>
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">

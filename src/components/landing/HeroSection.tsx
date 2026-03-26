@@ -34,7 +34,7 @@ const HeroSection = () => {
       {/* Decorative blur behind image */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container px-6 lg:px-8 pt-28 pb-40 lg:pt-40 lg:pb-48">
+      <div className="container px-6 lg:px-8 pt-20 pb-20 lg:pt-28 lg:pb-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left — Text */}
           <div>
@@ -43,7 +43,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7, ease }}
             >
-              <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-8">
+              <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-5">
                 {t("hero.badge")}
               </span>
             </motion.div>
@@ -67,7 +67,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.7, ease }}
-              className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-md mb-14"
+              className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-md mb-8"
             >
               {t("hero.subtitle")}
             </motion.p>
@@ -78,13 +78,13 @@ const HeroSection = () => {
               transition={{ delay: 1.0, duration: 0.6, ease }}
               className="flex flex-col sm:flex-row items-start gap-4"
             >
-              <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-8 text-base font-medium text-primary-foreground shadow-md">
+              <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
                 <Link to="/generate" className="inline-flex items-center gap-2 group">
                   {t("hero.cta")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button variant="outline" asChild className="rounded-full h-14 px-8 text-base font-medium border-border hover:border-primary hover:text-primary">
+              <Button variant="outline" asChild className="rounded-full h-12 px-8 text-base font-medium border-border hover:border-primary hover:text-primary">
                 <a href="#gallery">
                   {t("hero.viewGallery")}
                 </a>

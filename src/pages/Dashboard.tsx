@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Image as ImageIcon, Copy, Printer } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -267,85 +267,23 @@ const Dashboard = () => {
                 {/* Quick action */}
                 <button
                   onClick={() => isPremium ? navigate("/generate") : setCreditModalOpen(true)}
-                  className="rounded-2xl bg-primary/5 border border-primary/20 p-5 text-left hover:bg-primary/10 transition-colors group"
+                  className="rounded-2xl bg-primary text-primary-foreground p-5 text-left hover:bg-primary/90 transition-colors group shadow-sm"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                      {isPremium ? <ImageIcon className="h-4 w-4 text-primary" /> : <Crown className="h-4 w-4 text-primary" />}
+                    <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                      {isPremium ? <ImageIcon className="h-4 w-4 text-primary-foreground" /> : <Crown className="h-4 w-4 text-primary-foreground" />}
                     </div>
                   </div>
-                  <p className="font-serif text-sm font-bold text-primary group-hover:underline">
+                  <p className="font-serif text-sm font-bold text-primary-foreground group-hover:underline">
                     {isPremium ? t("dashboard.createPortrait", "Create Portrait") : t("dashboard.goPremium", "Go Premium — €15")}
                   </p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                  <p className="text-[10px] text-primary-foreground/70 mt-0.5">
                     {isPremium
                       ? t("dashboard.creditCosts", "Single: {{single}} credits · Mix: {{mix}} credits", { single: CREDIT_COST_SINGLE, mix: CREDIT_COST_MIX })
                       : t("dashboard.premiumPerks", "All HD · No watermarks · Discount prints")}
                   </p>
                 </button>
               </div>
-
-              {/* Referral card */}
-              {profile?.referral_code && (
-                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 mb-8">
-                  <div className="flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                      <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                        {t("referral.title", "Invite Friends, Earn Credits")}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="rounded-full gap-2"
-                      onClick={() => {
-                        const link = `${window.location.origin}/signup?ref=${profile.referral_code}`;
-                        navigator.clipboard.writeText(link);
-                        toast.success(t("referral.copied", "Referral link copied!"));
-                      }}
-                    >
-                      <Copy className="h-4 w-4" />
-                      {t("referral.copyLink", "Copy Link")}
-                    </Button>
-                  </div>
-                  <div className="mt-3 flex items-center gap-3 flex-wrap">
-                    <div className="px-4 py-2 bg-primary/10 rounded-lg">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">{t("referral.yourCode", "Your Code")}</p>
-                      <p className="font-mono text-lg font-bold text-primary select-all">{profile.referral_code}</p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{t("referral.shareCta", "Share this code with friends to earn bonus credits!")}</p>
-                  </div>
-                  <div className="mt-3 p-3 bg-muted rounded-lg text-sm font-mono text-muted-foreground select-all">
-                    {window.location.origin}/signup?ref={profile.referral_code}
-                  </div>
-                </div>
-              )}
-
-              {/* Print cross-sell — show when user has portraits */}
-              {(generations?.filter(g => g.status === "completed").length ?? 0) > 0 && (
-                <div className="rounded-2xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-border shadow-sm p-6 mb-8 flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Printer className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-serif text-lg font-semibold text-foreground">
-                        {t("dashboard.printCta", "Your portraits would look stunning on canvas")}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {t("dashboard.printCtaDesc", "Museum-quality prints from €59.90 — shipped to your door")}
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="outline" className="rounded-full gap-2" asChild>
-                    <Link to="/prints">
-                      {t("dashboard.printCtaBtn", "View Prints")}
-                    </Link>
-                  </Button>
-                </div>
-              )}
 
               {/* Recent generations */}
               {generationsLoading ? (
@@ -383,7 +321,7 @@ const Dashboard = () => {
                               <span className="text-[10px] font-bold bg-primary text-primary-foreground px-1.5 py-0.5 rounded">HD</span>
                             ) : (
                               <span className="text-[10px] font-medium bg-black/60 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                <Lock className="h-2.5 w-2.5" /> SD
+                                <Eye className="h-2.5 w-2.5" /> Preview
                               </span>
                             )}
                           </div>
@@ -440,6 +378,45 @@ const Dashboard = () => {
                   </div>
                 </div>
               )}
+
+              {/* Referral — compact inline banner */}
+              {profile?.referral_code && (
+                <div className="rounded-xl bg-card border border-border p-4 mt-8 flex items-center justify-between flex-wrap gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full gap-2"
+                    onClick={() => {
+                      const link = `${window.location.origin}/signup?ref=${profile.referral_code}`;
+                      navigator.clipboard.writeText(link);
+                      toast.success(t("referral.copied", "Referral link copied!"));
+                    }}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                    {t("referral.copyLink", "Copy Link")}
+                  </Button>
+                </div>
+              )}
+
+              {/* Print cross-sell — show when user has portraits */}
+              {(generations?.filter(g => g.status === "completed").length ?? 0) > 0 && (
+                <div className="rounded-xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-border p-4 mt-4 flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-3">
+                    <Printer className="h-4 w-4 text-primary flex-shrink-0" />
+                    <p className="text-sm text-muted-foreground">
+                      {t("dashboard.printCta", "Your portraits would look stunning on canvas")}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" className="rounded-full gap-2" asChild>
+                    <Link to="/prints">
+                      {t("dashboard.printCtaBtn", "View Prints")}
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -481,7 +458,7 @@ const Dashboard = () => {
                               <span className="text-[10px] font-bold bg-primary text-primary-foreground px-1.5 py-0.5 rounded">HD</span>
                             ) : (
                               <span className="text-[10px] font-medium bg-black/60 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                <Lock className="h-2.5 w-2.5" /> SD
+                                <Eye className="h-2.5 w-2.5" /> Preview
                               </span>
                             )}
                           </div>

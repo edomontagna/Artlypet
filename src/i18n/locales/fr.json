@@ -115,7 +115,7 @@
     "secureDesc": "Payez en toute sécurité avec Stripe. Vos données de paiement sont toujours protégées.",
     "cta": "Commencer & Imprimer",
     "delivered": "5 000+ impressions livrées en Europe",
-    "shipping": "Livraison en 7-10 jours · Gratuite dès 50 €",
+    "shippingInfo": "Livraison en 7-10 jours · Gratuite dès 50 €",
     "giftCta": "Le cadeau parfait pour les amoureux des animaux"
   },
   "testimonials": {
@@ -124,9 +124,16 @@
     "count": "Plus de 2 000 propriétaires satisfaits",
     "label": "Témoignages",
     "cta": "Rejoignez 10 000+ Amoureux des Animaux",
-    "ctaSub": "Commencez gratuitement, pas de carte requise"
+    "ctaSub": "Commencez gratuitement, pas de carte requise",
+    "t1": "Je n'en revenais pas du réalisme du style peinture à l'huile. Mon golden retriever ressemble à un véritable aristocrate !",
+    "t2": "J'ai offert un portrait pop art de mon chat à ma copine. Elle était ravie ! Une qualité incroyable.",
+    "t3": "Le style aquarelle est absolument magnifique. J'ai commandé une impression sur toile et elle fait un effet musée sur mon mur.",
+    "t4": "Le style peinture à l'huile est incroyable — il capture vraiment la personnalité de mon chat. J'adorerais voir encore plus d'options de styles à l'avenir !",
+    "t5": "J'ai offert un portrait Renaissance de mon Labrador à ma mère. Elle a pleuré de joie !",
+    "t6": "Le style Art Nouveau a transformé la photo de mon chat en une véritable œuvre d'art. J'aimerais plus d'options d'arrière-plan, mais la qualité est excellente."
   },
   "faq": {
+    "label": "Support",
     "title": "Questions Fréquentes",
     "subtitle": "Tout ce que vous devez savoir sur Artlypet",
     "q1": "Comment fonctionne Artlypet ?",
@@ -158,7 +165,9 @@
     "createPortrait": "Créer un portrait",
     "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE",
     "ctaTitle": "Prêt à transformer votre animal ?",
-    "ctaDesc": "Créez de superbes portraits IA de votre animal en quelques secondes. Gratuit pour commencer."
+    "ctaDesc": "Créez de superbes portraits IA de votre animal en quelques secondes. Gratuit pour commencer.",
+    "business": "Entreprise",
+    "allRights": "Tous droits réservés."
   },
   "auth": {
     "welcomeBack": "Bon Retour",
@@ -253,7 +262,26 @@
     "emptyDesc": "Téléchargez votre première photo et regardez la magie opérer",
     "emptyBtn": "Créez votre premier portrait",
     "totalPortraits": "Portraits",
-    "premiumPerks": "Tout en HD · Sans filigrane · Impressions à prix réduit"
+    "premiumPerks": "Tout en HD · Sans filigrane · Impressions à prix réduit",
+    "failedRefunded": "Échoué — crédits remboursés",
+    "retryGenerate": "Réessayer",
+    "viewAll": "Voir tous les portraits",
+    "browseStyles": "Parcourir les Styles",
+    "nameUpdateFailed": "Échec de la mise à jour du nom",
+    "nameUpdated": "Nom mis à jour",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible. Toutes vos données seront définitivement supprimées.",
+    "deletionRequested": "Suppression du compte demandée. Vos données seront supprimées prochainement.",
+    "printCta": "Vos portraits seraient magnifiques sur toile",
+    "printCtaDesc": "Impressions qualité musée à partir de 59,90 € — livrées chez vous",
+    "printCtaBtn": "Voir les Impressions"
+  },
+  "demo": {
+    "banner": "Mode Démo — Ceci est un aperçu avec des données d'exemple.",
+    "createRealAccount": "Créer un vrai compte",
+    "exitDemo": "Quitter la Démo",
+    "buyCredits": "Acheter des Crédits",
+    "ctaTitle": "Prêt à créer le vôtre ?",
+    "ctaSub": "3 portraits gratuits, sans carte bancaire"
   },
   "generate": {
     "title": "Créer un Portrait",

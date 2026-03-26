@@ -115,7 +115,7 @@
     "secureDesc": "Pay safely with Stripe. Your payment details are always protected.",
     "cta": "Get Started & Print",
     "delivered": "5,000+ prints delivered across Europe",
-    "shipping": "Ships in 7-10 days · Free shipping over €50",
+    "shippingInfo": "Ships in 7-10 days · Free shipping over €50",
     "giftCta": "Perfect as a gift for any pet lover"
   },
   "testimonials": {
@@ -124,9 +124,16 @@
     "count": "2,000+ happy pet owners",
     "label": "Testimonials",
     "cta": "Join 10,000+ Happy Pet Owners",
-    "ctaSub": "Start free, no card needed"
+    "ctaSub": "Start free, no card needed",
+    "t1": "I couldn't believe how realistic the oil painting style looked. My golden retriever looks like a true aristocrat!",
+    "t2": "I gifted a pop art portrait of my cat to my girlfriend. She was thrilled! Incredible quality.",
+    "t3": "The watercolor style is absolutely gorgeous. I ordered a canvas print and it looks museum-worthy on my wall.",
+    "t4": "The oil painting style is incredible — it really captures my cat's personality. I'd love to see even more style options in the future!",
+    "t5": "I gifted a Renaissance portrait of my Labrador to my mother. She cried tears of joy!",
+    "t6": "The Art Nouveau style transformed my cat's photo into a true work of art. I'd love more background options, but the quality is excellent."
   },
   "faq": {
+    "label": "Support",
     "title": "Frequently Asked Questions",
     "subtitle": "Everything you need to know about Artlypet",
     "q1": "How does Artlypet work?",
@@ -255,7 +262,18 @@
     "emptyDesc": "Upload your first pet photo and watch the magic happen",
     "emptyBtn": "Create Your First Portrait",
     "totalPortraits": "Portraits",
-    "premiumPerks": "All HD · No watermarks · Discount prints"
+    "premiumPerks": "All HD · No watermarks · Discount prints",
+    "failedRefunded": "Failed — credits refunded",
+    "retryGenerate": "Retry",
+    "viewAll": "View all portraits",
+    "browseStyles": "Browse Styles",
+    "nameUpdateFailed": "Failed to update name",
+    "nameUpdated": "Name updated",
+    "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.",
+    "deletionRequested": "Account deletion requested. Your data will be removed shortly.",
+    "printCta": "Your portraits would look stunning on canvas",
+    "printCtaDesc": "Museum-quality prints from €59.90 — shipped to your door",
+    "printCtaBtn": "View Prints"
   },
   "generate": {
     "title": "Create Portrait",
@@ -363,6 +381,14 @@
     "premiumDesc": "50 portraits · Full HD · Prints from €{{price}}",
     "printNeedsHd": "Unlock HD first to order prints",
     "hdClearDesc": "Crystal-clear, print-ready quality"
+  },
+  "demo": {
+    "banner": "Demo Mode — This is a preview with sample data.",
+    "createRealAccount": "Create a real account",
+    "exitDemo": "Exit Demo",
+    "buyCredits": "Buy Credits",
+    "ctaTitle": "Ready to create your own?",
+    "ctaSub": "3 free portraits, no card needed"
   },
   "referral": {
     "title": "Invite Friends, Earn Credits",

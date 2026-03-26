@@ -16,11 +16,18 @@ const fallbackStyles = [
 
 const ease = [0.16, 1, 0.3, 1];
 
+let tiltRaf = 0;
 const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = (e.clientX - rect.left) / rect.width - 0.5;
-  const y = (e.clientY - rect.top) / rect.height - 0.5;
-  e.currentTarget.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+  const target = e.currentTarget;
+  const clientX = e.clientX;
+  const clientY = e.clientY;
+  cancelAnimationFrame(tiltRaf);
+  tiltRaf = requestAnimationFrame(() => {
+    const rect = target.getBoundingClientRect();
+    const x = (clientX - rect.left) / rect.width - 0.5;
+    const y = (clientY - rect.top) / rect.height - 0.5;
+    target.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+  });
 };
 const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
   e.currentTarget.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
@@ -33,10 +40,10 @@ const GallerySection = () => {
   const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
 
   return (
-    <section id="gallery" className="py-28 lg:py-40 bg-background" aria-labelledby="gallery-heading">
+    <section id="gallery" className="py-16 lg:py-24 bg-background" aria-labelledby="gallery-heading">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -132,7 +139,7 @@ const GallerySection = () => {
                   )}
                   <Link
                     to={session ? "/generate" : "/signup"}
-                    className="inline-block mt-2 text-xs font-medium text-white/90 hover:text-white transition-colors duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                    className="inline-block mt-2 text-sm font-semibold text-white hover:bg-white/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                   >
                     {t("gallery.tryCta", "Create this look — Free")} &rarr;
                   </Link>

@@ -22,9 +22,9 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 40 14% 94%;
-    --muted-foreground: 0 0% 45%;
+    --muted-foreground: 0 0% 38%;
 
-    --accent: 40 14% 94%;
+    --accent: 40 20% 90%;
     --accent-foreground: 40 4% 16%;
 
     --destructive: 0 84% 60%;
@@ -59,13 +59,13 @@
     --primary: 48 88% 58%;
     --primary-foreground: 0 0% 10%;
 
-    --secondary: 135 10% 56%;
+    --secondary: 135 14% 68%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 40 4% 16%;
     --muted-foreground: 0 0% 64%;
 
-    --accent: 40 4% 16%;
+    --accent: 40 4% 20%;
     --accent-foreground: 36 20% 94%;
 
     --destructive: 0 63% 31%;
@@ -191,5 +191,17 @@
     );
     background-size: 200% 100%;
     animation: shimmer 1.8s ease-in-out infinite;
+  }
+}
+
+/* Accessibility — reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

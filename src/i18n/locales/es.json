@@ -115,7 +115,7 @@
     "secureDesc": "Paga de forma segura con Stripe. Tus datos de pago siempre están protegidos.",
     "cta": "Comenzar e Imprimir",
     "delivered": "5.000+ impresiones enviadas por toda Europa",
-    "shipping": "Envío en 7-10 días · Gratis a partir de 50 €",
+    "shippingInfo": "Envío en 7-10 días · Gratis a partir de 50 €",
     "giftCta": "El regalo perfecto para los amantes de mascotas"
   },
   "testimonials": {
@@ -124,9 +124,16 @@
     "count": "Más de 2.000 dueños satisfechos",
     "label": "Testimonios",
     "cta": "Únete a 10.000+ Amantes de Mascotas",
-    "ctaSub": "Empieza gratis, sin tarjeta"
+    "ctaSub": "Empieza gratis, sin tarjeta",
+    "t1": "No podía creer lo realista que se veía el estilo de pintura al óleo. ¡Mi golden retriever parece un verdadero aristócrata!",
+    "t2": "Le regalé un retrato pop art de mi gato a mi novia. ¡Estaba encantada! Calidad increíble.",
+    "t3": "El estilo acuarela es absolutamente precioso. Pedí una impresión en lienzo y parece digna de museo en mi pared.",
+    "t4": "El estilo de pintura al óleo es increíble — realmente captura la personalidad de mi gato. ¡Me encantaría ver aún más opciones de estilos en el futuro!",
+    "t5": "Le regalé un retrato renacentista de mi Labrador a mi madre. ¡Lloró de alegría!",
+    "t6": "El estilo Art Nouveau transformó la foto de mi gato en una verdadera obra de arte. Me gustaría tener más opciones de fondo, pero la calidad es excelente."
   },
   "faq": {
+    "label": "Soporte",
     "title": "Preguntas Frecuentes",
     "subtitle": "Todo lo que necesitas saber sobre Artlypet",
     "q1": "¿Cómo funciona Artlypet?",
@@ -158,7 +165,9 @@
     "createPortrait": "Crear retrato",
     "madeWith": "Hecho con amor para amantes de mascotas en la UE",
     "ctaTitle": "Listo para transformar a tu mascota?",
-    "ctaDesc": "Crea impresionantes retratos IA de tu mascota en segundos. Gratis para empezar."
+    "ctaDesc": "Crea impresionantes retratos IA de tu mascota en segundos. Gratis para empezar.",
+    "business": "Empresa",
+    "allRights": "Todos los derechos reservados."
   },
   "auth": {
     "welcomeBack": "Bienvenido de Nuevo",
@@ -253,7 +262,26 @@
     "emptyDesc": "Sube tu primera foto de mascota y mira cómo sucede la magia",
     "emptyBtn": "Crea tu primer retrato",
     "totalPortraits": "Retratos",
-    "premiumPerks": "Todo HD · Sin marca de agua · Impresiones con descuento"
+    "premiumPerks": "Todo HD · Sin marca de agua · Impresiones con descuento",
+    "failedRefunded": "Fallido — créditos reembolsados",
+    "retryGenerate": "Reintentar",
+    "viewAll": "Ver todos los retratos",
+    "browseStyles": "Explorar Estilos",
+    "nameUpdateFailed": "Error al actualizar el nombre",
+    "nameUpdated": "Nombre actualizado",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer. Todos tus datos se eliminarán permanentemente.",
+    "deletionRequested": "Solicitud de eliminación de cuenta enviada. Tus datos se eliminarán en breve.",
+    "printCta": "Tus retratos lucirían increíbles en lienzo",
+    "printCtaDesc": "Impresiones de calidad museo desde €59,90 — enviadas a tu puerta",
+    "printCtaBtn": "Ver Impresiones"
+  },
+  "demo": {
+    "banner": "Modo Demo — Esta es una vista previa con datos de ejemplo.",
+    "createRealAccount": "Crear una cuenta real",
+    "exitDemo": "Salir de la Demo",
+    "buyCredits": "Comprar Créditos",
+    "ctaTitle": "¿Listo para crear el tuyo?",
+    "ctaSub": "3 retratos gratis, sin tarjeta"
   },
   "generate": {
     "title": "Crear Retrato",

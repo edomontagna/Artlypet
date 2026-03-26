@@ -16,10 +16,10 @@ const HowItWorksSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-28 lg:py-36 bg-background">
+    <section className="py-16 lg:py-24 bg-background">
       <div className="container px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-24">
+        <div className="text-center mb-14">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -86,7 +86,7 @@ const HowItWorksSection = () => {
           transition={{ delay: 0.3 }}
           className="text-center mt-16"
         >
-          <Button asChild className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("howItWorks.cta", "Start Creating — It's Free")}</Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">{t("howItWorks.ctaSub", "Ready in under 1 minute · No card needed")}</p>

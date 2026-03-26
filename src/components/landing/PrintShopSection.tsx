@@ -17,7 +17,7 @@ const PrintShopSection = () => {
   return (
     <section
       id="prints"
-      className="py-28 lg:py-36 bg-muted/30"
+      className="py-16 lg:py-24 bg-muted/30"
       aria-labelledby="prints-heading"
     >
       <div className="container px-6 lg:px-8 relative z-10">
@@ -68,7 +68,7 @@ const PrintShopSection = () => {
                 <Button
                   size="lg"
                   asChild
-                  className="rounded-full px-8 h-12 font-medium group"
+                  className="shimmer-btn btn-press rounded-full px-8 h-12 font-medium text-primary-foreground shadow-md group"
                 >
                   <Link to="/signup">
                     {t("printShop.cta")}
@@ -76,7 +76,7 @@ const PrintShopSection = () => {
                   </Link>
                 </Button>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  {t("printShop.shipping", "Ships in 7-10 days · Free shipping over €50")}
+                  {t("printShop.shippingInfo", "Ships in 7-10 days · Free shipping over €50")}
                 </p>
                 <p className="mt-1 text-sm text-primary font-medium">
                   {t("printShop.giftCta", "Perfect as a gift for any pet lover")}
@@ -89,7 +89,7 @@ const PrintShopSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
-                className="mt-8 grid grid-cols-3 gap-3"
+                className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3"
               >
                 {[
                   { size: "30×40cm", label: t("printShop.sizeSmall", "Desk") },
