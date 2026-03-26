@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
+import { getConsent } from "@/components/CookieBanner";
 
 const COOKIE_KEY = "artlypet-cookie-consent";
 
-const initAnalytics = () => {
-
-    // Google Analytics 4
+const initGA = () => {
     const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
     if (gaId && !document.querySelector(`script[src*="googletagmanager"]`)) {
       const script = document.createElement("script");
@@ -20,8 +19,9 @@ const initAnalytics = () => {
       window.gtag("js", new Date());
       window.gtag("config", gaId);
     }
+};
 
-    // Meta Pixel — inject script dynamically
+const initPixel = () => {
     const pixelId = import.meta.env.VITE_META_PIXEL_ID;
     if (pixelId && !window.fbq) {
       const f = window as Record<string, unknown>;
@@ -45,6 +45,13 @@ const initAnalytics = () => {
       window.fbq("init", pixelId);
       window.fbq("track", "PageView");
     }
+};
+
+const initAnalytics = () => {
+  const consent = getConsent();
+  if (!consent) return;
+  if (consent.analytics) initGA();
+  if (consent.marketing) initPixel();
 };
 
 // Conversion event utilities — call these from components after user actions
@@ -77,15 +84,13 @@ export const useAnalytics = () => {
   const [, setConsentTrigger] = useState(0);
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_KEY);
-    if (consent === "accepted") initAnalytics();
+    const consent = getConsent();
+    if (consent) initAnalytics();
 
     // Listen for consent changes from CookieBanner
     const handler = () => {
-      if (localStorage.getItem(COOKIE_KEY) === "accepted") {
-        initAnalytics();
-        setConsentTrigger((c) => c + 1);
-      }
+      initAnalytics();
+      setConsentTrigger((c) => c + 1);
     };
     window.addEventListener("cookie-consent-changed", handler);
     return () => window.removeEventListener("cookie-consent-changed", handler);

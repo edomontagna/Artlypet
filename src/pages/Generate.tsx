@@ -369,7 +369,11 @@ const Generate = () => {
             </div>
 
             {/* Create another */}
-            <div className="text-center pt-4">
+            <div className="flex items-center justify-center gap-3 pt-4 flex-wrap">
+              <Button variant="outline" className="rounded-full gap-2" onClick={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); setSelectedStyleId(null); }}>
+                <Star className="h-4 w-4" />
+                {t("generate.tryDifferentStyle", "Try Different Style")}
+              </Button>
               <Button variant="outline" className="rounded-full gap-2" onClick={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); removeFile(); }}>
                 <ImageIcon className="h-4 w-4" />
                 {t("generate.createAnother", "Create Another Portrait")}
@@ -491,9 +495,20 @@ const Generate = () => {
                     : t("generate.step1Title", "Upload your photo")}
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-muted-foreground mb-2">
                 {t("generate.uploadTip", "Use a clear, well-lit photo where the face is visible. The better the photo, the better the portrait!")}
               </p>
+              <details className="mb-4 text-sm">
+                <summary className="text-primary cursor-pointer hover:underline font-medium">
+                  {t("generate.photoTipsToggle", "Photo tips for best results")}
+                </summary>
+                <ul className="mt-2 space-y-1 text-muted-foreground pl-4 list-disc">
+                  <li>{t("generate.tip1", "Natural daylight works best — avoid harsh flash")}</li>
+                  <li>{t("generate.tip2", "Face clearly visible, looking towards the camera")}</li>
+                  <li>{t("generate.tip3", "Simple background — avoid busy or cluttered scenes")}</li>
+                  <li>{t("generate.tip4", "High resolution photo — at least 500×500px")}</li>
+                </ul>
+              </details>
 
               <div className={generationType === "mix" ? "grid grid-cols-1 sm:grid-cols-2 gap-6" : "max-w-md"}>
                 {/* Upload 1 */}

@@ -323,6 +323,30 @@ const Dashboard = () => {
                 </div>
               )}
 
+              {/* Print cross-sell — show when user has portraits */}
+              {(generations?.filter(g => g.status === "completed").length ?? 0) > 0 && (
+                <div className="rounded-2xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-border shadow-sm p-6 mb-8 flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Printer className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-semibold text-foreground">
+                        {t("dashboard.printCta", "Your portraits would look stunning on canvas")}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t("dashboard.printCtaDesc", "Museum-quality prints from €59.90 — shipped to your door")}
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="rounded-full gap-2" asChild>
+                    <Link to="/prints">
+                      {t("dashboard.printCtaBtn", "View Prints")}
+                    </Link>
+                  </Button>
+                </div>
+              )}
+
               {/* Recent generations */}
               {generationsLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -405,6 +429,15 @@ const Dashboard = () => {
                   <Button className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md" asChild>
                     <Link to="/generate">{t("dashboard.emptyBtn", "Create Your First Portrait")}</Link>
                   </Button>
+                  <div className="mt-4 flex items-center justify-center gap-4">
+                    <Link to="/styles" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                      {t("dashboard.browseStyles", "Browse Styles")}
+                    </Link>
+                    <span className="text-muted-foreground/30">·</span>
+                    <Link to="/how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                      {t("nav.howItWorks", "How It Works")}
+                    </Link>
+                  </div>
                 </div>
               )}
             </motion.div>
