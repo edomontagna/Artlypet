@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { trackLead } from "@/hooks/useAnalytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,7 +64,8 @@ const Contact = () => {
       `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
     )}`;
     window.open(mailtoLink, "_blank");
-    toast.success(t("contact.success", "Message sent! We'll get back to you soon."));
+    trackLead("contact_form");
+    toast.success(t("contact.success", "Opening your email client... Please send the email to complete your message."));
     reset();
   };
 
@@ -195,6 +197,9 @@ const Contact = () => {
                   >
                     {t("contact.send", "Send Message")}
                   </Button>
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    {t("contact.mailtoNote", "This will open your default email app to send the message.")}
+                  </p>
                 </form>
               </div>
             </motion.div>

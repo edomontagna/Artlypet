@@ -49,7 +49,7 @@ const Navbar = () => {
   return (
     <>
     <div className="bg-primary text-primary-foreground text-center text-xs py-2 px-4 font-medium">
-      <span>✨ {t("nav.announcement", "300 free credits for new members — Start creating today!")}</span>
+      <span>✨ {t("nav.announcement", "3 free portraits for new members — Start creating today!")}</span>
     </div>
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -110,13 +110,6 @@ const Navbar = () => {
                   onClick={() => setMoreOpen(false)}
                 >
                   {t("nav.about", "About")}
-                </Link>
-                <Link
-                  to="/blog"
-                  className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
-                  onClick={() => setMoreOpen(false)}
-                >
-                  {t("nav.blog", "Blog")}
                 </Link>
                 <Link
                   to="/prints"
@@ -229,13 +222,6 @@ const Navbar = () => {
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.about", "About")}
-          </Link>
-          <Link
-            to="/blog"
-            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
-            onClick={() => setMobileOpen(false)}
-          >
-            {t("nav.blog", "Blog")}
           </Link>
           <Link
             to="/prints"

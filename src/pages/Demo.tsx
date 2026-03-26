@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, ImageIcon } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, ImageIcon, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -22,6 +23,7 @@ const DEMO_GENERATIONS = [
 ];
 
 const Demo = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"dashboard" | "history" | "settings">("dashboard");
 
   const tabs = [
@@ -206,7 +208,7 @@ const Demo = () => {
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="lg:hidden border-t border-border flex" aria-label="Dashboard navigation">
+        <nav className="lg:hidden border-t border-border flex mb-[72px]" aria-label="Dashboard navigation">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -220,6 +222,19 @@ const Demo = () => {
             </button>
           ))}
         </nav>
+      </div>
+
+      {/* Sticky CTA bar */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-border p-4 flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium">{t("demo.ctaTitle", "Ready to create your own?")}</p>
+          <p className="text-xs text-muted-foreground">{t("demo.ctaSub", "3 free portraits, no card needed")}</p>
+        </div>
+        <Button asChild className="rounded-full shimmer-btn btn-press text-primary-foreground">
+          <Link to="/signup">
+            {t("nav.getStarted", "Get Started")} <ArrowRight className="h-4 w-4 ml-1" />
+          </Link>
+        </Button>
       </div>
     </div>
   );

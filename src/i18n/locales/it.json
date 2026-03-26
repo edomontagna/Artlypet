@@ -13,7 +13,7 @@
     "contact": "Contatti",
     "signIn": "Accedi",
     "getStarted": "Inizia Ora",
-    "announcement": "300 crediti gratuiti per i nuovi membri — Inizia a creare oggi!"
+    "announcement": "3 ritratti gratuiti per i nuovi membri — Inizia a creare oggi!"
   },
   "hero": {
     "badge": "Ritratti AI per Animali",
@@ -25,7 +25,7 @@
     "socialProof": "Amato da oltre 10.000 proprietari di animali",
     "noSub": "Nessun abbonamento",
     "cancelAnytime": "Cancella quando vuoi",
-    "freeCredits": "300 crediti gratuiti"
+    "freeCredits": "3 ritratti gratuiti"
   },
   "howItWorks": {
     "title": "Come Funziona",
@@ -157,10 +157,8 @@
     "terms": "Termini di Servizio",
     "createPortrait": "Crea Ritratto",
     "madeWith": "Fatto con amore per gli amanti degli animali nell'UE",
-    "newsletterTitle": "Ricevi Consigli e Offerte Esclusive",
-    "newsletterDesc": "Unisciti a 5.000+ amanti degli animali. Zero spam, cancellati quando vuoi.",
-    "emailPlaceholder": "tua@email.com",
-    "subscribe": "Iscriviti"
+    "ctaTitle": "Pronto a Trasformare il Tuo Animale?",
+    "ctaDesc": "Crea straordinari ritratti AI del tuo animale in pochi secondi. Gratis per iniziare."
   },
   "auth": {
     "welcomeBack": "Bentornato",

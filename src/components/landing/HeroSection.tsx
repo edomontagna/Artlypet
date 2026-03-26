@@ -98,7 +98,7 @@ const HeroSection = () => {
               transition={{ delay: 1.2, duration: 0.5, ease }}
               className="mt-4 text-sm text-muted-foreground"
             >
-              {t("hero.freeTier", "Start free — 300 credits, no card required")}
+              {t("hero.freeTier", "Start free — 3 portraits included, no card required")}
             </motion.p>
 
             {/* Social Proof Bar */}
@@ -130,7 +130,7 @@ const HeroSection = () => {
               <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-foreground/70">
                 <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.noSub", "No subscription")}</span>
                 <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
-                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-primary" /> {t("hero.freeCredits", "300 free credits")}</span>
+                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-primary" /> {t("hero.freeCredits", "3 free portraits")}</span>
               </div>
             </motion.div>
 

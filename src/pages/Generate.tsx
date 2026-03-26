@@ -18,6 +18,7 @@ import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/consta
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { SharePanel } from "@/components/SharePanel";
+import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
 
@@ -44,6 +45,7 @@ const Generate = () => {
   const [resultMode, setResultMode] = useState<"hd" | "watermarked" | null>(null);
   const [showRetry, setShowRetry] = useState(false);
   const [optimisticCreditDeduction, setOptimisticCreditDeduction] = useState(0);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const creditCost = getCreditCost(generationType);
@@ -275,12 +277,10 @@ const Generate = () => {
                         <p className="text-xs text-primary font-medium mb-3">
                           {t("generate.premiumSaving", "5 HD images would cost €24.50 — Premium is just €15!")}
                         </p>
-                        <Button variant="outline" asChild size="lg" className="rounded-full gap-2 h-12 px-8 text-base border-primary/30 text-primary hover:bg-primary/5">
-                          <Link to="/dashboard?upgrade=true">
+                        <Button variant="outline" size="lg" className="rounded-full gap-2 h-12 px-8 text-base border-primary/30 text-primary hover:bg-primary/5" onClick={() => setShowPurchaseModal(true)}>
                             <Crown className="h-4 w-4" />
                             {t("generate.premiumBtn", "Go Premium — €15")}
                             <ArrowRight className="h-4 w-4" />
-                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -611,11 +611,9 @@ const Generate = () => {
                     <p className="text-muted-foreground mb-4 text-lg">
                       {t("generate.needCredits", "You need at least {{cost}} credits", { cost: creditCost })}
                     </p>
-                    <Button asChild size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl">
-                      <Link to="/dashboard?upgrade=true">
+                    <Button size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl" onClick={() => setShowPurchaseModal(true)}>
                         <Crown className="mr-2 h-5 w-5" />
                         {t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
-                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -655,6 +653,7 @@ const Generate = () => {
           </div>
         )}
       </div>
+      <CreditPurchaseModal open={showPurchaseModal} onOpenChange={setShowPurchaseModal} />
     </div>
   );
 };

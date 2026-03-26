@@ -59,6 +59,18 @@ export const SharePanel = ({ imageUrl, styleName }: SharePanelProps) => {
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodeURIComponent(shareText)}`,
       color: "hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-400",
     },
+    {
+      name: "Pinterest",
+      icon: () => <span className="text-sm font-bold">P</span>,
+      url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(shareText)}`,
+      color: "hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400",
+    },
+    {
+      name: "Telegram",
+      icon: () => <span className="text-sm font-bold">T</span>,
+      url: `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(shareText)}`,
+      color: "hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950 dark:hover:text-sky-400",
+    },
   ];
 
   return (

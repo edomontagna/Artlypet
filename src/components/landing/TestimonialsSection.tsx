@@ -29,8 +29,8 @@ const testimonials = [
   {
     name: "David K.",
     location: "London, UK",
-    text: "I never expected AI art to capture my cat's personality so perfectly. The oil painting style is incredible.",
-    rating: 5,
+    text: "The oil painting style is incredible — it really captures my cat's personality. I'd love to see even more style options in the future!",
+    rating: 4,
     initials: "DK",
   },
   {
@@ -43,8 +43,8 @@ const testimonials = [
   {
     name: "Ana P.",
     location: "Barcelona, España",
-    text: "El estilo Art Nouveau transformó la foto de mi gato en una verdadera obra de arte. Increíble calidad.",
-    rating: 5,
+    text: "El estilo Art Nouveau transformó la foto de mi gato en una verdadera obra de arte. Me encantaría más opciones de fondo, pero la calidad es excelente.",
+    rating: 4,
     initials: "AP",
   },
 ];
@@ -100,10 +100,10 @@ const TestimonialsSection = () => {
             >
               {/* Stars */}
               <div className="flex gap-0.5 mb-5" role="img" aria-label={`${item.rating} out of 5 stars`}>
-                {Array.from({ length: item.rating }).map((_, j) => (
+                {Array.from({ length: 5 }).map((_, j) => (
                   <Star
                     key={j}
-                    className="h-4 w-4 fill-primary text-primary"
+                    className={`h-4 w-4 ${j < item.rating ? "fill-primary text-primary" : "text-muted-foreground/30"}`}
                   />
                 ))}
               </div>

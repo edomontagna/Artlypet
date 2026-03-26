@@ -82,6 +82,26 @@ const PrintShopSection = () => {
                   {t("printShop.giftCta", "Perfect as a gift for any pet lover")}
                 </p>
               </motion.div>
+
+              {/* Size cards */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                className="mt-8 grid grid-cols-3 gap-3"
+              >
+                {[
+                  { size: "30×40cm", label: t("printShop.sizeSmall", "Desk") },
+                  { size: "50×70cm", label: t("printShop.sizeMedium", "Wall") },
+                  { size: "70×100cm", label: t("printShop.sizeLarge", "Statement") },
+                ].map((s) => (
+                  <div key={s.size} className="rounded-xl bg-card border border-border p-3 text-center">
+                    <p className="text-sm font-medium text-foreground">{s.size}</p>
+                    <p className="text-xs text-muted-foreground">{s.label}</p>
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
             {/* Right: Feature cards */}

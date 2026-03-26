@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 
 const schema = z.object({
   email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
@@ -192,6 +192,12 @@ const Login = () => {
           </div>
           <h3 className="font-serif text-2xl font-bold text-foreground mb-2">{t("auth.showcaseTitle", "Transform Your Pet Into Art")}</h3>
           <p className="text-muted-foreground text-sm">{t("auth.showcaseDesc", "Join thousands of pet lovers creating stunning AI portraits")}</p>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-3 w-3 fill-primary text-primary" />)}
+            </div>
+            <span className="text-xs text-muted-foreground">{t("auth.socialProof", "Rated 4.9/5 by 2,000+ pet owners")}</span>
+          </div>
         </div>
       </div>
     </div>

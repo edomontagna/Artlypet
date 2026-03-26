@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer, Shield } from "lucide-react";
 import { PREMIUM_CREDITS, PREMIUM_PRICE, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_PREMIUM, HD_UNLOCK_PRICE } from "@/lib/constants";
+import { trackInitiateCheckout } from "@/hooks/useAnalytics";
 
 interface Props {
   open: boolean;
@@ -19,6 +20,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
 
   const handlePurchasePremium = async () => {
     setLoading(true);
+    trackInitiateCheckout(PREMIUM_PRICE, "premium");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout-session", {
         body: { package_id: "premium" },
@@ -71,6 +73,9 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {t("pricing.anchor", "That's just €0.30 per portrait")}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("pricing.vatIncluded", "All prices include VAT where applicable.")}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               {t("pricing.creditsInfo", "= {{single}} single or {{mix}} mixed portraits", {

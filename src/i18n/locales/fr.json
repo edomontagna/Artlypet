@@ -13,7 +13,7 @@
     "contact": "Contact",
     "signIn": "Connexion",
     "getStarted": "Commencer",
-    "announcement": "300 crédits gratuits pour les nouveaux membres — Commencez aujourd'hui !"
+    "announcement": "3 portraits gratuits pour les nouveaux membres — Commencez aujourd'hui !"
   },
   "hero": {
     "badge": "Portraits d'Animaux par IA",
@@ -25,7 +25,7 @@
     "socialProof": "Adoré par plus de 10 000 propriétaires d'animaux",
     "noSub": "Sans abonnement",
     "cancelAnytime": "Annulation à tout moment",
-    "freeCredits": "300 crédits gratuits"
+    "freeCredits": "3 portraits gratuits"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -157,10 +157,8 @@
     "terms": "Conditions d'Utilisation",
     "createPortrait": "Créer un portrait",
     "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE",
-    "newsletterTitle": "Recevez des Conseils et Offres Exclusives",
-    "newsletterDesc": "Rejoignez 5 000+ amoureux des animaux. Pas de spam, désinscription à tout moment.",
-    "emailPlaceholder": "votre@email.fr",
-    "subscribe": "S'abonner"
+    "ctaTitle": "Prêt à transformer votre animal ?",
+    "ctaDesc": "Créez de superbes portraits IA de votre animal en quelques secondes. Gratuit pour commencer."
   },
   "auth": {
     "welcomeBack": "Bon Retour",

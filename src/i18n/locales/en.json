@@ -13,7 +13,7 @@
     "contact": "Contact",
     "signIn": "Sign In",
     "getStarted": "Get Started",
-    "announcement": "300 free credits for new members — Start creating today!"
+    "announcement": "3 free portraits for new members — Start creating today!"
   },
   "hero": {
     "badge": "AI-Powered Pet Portraits",
@@ -25,7 +25,7 @@
     "socialProof": "Loved by 10,000+ pet owners",
     "noSub": "No subscription",
     "cancelAnytime": "Cancel anytime",
-    "freeCredits": "300 free credits"
+    "freeCredits": "3 free portraits"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -159,10 +159,8 @@
     "business": "Business",
     "allRights": "All rights reserved.",
     "madeWith": "Made with love for pet lovers in the EU",
-    "newsletterTitle": "Get Pet Art Tips & Exclusive Offers",
-    "newsletterDesc": "Join 5,000+ pet lovers. No spam, unsubscribe anytime.",
-    "emailPlaceholder": "your@email.com",
-    "subscribe": "Subscribe"
+    "ctaTitle": "Ready to Transform Your Pet?",
+    "ctaDesc": "Create stunning AI portraits of your pet in seconds. Free to start."
   },
   "auth": {
     "welcomeBack": "Welcome Back",

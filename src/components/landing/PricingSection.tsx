@@ -216,6 +216,9 @@ const PricingSection = () => {
             </motion.div>
           ))}
         </div>
+        <p className="text-center text-sm text-muted-foreground mt-8">
+          {t("pricing.vatIncluded", "All prices include VAT where applicable.")}
+        </p>
       </div>
     </section>
   );

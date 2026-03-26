@@ -13,7 +13,8 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Star } from "lucide-react";
+import { trackCompleteRegistration } from "@/hooks/useAnalytics";
 
 const schema = z.object({
   displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")),
@@ -75,6 +76,7 @@ const Signup = () => {
       toast.error(error.message);
     } else {
       toast.success(t("auth.checkEmailConfirmation", "Check your email for a confirmation link to complete your registration."));
+      trackCompleteRegistration("email");
       navigate("/login");
     }
     setLoading(false);
@@ -282,7 +284,7 @@ const Signup = () => {
         <div className="relative z-10 max-w-md px-8 text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">300 Free Credits</span>
+            <span className="text-sm font-medium text-primary">{t("auth.freePortraits", "3 Free Portraits")}</span>
           </div>
           <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden mb-8">
             <img
@@ -293,6 +295,12 @@ const Signup = () => {
           </div>
           <h3 className="font-serif text-2xl font-bold text-foreground mb-2">{t("auth.showcaseTitle", "Transform Your Pet Into Art")}</h3>
           <p className="text-muted-foreground text-sm">{t("auth.showcaseDesc", "Join thousands of pet lovers creating stunning AI portraits")}</p>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-3 w-3 fill-primary text-primary" />)}
+            </div>
+            <span className="text-xs text-muted-foreground">{t("auth.socialProof", "Rated 4.9/5 by 2,000+ pet owners")}</span>
+          </div>
         </div>
       </div>
     </div>

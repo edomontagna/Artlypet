@@ -13,7 +13,7 @@
     "contact": "Contacto",
     "signIn": "Iniciar Sesión",
     "getStarted": "Comenzar",
-    "announcement": "300 créditos gratis para nuevos miembros — ¡Empieza a crear hoy!"
+    "announcement": "3 retratos gratis para nuevos miembros — ¡Empieza a crear hoy!"
   },
   "hero": {
     "badge": "Retratos de Mascotas con IA",
@@ -25,7 +25,7 @@
     "socialProof": "Amado por más de 10.000 dueños de mascotas",
     "noSub": "Sin suscripción",
     "cancelAnytime": "Cancela cuando quieras",
-    "freeCredits": "300 créditos gratis"
+    "freeCredits": "3 retratos gratis"
   },
   "howItWorks": {
     "title": "Cómo Funciona",
@@ -157,10 +157,8 @@
     "terms": "Términos de Servicio",
     "createPortrait": "Crear retrato",
     "madeWith": "Hecho con amor para amantes de mascotas en la UE",
-    "newsletterTitle": "Recibe Consejos y Ofertas Exclusivas",
-    "newsletterDesc": "Únete a 5.000+ amantes de mascotas. Sin spam, cancela cuando quieras.",
-    "emailPlaceholder": "tu@email.es",
-    "subscribe": "Suscribirse"
+    "ctaTitle": "Listo para transformar a tu mascota?",
+    "ctaDesc": "Crea impresionantes retratos IA de tu mascota en segundos. Gratis para empezar."
   },
   "auth": {
     "welcomeBack": "Bienvenido de Nuevo",

@@ -13,7 +13,7 @@
     "contact": "Kontakt",
     "signIn": "Anmelden",
     "getStarted": "Jetzt Starten",
-    "announcement": "300 Gratis-Credits für neue Mitglieder — Starte noch heute!"
+    "announcement": "3 kostenlose Porträts für neue Mitglieder — Starte noch heute!"
   },
   "hero": {
     "badge": "KI-gestützte Haustier-Porträts",
@@ -25,7 +25,7 @@
     "socialProof": "Geliebt von über 10.000 Tierbesitzern",
     "noSub": "Kein Abonnement",
     "cancelAnytime": "Jederzeit kündbar",
-    "freeCredits": "300 kostenlose Credits"
+    "freeCredits": "3 kostenlose Porträts"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -157,10 +157,8 @@
     "terms": "Nutzungsbedingungen",
     "createPortrait": "Porträt erstellen",
     "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht",
-    "newsletterTitle": "Tipps & exklusive Angebote erhalten",
-    "newsletterDesc": "Schließe dich 5.000+ Tierliebhabern an. Kein Spam, jederzeit kündbar.",
-    "emailPlaceholder": "deine@email.de",
-    "subscribe": "Abonnieren"
+    "ctaTitle": "Bereit, dein Haustier zu verwandeln?",
+    "ctaDesc": "Erstelle atemberaubende KI-Porträts deines Haustieres in Sekunden. Kostenlos starten."
   },
   "auth": {
     "welcomeBack": "Willkommen Zurück",
