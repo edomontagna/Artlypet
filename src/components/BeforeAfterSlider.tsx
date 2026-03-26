@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,10 +14,7 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowHint(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  const hideHint = useCallback(() => setShowHint(false), []);
 
   const updatePosition = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -64,6 +61,8 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
         aria-valuemin={0}
         aria-valuemax={100}
         className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-xl cursor-col-resize select-none border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+        onMouseEnter={hideHint}
+        onTouchStart={hideHint}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}

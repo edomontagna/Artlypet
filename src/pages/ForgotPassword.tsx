@@ -102,7 +102,7 @@ const ForgotPassword = () => {
                   className="rounded-full h-12 w-full bg-primary text-primary-foreground font-sans text-sm shadow-md hover:bg-primary/90"
                   disabled={loading}
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <span role="status" aria-label="Loading"><Loader2 className="mr-2 h-4 w-4 animate-spin" /></span>}
                   {t("auth.sendResetLink", "Send Reset Link")}
                 </Button>
               </CardFooter>

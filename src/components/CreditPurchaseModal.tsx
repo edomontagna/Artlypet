@@ -138,7 +138,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
             disabled={loading}
           >
             {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <span role="status" aria-label="Loading"><Loader2 className="h-5 w-5 animate-spin" /></span>
             ) : (
               <>
                 <Crown className="h-5 w-5" />

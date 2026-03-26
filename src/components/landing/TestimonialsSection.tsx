@@ -59,7 +59,7 @@ const TestimonialsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.15, duration: 0.6 }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
               className="bg-card rounded-2xl p-8 lg:p-10 shadow-sm"
             >
               {/* Stars */}

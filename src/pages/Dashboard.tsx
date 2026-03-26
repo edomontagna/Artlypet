@@ -125,6 +125,7 @@ const Dashboard = () => {
         a.href = data.url;
         a.download = `artlypet-portrait-${data.mode}.png`;
         a.click();
+        setTimeout(() => a.remove(), 100);
       }
     } catch {
       toast.error("Failed to download image");

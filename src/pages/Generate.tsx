@@ -519,7 +519,7 @@ const Generate = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 {t("generate.uploadTip", "Use a clear, well-lit photo where the face is visible. The better the photo, the better the portrait!")}
               </p>
-              <details className="mb-4 text-sm">
+              <details className="mb-4 text-sm" open>
                 <summary className="text-primary cursor-pointer hover:underline font-medium">
                   {t("generate.photoTipsToggle", "Photo tips for best results")}
                 </summary>

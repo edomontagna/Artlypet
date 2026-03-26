@@ -112,7 +112,7 @@ const PrintShopSection = () => {
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.15, duration: 0.6 }}
+                  transition={{ delay: 0.2 + i * 0.1, duration: 0.6 }}
                   className="flex items-start gap-5 rounded-2xl bg-card p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">

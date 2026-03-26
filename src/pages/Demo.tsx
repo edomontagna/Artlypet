@@ -159,7 +159,7 @@ const Demo = () => {
                     <div className="p-3">
                       <p className="text-sm font-medium truncate">{gen.style}</p>
                       <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
                           {gen.status}
                         </span>
                         <span className="text-xs text-muted-foreground">

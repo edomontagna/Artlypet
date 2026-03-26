@@ -110,7 +110,7 @@ const PricingSection = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.15, duration: 0.6 }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
               className={`relative flex flex-col rounded-2xl p-8 sm:p-12 ${
                 plan.popular
                   ? "bg-primary text-primary-foreground shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
