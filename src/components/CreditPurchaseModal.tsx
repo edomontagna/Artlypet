@@ -28,7 +28,14 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
 
       if (error) throw error;
       if (data?.url) {
+        // Redirect to Stripe with timeout fallback
+        const redirectTimer = setTimeout(() => {
+          setLoading(false);
+          toast.error(t("pricing.redirectFailed", "Redirect failed. Please try again."));
+        }, 10000);
         window.location.href = data.url;
+        // Timer will be cleared by page unload
+        return () => clearTimeout(redirectTimer);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to start checkout");
@@ -110,7 +117,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           </div>
 
           {/* Comparison */}
-          <div className="rounded-xl bg-muted p-4 text-xs text-muted-foreground space-y-1">
+          <div className="rounded-xl bg-muted p-4 text-xs text-foreground/70 space-y-1">
             <p className="font-medium text-foreground">{t("pricing.vsFreePlan", "vs. Free Plan:")}</p>
             <p>• {t("pricing.freeWatermark", "Free = watermarked low-res previews")}</p>
             <p>• {t("pricing.freeHdPrice", "HD unlock per image: €{{price}}", { price: HD_UNLOCK_PRICE.toFixed(2) })}</p>

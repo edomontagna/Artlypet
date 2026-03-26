@@ -1,18 +1,13 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import Navbar from "@/components/landing/Navbar";
+import FooterSection from "@/components/landing/FooterSection";
 
 const Privacy = () => (
   <div className="min-h-screen bg-background">
-    <header className="h-16 border-b border-border flex items-center px-4 lg:px-8">
-      <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4" />
-        <span className="font-serif text-xl font-bold text-gradient-gold">Artlypet</span>
-      </Link>
-    </header>
-    <main className="container max-w-3xl px-4 py-12">
+    <Navbar />
+    <main className="container max-w-3xl px-6 lg:px-8 py-16 lg:py-24">
       <h1 className="font-serif text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
 
-      <div className="prose prose-neutral max-w-none space-y-6 text-muted-foreground">
+      <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6 text-muted-foreground">
         <p><strong>Last updated:</strong> February 2026</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">1. Data We Collect</h2>
@@ -38,6 +33,7 @@ const Privacy = () => (
         <p>For privacy inquiries: privacy@artlypet.com</p>
       </div>
     </main>
+    <FooterSection />
   </div>
 );
 

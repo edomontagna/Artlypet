@@ -52,7 +52,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.9, ease }}
-              className="font-serif font-bold text-5xl sm:text-6xl lg:text-7xl leading-[1.1] text-foreground mb-8"
+              className="font-serif font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] text-foreground mb-8"
             >
               {t("hero.title").split(",").map((part, i) =>
                 i === 0 ? (
@@ -163,7 +163,7 @@ const HeroSection = () => {
             transition={{ delay: 0.5, duration: 1, ease }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden bg-secondary/10 relative">
+            <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10 relative">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={currentImage}

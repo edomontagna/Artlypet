@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,6 +21,8 @@ import { SharePanel } from "@/components/SharePanel";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const Generate = () => {
   const { t } = useTranslation();
@@ -46,6 +48,7 @@ const Generate = () => {
   const [showRetry, setShowRetry] = useState(false);
   const [optimisticCreditDeduction, setOptimisticCreditDeduction] = useState(0);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const isGeneratingRef = useRef(false);
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const creditCost = getCreditCost(generationType);
@@ -73,26 +76,30 @@ const Generate = () => {
 
   useEffect(() => {
     if (!generationId || !generating) return;
+    const controller = new AbortController();
     if (generationStatus?.status === "completed") {
       setGenerating(false);
+      isGeneratingRef.current = false;
       setOptimisticCreditDeduction(0);
       getServedImage(generationId)
-        .then((data) => { setResultUrl(data.url); setResultMode(data.mode); })
-        .catch(() => toast.error("Failed to load result"));
+        .then((data) => { if (!controller.signal.aborted) { setResultUrl(data.url); setResultMode(data.mode); } })
+        .catch(() => { if (!controller.signal.aborted) toast.error("Failed to load result"); });
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
     } else if (generationStatus?.status === "failed") {
       setGenerating(false);
+      isGeneratingRef.current = false;
       setGenerationId(null);
       setShowRetry(true);
       setOptimisticCreditDeduction(0);
       toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }
+    return () => controller.abort();
   }, [generationStatus?.status, generationId, generating, queryClient]);
 
   const handleFile = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
+    if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setUploadedFile(file);
@@ -107,7 +114,7 @@ const Generate = () => {
   const removeFile = () => { if (previewUrl) URL.revokeObjectURL(previewUrl); setUploadedFile(null); setPreviewUrl(null); setResultUrl(null); setResultMode(null); setGenerationId(null); };
 
   const handleFile2 = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) { toast.error(t("generate.errorNotImage", "Please upload an image file")); return; }
+    if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl2) URL.revokeObjectURL(previewUrl2);
     setUploadedFile2(file); setPreviewUrl2(URL.createObjectURL(file));
@@ -122,6 +129,15 @@ const Generate = () => {
   const handleGenerate = async () => {
     if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
     if (generationType === "mix" && !uploadedFile2) return;
+    if (isGeneratingRef.current) return;
+
+    const remaining = (creditBalance ?? 0) - creditCost;
+    const confirmed = window.confirm(
+      t("generate.confirmGeneration", "This will cost {{cost}} credits. You'll have {{remaining}} credits left. Continue?", { cost: creditCost, remaining })
+    );
+    if (!confirmed) return;
+
+    isGeneratingRef.current = true;
     setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setOptimisticCreditDeduction(creditCost);
     try {
       const original = await uploadOriginalImage(user.id, uploadedFile);
@@ -130,7 +146,7 @@ const Generate = () => {
       const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
-    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setGenerating(false); setOptimisticCreditDeduction(0); }
+    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0); }
   };
 
   const handleUnlockHd = async () => {
@@ -336,7 +352,7 @@ const Generate = () => {
                           {t("generate.downloadDesc", "Full 2K HD resolution, no watermark. Ready to print or share.")}
                         </p>
                         <Button asChild size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
-                          <a href={resultUrl} target="_blank" rel="noopener noreferrer" download="artlypet-portrait-HD.png">
+                          <a href={resultUrl} target="_blank" rel="noopener noreferrer" download={`artlypet-${styles?.find(s => s.id === selectedStyleId)?.name?.toLowerCase().replace(/\s+/g, "-") || "portrait"}-HD.png`}>
                             <Download className="h-4 w-4" />
                             {t("generate.downloadHd", "Download HD")}
                           </a>
@@ -422,12 +438,17 @@ const Generate = () => {
                   { num: 3, done: !!selectedStyleId },
                 ].map((step, i) => (
                   <div key={step.num} className="flex items-center">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                      step.done
-                        ? "bg-primary text-primary-foreground shadow-glow"
-                        : "bg-muted text-muted-foreground"
-                    }`}>
-                      {step.num}
+                    <div className="relative">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        step.done
+                          ? "bg-primary text-primary-foreground shadow-glow"
+                          : "bg-muted text-muted-foreground"
+                      }`}>
+                        {step.num}
+                      </div>
+                      <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-muted-foreground whitespace-nowrap">
+                        {step.num === 1 ? t("generate.stepType", "Type") : step.num === 2 ? t("generate.stepUpload", "Upload") : t("generate.stepStyle", "Style")}
+                      </span>
                     </div>
                     {i < 2 && (
                       <div className={`w-16 h-0.5 transition-all duration-500 ${
@@ -522,7 +543,7 @@ const Generate = () => {
                   {previewUrl ? (
                     <div className="relative">
                       <img src={previewUrl} alt="Pet preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
-                      <button onClick={removeFile} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
+                      <button onClick={removeFile} aria-label={t("generate.removeImage", "Remove image")} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
                         <X className="h-4 w-4" />
                       </button>
                     </div>
@@ -550,7 +571,7 @@ const Generate = () => {
                     {previewUrl2 ? (
                       <div className="relative">
                         <img src={previewUrl2} alt="Person preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
-                        <button onClick={removeFile2} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
+                        <button onClick={removeFile2} aria-label={t("generate.removeImage", "Remove image")} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
                           <X className="h-4 w-4" />
                         </button>
                       </div>
@@ -592,6 +613,9 @@ const Generate = () => {
                     <Card
                       key={style.id}
                       onClick={() => setSelectedStyleId(style.id)}
+                      tabIndex={0}
+                      role="button"
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedStyleId(style.id); } }}
                       className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-200 rounded-2xl ${
                         selectedStyleId === style.id
                           ? "ring-3 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-lg"
@@ -617,6 +641,14 @@ const Generate = () => {
                 </div>
               )}
             </motion.div>
+
+            {/* Mix mode validation banner */}
+            {generationType === "mix" && uploadedFile && !uploadedFile2 && (
+              <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-3 flex items-center gap-2 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                {t("generate.mixBothRequired", "Both photos are required for Mix mode. Upload photo B to continue.")}
+              </div>
+            )}
 
             {/* ══ GENERATE BUTTON — BIG, IMPOSSIBLE TO MISS ══ */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
@@ -657,7 +689,7 @@ const Generate = () => {
                       </p>
                     )}
                     {!isPremium && canGenerate && (
-                      <p className="text-xs text-muted-foreground mt-3">
+                      <p className="text-sm text-foreground/70 bg-muted rounded-lg p-2 mt-3">
                         {t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}
                       </p>
                     )}

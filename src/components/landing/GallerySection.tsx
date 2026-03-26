@@ -107,7 +107,7 @@ const GallerySection = () => {
                   </span>
                 )}
                 {i === 4 && (
-                  <span className="absolute top-3 left-3 z-10 bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
+                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
                     {t("gallery.new", "New")}
                   </span>
                 )}
@@ -125,7 +125,7 @@ const GallerySection = () => {
                 )}
 
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
                 {/* Content at bottom */}
                 <div className="absolute inset-x-0 bottom-0 p-5 z-10">
@@ -133,13 +133,13 @@ const GallerySection = () => {
                     {item.name}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-white/70 font-sans opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-sm text-white/90 font-sans opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                       {item.description}
                     </p>
                   )}
                   <Link
                     to={session ? "/generate" : "/signup"}
-                    className="inline-block mt-2 text-sm font-semibold text-white hover:bg-white/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                    className="inline-block mt-2 text-sm font-semibold text-white hover:bg-black/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                   >
                     {t("gallery.tryCta", "Create this look — Free")} &rarr;
                   </Link>

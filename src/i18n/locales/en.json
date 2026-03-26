@@ -17,7 +17,7 @@
   },
   "hero": {
     "badge": "AI-Powered Pet Portraits",
-    "title": "Your Pet, Immortalised in Art",
+    "title": "Your Pet, Immortalized in Art",
     "subtitle": "Transform your beloved pet's photo into a stunning, museum-quality artistic portrait using cutting-edge AI. Choose from a curated collection of world-class art styles.",
     "cta": "Transform Your Pet",
     "viewGallery": "View Gallery",
@@ -89,7 +89,7 @@
       "allStyles": "Access to all art styles",
       "singleCost": "Single portrait: {{cost}} credits",
       "mixCost": "Mix portrait: {{cost}} credits",
-      "watermarked": "Watermarked low-res downloads",
+      "watermarked": "Watermarked preview downloads",
       "hdPerImage": "HD unlock: €4.90/image",
       "printFree": "Canvas prints: €{{price}}",
       "premiumCredits": "{{credits}} credits included",
@@ -121,7 +121,7 @@
   "testimonials": {
     "title": "Loved by Pet Owners",
     "subtitle": "See what our customers say about their Artlypet portraits",
-    "count": "2,000+ happy pet owners",
+    "count": "10,000+ happy pet owners",
     "label": "Testimonials",
     "cta": "Join 10,000+ Happy Pet Owners",
     "ctaSub": "Start free, no card needed",

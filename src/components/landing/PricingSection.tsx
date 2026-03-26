@@ -111,7 +111,7 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
-              className={`relative flex flex-col rounded-3xl p-8 sm:p-12 ${
+              className={`relative flex flex-col rounded-2xl p-8 sm:p-12 ${
                 plan.popular
                   ? "bg-primary text-primary-foreground shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
                   : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
@@ -119,7 +119,7 @@ const PricingSection = () => {
             >
               {/* Popular badge */}
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md">
                   {t("pricing.popular")}
                 </span>
               )}
@@ -156,19 +156,19 @@ const PricingSection = () => {
                   </span>
                 </div>
                 {plan.priceSuffix && (
-                  <p className={`text-sm mt-1 ${plan.popular ? "text-primary-foreground/50" : "text-muted-foreground"}`}>
+                  <p className={`text-sm mt-1 ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                     {plan.priceSuffix}
                   </p>
                 )}
                 {plan.popular && (
-                  <p className="text-xs mt-2 text-primary-foreground/50">
+                  <p className="text-xs mt-2 text-primary-foreground/80">
                     {t("pricing.needMore", "Need more? Purchase again anytime.")}
                   </p>
                 )}
               </div>
 
               {/* Divider */}
-              <div className={`h-px mb-8 ${plan.popular ? "bg-white/20" : "bg-border"}`} />
+              <div className={`h-px mb-8 ${plan.popular ? "bg-primary-foreground/20" : "bg-border"}`} />
 
               {/* Features */}
               <ul className="space-y-4 flex-1" role="list">
@@ -195,7 +195,7 @@ const PricingSection = () => {
                 asChild
                 className={`mt-10 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
                   plan.popular
-                    ? "bg-white text-primary hover:bg-white/90"
+                    ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
                     : ""
                 }`}
                 variant={plan.popular ? "default" : "outline"}
@@ -209,7 +209,7 @@ const PricingSection = () => {
                 </span>
               </div>
               {plan.popular && (
-                <p className="text-center text-[11px] mt-3 text-primary-foreground/60 italic">
+                <p className="text-center text-[11px] mt-3 text-primary-foreground/80 italic">
                   &ldquo;{t("pricing.testimonial", "Best €15 I ever spent!")}&rdquo; — Sarah, Berlin
                 </p>
               )}

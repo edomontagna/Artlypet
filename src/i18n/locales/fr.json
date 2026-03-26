@@ -89,7 +89,7 @@
       "allStyles": "Accès à tous les styles artistiques",
       "singleCost": "Portrait individuel : {{cost}} crédits",
       "mixCost": "Portrait mixte : {{cost}} crédits",
-      "watermarked": "Téléchargements basse résolution avec filigrane",
+      "watermarked": "Téléchargements d'aperçu avec filigrane",
       "hdPerImage": "Déblocage HD : €4,90/image",
       "printFree": "Impressions sur toile : €{{price}}",
       "premiumCredits": "{{credits}} crédits inclus",
@@ -121,7 +121,7 @@
   "testimonials": {
     "title": "Adoré par les Propriétaires d'Animaux",
     "subtitle": "Découvrez ce que nos clients disent de leurs portraits Artlypet",
-    "count": "Plus de 2 000 propriétaires satisfaits",
+    "count": "Plus de 10 000 propriétaires satisfaits",
     "label": "Témoignages",
     "cta": "Rejoignez 10 000+ Amoureux des Animaux",
     "ctaSub": "Commencez gratuitement, pas de carte requise",

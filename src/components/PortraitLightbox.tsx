@@ -53,7 +53,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-[95vw] p-0 gap-0 rounded-3xl overflow-hidden border-0 bg-card">
+      <DialogContent className="max-w-4xl w-[95vw] p-0 gap-0 rounded-2xl overflow-hidden border-0 bg-card">
         {/* Close button */}
         <button onClick={() => onOpenChange(false)} className="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <X className="h-4 w-4" />

@@ -89,7 +89,7 @@
       "allStyles": "Acceso a todos los estilos artísticos",
       "singleCost": "Retrato individual: {{cost}} créditos",
       "mixCost": "Retrato mixto: {{cost}} créditos",
-      "watermarked": "Descargas de baja resolución con marca de agua",
+      "watermarked": "Descargas de vista previa con marca de agua",
       "hdPerImage": "Desbloqueo HD: €4,90/imagen",
       "printFree": "Impresiones en lienzo: €{{price}}",
       "premiumCredits": "{{credits}} créditos incluidos",
@@ -121,7 +121,7 @@
   "testimonials": {
     "title": "Amado por Dueños de Mascotas",
     "subtitle": "Descubre lo que nuestros clientes dicen sobre sus retratos Artlypet",
-    "count": "Más de 2.000 dueños satisfechos",
+    "count": "Más de 10.000 dueños satisfechos",
     "label": "Testimonios",
     "cta": "Únete a 10.000+ Amantes de Mascotas",
     "ctaSub": "Empieza gratis, sin tarjeta",

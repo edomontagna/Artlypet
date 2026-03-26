@@ -123,7 +123,7 @@ const Contact = () => {
                     <Input
                       {...register("name")}
                       placeholder={t("contact.namePlaceholder", "Your name")}
-                      className="rounded-xl"
+                      className="rounded-lg"
                     />
                     {errors.name && (
                       <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
@@ -138,7 +138,7 @@ const Contact = () => {
                       {...register("email")}
                       type="email"
                       placeholder={t("contact.emailPlaceholder", "you@example.com")}
-                      className="rounded-xl"
+                      className="rounded-lg"
                     />
                     {errors.email && (
                       <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
@@ -155,7 +155,7 @@ const Contact = () => {
                         setValue("subject", value as ContactForm["subject"])
                       }
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger className="rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -183,7 +183,7 @@ const Contact = () => {
                       {...register("message")}
                       placeholder={t("contact.messagePlaceholder", "How can we help?")}
                       rows={5}
-                      className="rounded-xl resize-none"
+                      className="rounded-lg resize-none"
                     />
                     {errors.message && (
                       <p className="text-sm text-destructive mt-1">{errors.message.message}</p>

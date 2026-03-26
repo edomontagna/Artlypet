@@ -56,7 +56,9 @@ const Signup = () => {
   const [hasReferral, setHasReferral] = useState(false);
   useEffect(() => {
     const ref = searchParams.get("ref");
-    if (ref) localStorage.setItem("artlypet_ref", ref);
+    if (ref && /^[A-Za-z0-9_-]{4,32}$/.test(ref)) {
+      localStorage.setItem("artlypet_ref", ref);
+    }
     if (ref || localStorage.getItem("artlypet_ref")) setHasReferral(true);
   }, [searchParams]);
 
@@ -97,7 +99,7 @@ const Signup = () => {
       <div className="flex-1 flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">
         {hasReferral && (
-          <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-center text-sm text-green-800 font-medium">
+          <div className="mb-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 px-4 py-3 text-center text-sm text-green-800 dark:text-green-300 font-medium">
             {"\uD83C\uDF89"} {t("auth.referralBanner", "You've been invited! Sign up and get 150 bonus credits")}
           </div>
         )}
@@ -162,6 +164,8 @@ const Signup = () => {
                         type="text"
                         placeholder={t("auth.yourName", "Your name")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
+                        name="name"
+                        autoComplete="name"
                         {...field}
                       />
                     </FormControl>
@@ -182,6 +186,8 @@ const Signup = () => {
                         type="email"
                         placeholder="you@example.com"
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
+                        name="email"
+                        autoComplete="email"
                         {...field}
                       />
                     </FormControl>
@@ -197,11 +203,16 @@ const Signup = () => {
                     <FormLabel className="font-sans text-sm text-muted-foreground">
                       {t("auth.password", "Password")}
                     </FormLabel>
+                    <p className="text-xs text-muted-foreground">
+                      {t("auth.passwordReq", "Minimum 10 characters")}
+                    </p>
                     <FormControl>
                       <Input
                         type="password"
                         placeholder={t("auth.minChars", "Min 10 characters")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
+                        name="password"
+                        autoComplete="new-password"
                         {...field}
                       />
                     </FormControl>

@@ -63,12 +63,12 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 40 4% 16%;
-    --muted-foreground: 0 0% 64%;
+    --muted-foreground: 0 0% 68%;
 
     --accent: 40 4% 20%;
     --accent-foreground: 36 20% 94%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 40 4% 16%;
@@ -153,7 +153,7 @@
       hsl(var(--primary)) 100%
     );
     background-size: 200% 100%;
-    animation: shimmer 2.5s ease-in-out infinite;
+    animation: shimmer 2s ease-in-out infinite;
   }
 
   /* Glassmorphism */

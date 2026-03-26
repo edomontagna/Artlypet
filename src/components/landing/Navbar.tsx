@@ -19,24 +19,34 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
-      return (document.documentElement.getAttribute("data-theme") as "light" | "dark") || "light";
+      return (localStorage.getItem("artlypet-theme") as "light" | "dark") ||
+             (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     }
     return "light";
   });
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
+  useEffect(() => {
+    let rafId = 0;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-      setShowCta(window.scrollY > 600);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
+        setShowCta(window.scrollY > 600);
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => { window.removeEventListener("scroll", handleScroll); cancelAnimationFrame(rafId); };
   }, []);
 
   const toggleTheme = useCallback(() => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("artlypet-theme", next);
     if (next === "dark") {
       document.documentElement.classList.add("dark");
     } else {

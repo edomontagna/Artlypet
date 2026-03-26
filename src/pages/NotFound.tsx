@@ -54,7 +54,7 @@ const NotFound = () => {
           <div className="flex flex-wrap gap-2 justify-center mt-3">
             <Link to="/#pricing" className="text-sm text-primary hover:underline">{t("nav.pricing", "Pricing")}</Link>
             <span className="text-muted-foreground">·</span>
-            <Link to="/#faq" className="text-sm text-primary hover:underline">FAQ</Link>
+            <Link to="/#faq" className="text-sm text-primary hover:underline">{t("nav.faq", "FAQ")}</Link>
             <span className="text-muted-foreground">·</span>
             {!session && (
               <>
