@@ -39,7 +39,7 @@ const PrintShopSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-6"
+                className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-5"
               >
                 {t("printShop.title")}
               </motion.h2>

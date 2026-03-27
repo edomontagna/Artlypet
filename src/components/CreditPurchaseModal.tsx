@@ -96,7 +96,7 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="flex -space-x-1.5">
               {["J","K","M","S"].map((l, i) => (
-                <div key={i} className="w-6 h-6 rounded-full bg-primary/20 border-2 border-card flex items-center justify-center text-[9px] font-medium text-primary">{l}</div>
+                <div key={i} className="w-7 h-7 rounded-full bg-primary/10 border-2 border-card flex items-center justify-center text-[10px] font-medium text-primary">{l}</div>
               ))}
             </div>
             <p className="text-xs text-muted-foreground">{t("pricing.socialProof", "Join 5,000+ premium members")}</p>

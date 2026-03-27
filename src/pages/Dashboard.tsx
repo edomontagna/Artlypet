@@ -214,7 +214,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-3 ml-auto">
             {isPremium && (
               <span className="rounded-full bg-primary/10 text-primary px-3 py-1 flex items-center gap-1 text-xs font-medium">
-                <Crown className="h-3 w-3" /> Premium
+                <Crown className="h-3.5 w-3.5" /> Premium
               </span>
             )}
             <div className="flex items-center gap-1.5 text-sm">

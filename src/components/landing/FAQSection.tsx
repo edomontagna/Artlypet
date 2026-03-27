@@ -66,7 +66,7 @@ const FAQSection = () => {
         </motion.div>
 
         <div className="text-center mt-16">
-          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("faq.cta", "Create Your Portrait")}</Link>
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">

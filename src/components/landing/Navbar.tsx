@@ -55,7 +55,7 @@ const Navbar = () => {
   }, [theme]);
 
   const navLinkClass =
-    "text-sm text-muted-foreground hover:text-primary transition-colors duration-200";
+    "text-sm text-muted-foreground hover:text-primary transition-colors duration-300";
 
   return (
     <>

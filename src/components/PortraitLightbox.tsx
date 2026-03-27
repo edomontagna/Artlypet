@@ -113,7 +113,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
             <div className="space-y-3 flex-1">
               {/* Download */}
               <Button
-                className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
+                className="w-full justify-start gap-3 h-12 rounded-full btn-press"
                 variant="outline"
                 onClick={() => onDownload(generation)}
               >
@@ -127,7 +127,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
               {/* Unlock HD — only for non-premium, non-unlocked */}
               {!isPremium && !generation.is_hd_unlocked && (
                 <Button
-                  className="w-full justify-start gap-3 h-12 rounded-xl shimmer-btn btn-press text-primary-foreground"
+                  className="w-full justify-start gap-3 h-12 rounded-full shimmer-btn btn-press text-primary-foreground"
                   onClick={() => onUnlockHd(generation.id)}
                 >
                   <Lock className="h-4 w-4" />
@@ -141,7 +141,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
               {/* Order Print — always visible, different messaging based on HD status */}
               {(isPremium || generation.is_hd_unlocked) ? (
                 <Button
-                  className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
+                  className="w-full justify-start gap-3 h-12 rounded-full btn-press"
                   variant="outline"
                   asChild
                 >
@@ -155,7 +155,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                 </Button>
               ) : (
                 <Button
-                  className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
+                  className="w-full justify-start gap-3 h-12 rounded-full btn-press"
                   variant="outline"
                   onClick={() => onUnlockHd(generation.id)}
                 >
@@ -169,7 +169,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
 
               {/* Share toggle */}
               <Button
-                className="w-full justify-start gap-3 h-12 rounded-xl btn-press"
+                className="w-full justify-start gap-3 h-12 rounded-full btn-press"
                 variant="outline"
                 onClick={() => setShowShare(!showShare)}
               >

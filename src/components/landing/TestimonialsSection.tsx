@@ -44,7 +44,7 @@ const TestimonialsSection = () => {
           </motion.h2>
           <div className="flex items-center justify-center gap-2 mt-4">
             <div className="flex gap-0.5">
-              {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />)}
             </div>
             <span className="text-sm font-medium text-foreground">4.9/5</span>
             <span className="text-sm text-muted-foreground">— {t("testimonials.count", "2,000+ happy pet owners")}</span>
@@ -59,7 +59,7 @@ const TestimonialsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
+              transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="bg-card rounded-2xl p-8 lg:p-10 shadow-sm"
             >
               {/* Stars */}
@@ -67,7 +67,7 @@ const TestimonialsSection = () => {
                 {Array.from({ length: 5 }).map((_, j) => (
                   <Star
                     key={j}
-                    className={`h-4 w-4 ${j < item.rating ? "fill-primary text-primary" : "text-muted-foreground/30"}`}
+                    className={`h-3.5 w-3.5 ${j < item.rating ? "fill-primary text-primary" : "text-muted-foreground/30"}`}
                   />
                 ))}
               </div>
@@ -102,7 +102,7 @@ const TestimonialsSection = () => {
           transition={{ delay: 0.3 }}
           className="text-center mt-16"
         >
-          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("testimonials.cta", "Join 10,000+ Happy Pet Owners")}</Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">{t("testimonials.ctaSub", "Start free, no card needed")}</p>

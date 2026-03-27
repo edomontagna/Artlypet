@@ -12,7 +12,7 @@ const FooterSection = () => {
 
   return (
     <footer
-      className="py-20 border-t border-border bg-background"
+      className="py-16 lg:py-20 border-t border-border bg-background"
       role="contentinfo"
     >
       <div className="container px-6 lg:px-8">

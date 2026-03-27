@@ -50,7 +50,7 @@ const GallerySection = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-4">
+            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4">
               {t("gallery.label", "The Collection")}
             </span>
           </motion.div>
@@ -77,13 +77,13 @@ const GallerySection = () => {
 
         {/* Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
+              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
             {styles.slice(0, 6).map((item, i) => (
               <motion.div
                 key={item.id}
@@ -91,7 +91,7 @@ const GallerySection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.7, ease }}
-                className="aspect-[3/4] rounded-3xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-500"
+                className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300"
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
                 style={{ transition: 'transform 0.3s ease-out' }}

@@ -25,7 +25,7 @@ const HowItWorksSection = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-4">
+            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4">
               {t("howItWorks.label", "The Process")}
             </span>
           </motion.div>
@@ -86,7 +86,7 @@ const HowItWorksSection = () => {
           transition={{ delay: 0.3 }}
           className="text-center mt-16"
         >
-          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-10 text-base font-medium text-primary-foreground shadow-md">
+          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
             <Link to="/signup">{t("howItWorks.cta", "Start Creating — It's Free")}</Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">{t("howItWorks.ctaSub", "Ready in under 1 minute · No card needed")}</p>

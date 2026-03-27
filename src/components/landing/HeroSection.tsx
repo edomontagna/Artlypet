@@ -93,7 +93,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7, ease }}
             >
-              <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1 text-xs font-medium mb-5">
+              <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4">
                 {t("hero.badge")}
               </span>
             </motion.div>
@@ -160,7 +160,7 @@ const HeroSection = () => {
               <div className="flex items-center gap-3 mt-6">
                 <div className="flex -space-x-2">
                   {["S", "M", "A", "L", "R"].map((letter, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-primary/15 border-2 border-background flex items-center justify-center text-xs font-medium text-foreground">
+                    <div key={i} className="w-8 h-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-medium text-foreground">
                       {letter}
                     </div>
                   ))}
@@ -178,9 +178,9 @@ const HeroSection = () => {
               transition={{ delay: 1.4, duration: 0.6, ease }}
             >
               <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-foreground/70">
-                <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.noSub", "No subscription")}</span>
-                <span className="flex items-center gap-1"><Check className="h-3 w-3 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
-                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-primary" /> {t("hero.freeCredits", "3 free portraits")}</span>
+                <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-primary" /> {t("hero.noSub", "No subscription")}</span>
+                <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
+                <span className="flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-primary" /> {t("hero.freeCredits", "3 free portraits")}</span>
               </div>
             </motion.div>
 
