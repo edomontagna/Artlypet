@@ -129,6 +129,9 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
             <Shield className="h-4 w-4 text-primary" />
             <span className="font-medium text-foreground">{t("pricing.guaranteeBold", "30-day money-back guarantee")}</span>
           </div>
+          <p className="text-center text-[10px] text-muted-foreground mt-1">
+            {t("pricing.poweredByStripe", "Secure payments powered by Stripe")}
+          </p>
 
           {/* CTA */}
           <Button

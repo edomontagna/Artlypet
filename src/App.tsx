@@ -36,12 +36,14 @@ const queryClient = new QueryClient();
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    <motion.div
-      key={location.pathname}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2 }}
-    >
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.18, ease: "easeInOut" }}
+      >
         <Routes location={location}>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
@@ -77,6 +79,7 @@ const AnimatedRoutes = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
+    </AnimatePresence>
   );
 };
 

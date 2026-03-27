@@ -17,7 +17,13 @@ export const getConsent = (): CookieConsent | null => {
   // Backward compat: old format stored "accepted"/"declined"
   if (raw === "accepted") return { essential: true, analytics: true, marketing: true };
   if (raw === "declined") return { essential: true, analytics: false, marketing: false };
-  try { return JSON.parse(raw); } catch { return null; }
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed === "object" && parsed !== null && typeof parsed.analytics === "boolean") {
+      return parsed;
+    }
+    return null;
+  } catch { return null; }
 };
 
 export const CookieBanner = () => {

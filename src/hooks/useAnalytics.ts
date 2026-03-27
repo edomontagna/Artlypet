@@ -56,6 +56,7 @@ const initAnalytics = () => {
 
 // Conversion event utilities — call these from components after user actions
 export const trackEvent = (fbEvent: string, gaEvent: string, params?: Record<string, unknown>) => {
+  if (!fbEvent || !gaEvent) return;
   if (window.fbq) window.fbq("track", fbEvent, params);
   if (window.gtag) window.gtag("event", gaEvent, params);
 };
@@ -69,10 +70,12 @@ export const trackLead = (contentName?: string) => {
 };
 
 export const trackInitiateCheckout = (value: number, contentName: string) => {
+  if (value <= 0 || !contentName) return;
   trackEvent("InitiateCheckout", "begin_checkout", { value, currency: "EUR", content_name: contentName });
 };
 
 export const trackPurchase = (value: number, contentName: string, transactionId?: string) => {
+  if (value <= 0 || !contentName) return;
   trackEvent("Purchase", "purchase", { value, currency: "EUR", content_name: contentName, transaction_id: transactionId });
 };
 

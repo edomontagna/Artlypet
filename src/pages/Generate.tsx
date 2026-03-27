@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Lock, Crown, Users, AlertCircle, Printer, ArrowRight, Star } from "lucide-react";
+import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Lock, Crown, Users, AlertCircle, Printer, ArrowRight, Star, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -41,6 +41,7 @@ const Generate = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isDragging2, setIsDragging2] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [generationId, setGenerationId] = useState<string | null>(null);
   const [generationStartTime, setGenerationStartTime] = useState(0);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -140,13 +141,15 @@ const Generate = () => {
     isGeneratingRef.current = true;
     setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setOptimisticCreditDeduction(creditCost);
     try {
+      setUploading(true);
       const original = await uploadOriginalImage(user.id, uploadedFile);
       let originalId2: string | undefined;
       if (generationType === "mix" && uploadedFile2) { const original2 = await uploadOriginalImage(user.id, uploadedFile2); originalId2 = original2.id; }
+      setUploading(false);
       const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
-    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0); }
+    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setUploading(false); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0); }
   };
 
   const handleUnlockHd = async () => {
@@ -161,11 +164,17 @@ const Generate = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="rounded-full" asChild>
             <Link to="/dashboard"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
-          <h1 className="font-serif text-xl font-bold text-primary">{t("generate.title", "Create Portrait")}</h1>
+          <nav className="flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
+            <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
+              {t("dashboard.tabDashboard", "Dashboard")}
+            </Link>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="font-semibold text-foreground">{t("generate.title", "Create Portrait")}</span>
+          </nav>
         </div>
         <div className="flex items-center gap-3 text-sm">
           {isPremium && (
@@ -671,11 +680,20 @@ const Generate = () => {
                     <Button
                       size="lg"
                       onClick={handleGenerate}
-                      disabled={!canGenerate}
-                      className={`rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate ? " shimmer-btn" : ""}`}
+                      disabled={!canGenerate || uploading}
+                      className={`rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate && !uploading ? " shimmer-btn" : ""}`}
                     >
-                      <Sparkles className="mr-3 h-6 w-6" />
-                      {t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}
+                      {uploading ? (
+                        <>
+                          <span role="status" aria-label="Uploading"><Loader2 className="mr-3 h-6 w-6 animate-spin" /></span>
+                          {t("generate.uploading", "Uploading photos...")}
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="mr-3 h-6 w-6" />
+                          {t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}
+                        </>
+                      )}
                     </Button>
                     {!canGenerate && (
                       <p className="text-xs text-muted-foreground mt-3">

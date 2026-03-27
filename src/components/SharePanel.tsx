@@ -62,7 +62,7 @@ export const SharePanel = ({ imageUrl, styleName }: SharePanelProps) => {
     {
       name: "Pinterest",
       icon: () => <span className="text-sm font-bold">P</span>,
-      url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(shareText)}`,
+      url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodeURIComponent(shareText)}`,
       color: "hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400",
     },
     {

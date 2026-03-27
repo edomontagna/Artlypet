@@ -13,11 +13,11 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, Sparkles, Star } from "lucide-react";
+import { Loader2, Sparkles, Star, Shield, Lock } from "lucide-react";
 import { trackCompleteRegistration } from "@/hooks/useAnalytics";
 
 const schema = z.object({
-  displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")),
+  displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")).max(50).trim(),
   email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
   password: z.string().min(10, i18n.t("validation.passwordMinChars", "Password must be at least 10 characters")),
   termsAccepted: z.literal(true, {
@@ -274,6 +274,16 @@ const Signup = () => {
                 {loading && <span role="status" aria-label="Loading"><Loader2 className="mr-2 h-4 w-4 animate-spin" /></span>}
                 {t("auth.createBtn", "Create Account")}
               </Button>
+              <div className="flex items-center justify-center gap-4 pt-4 border-t border-border mt-6">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Shield className="h-3 w-3" />
+                  <span>{t("auth.secureLogin", "Secure & encrypted")}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Lock className="h-3 w-3" />
+                  <span>{t("auth.dataProtected", "GDPR compliant")}</span>
+                </div>
+              </div>
               <p className="text-sm font-sans text-muted-foreground">
                 {t("auth.hasAccount", "Already have an account?")}{" "}
                 <Link
