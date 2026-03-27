@@ -4,10 +4,12 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Download, Lock, Printer, Share2, Crown, X } from "lucide-react";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 import { SharePanel } from "@/components/SharePanel";
 import { useState, useEffect } from "react";
 import { getSignedUrl } from "@/services/storage";
 import { HD_UNLOCK_PRICE, PREMIUM_PRICE, PRINT_PRICE_PREMIUM } from "@/lib/constants";
+import { useStyles } from "@/hooks/useStyles";
 
 interface PortraitLightboxProps {
   generation: {
@@ -17,6 +19,7 @@ interface PortraitLightboxProps {
     is_hd_unlocked: boolean;
     generation_type: string;
     created_at: string;
+    style_id?: string | null;
     styles?: { name: string } | null;
   } | null;
   open: boolean;
@@ -31,6 +34,7 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
   const { t } = useTranslation();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showShare, setShowShare] = useState(false);
+  const { data: styles } = useStyles();
 
   const isHd = isPremium || generation?.is_hd_unlocked;
   const styleName = (generation as Record<string, unknown>)?.styles
@@ -179,6 +183,35 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                     <SharePanel imageUrl={imageUrl} styleName={styleName} />
                   </div>
                 </motion.div>
+              )}
+
+              {/* Try other styles */}
+              {styles && styles.length > 0 && (
+                <div className="pt-4 border-t border-border">
+                  <h4 className="text-sm font-semibold text-foreground mb-3">
+                    {t("lightbox.tryOtherStyles", "Try in other styles")}
+                  </h4>
+                  <div className="grid grid-cols-4 gap-2">
+                    {styles.filter(s => s.id !== generation?.style_id).slice(0, 4).map((style) => (
+                      <Link
+                        key={style.id}
+                        to={`/generate`}
+                        className="group relative aspect-square rounded-lg overflow-hidden"
+                        onClick={() => onOpenChange(false)}
+                      >
+                        {style.preview_url ? (
+                          <img src={style.preview_url} alt={style.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full bg-primary/10" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <span className="absolute bottom-1 inset-x-1 text-[10px] font-medium text-white text-center truncate">
+                          {style.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

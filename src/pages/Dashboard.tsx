@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer, Heart, Gift } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
 import { useGenerations } from "@/hooks/useGenerations";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -48,8 +49,22 @@ const Dashboard = () => {
   const [editName, setEditName] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [creditModalOpen, setCreditModalOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("artlypet_onboarded"));
   const [selectedGeneration, setSelectedGeneration] = useState<typeof generations extends (infer T)[] | undefined ? T | null : null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState("");
+  const [historyFilter, setHistoryFilter] = useState<"all" | "completed" | "failed" | "favorites">("all");
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("artlypet_favorites") || "[]"); } catch { return []; }
+  });
+
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => {
+      const next = prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id];
+      localStorage.setItem("artlypet_favorites", JSON.stringify(next));
+      return next;
+    });
+  };
 
   const openLightbox = (gen: NonNullable<typeof generations>[number]) => {
     setSelectedGeneration(gen);
@@ -315,6 +330,16 @@ const Dashboard = () => {
                             )}
                           </div>
                         )}
+                        {/* Favorite heart */}
+                        {gen.status === "completed" && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(gen.id); }}
+                            className="absolute top-2 left-2 z-10 h-7 w-7 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors"
+                            aria-label={favorites.includes(gen.id) ? t("dashboard.unfavorite", "Remove from favorites") : t("dashboard.favorite", "Add to favorites")}
+                          >
+                            <Heart className={`h-3.5 w-3.5 ${favorites.includes(gen.id) ? "fill-red-500 text-red-500" : "text-white"}`} />
+                          </button>
+                        )}
                         {/* HD badge or lock */}
                         {gen.status === "completed" && (
                           <div className="absolute top-2 right-2">
@@ -380,25 +405,49 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {/* Referral — compact inline banner */}
+              {/* Referral program */}
               {profile?.referral_code && (
-                <div className="rounded-xl bg-card border border-border p-4 mt-8 flex items-center justify-between flex-wrap gap-3">
-                  <p className="text-sm text-muted-foreground">
+                <div className="rounded-2xl bg-card border border-border p-5 mt-8">
+                  <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
+                    <h4 className="font-serif text-base font-semibold text-foreground flex items-center gap-2">
+                      <Gift className="h-4 w-4 text-primary" />
+                      {t("referral.title", "Invite Friends, Earn Credits")}
+                    </h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full gap-2"
+                      onClick={() => {
+                        const link = `${window.location.origin}/signup?ref=${encodeURIComponent(profile.referral_code)}`;
+                        navigator.clipboard.writeText(link);
+                        toast.success(t("referral.copied", "Referral link copied!"));
+                      }}
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      {t("referral.copyLink", "Copy Link")}
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
                     {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
                   </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full gap-2"
-                    onClick={() => {
-                      const link = `${window.location.origin}/signup?ref=${profile.referral_code}`;
-                      navigator.clipboard.writeText(link);
-                      toast.success(t("referral.copied", "Referral link copied!"));
-                    }}
-                  >
-                    <Copy className="h-3.5 w-3.5" />
-                    {t("referral.copyLink", "Copy Link")}
-                  </Button>
+                  {/* Progress visualization */}
+                  {/* Note: referral_count is not in the current profile type — would need a backend query or DB column. Using 0 as default. */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="rounded-xl bg-primary/5 p-3 text-center">
+                      <p className="font-serif text-2xl font-bold text-primary">{(profile as any).referral_count ?? 0}</p>
+                      <p className="text-[10px] text-muted-foreground">{t("referral.friends", "Friends invited")}</p>
+                    </div>
+                    <div className="rounded-xl bg-primary/5 p-3 text-center">
+                      <p className="font-serif text-2xl font-bold text-primary">{((profile as any).referral_count ?? 0) * 150}</p>
+                      <p className="text-[10px] text-muted-foreground">{t("referral.earned", "Credits earned")}</p>
+                    </div>
+                    <div className="rounded-xl bg-primary/5 p-3 text-center">
+                      <p className="font-serif text-2xl font-bold text-primary">
+                        {Math.max(0, 5 - ((profile as any).referral_count ?? 0))}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">{t("referral.toNextReward", "To next reward")}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -430,8 +479,55 @@ const Dashboard = () => {
                   {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
               ) : generations && generations.length > 0 ? (
+                <>
+                {/* Filter bar */}
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                  <div className="flex-1">
+                    <Input
+                      placeholder={t("dashboard.searchStyles", "Search by style...")}
+                      value={historySearch}
+                      onChange={(e) => setHistorySearch(e.target.value)}
+                      className="rounded-lg"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    {(["all", "completed", "failed"] as const).map((status) => (
+                      <Button
+                        key={status}
+                        variant={historyFilter === status ? "default" : "outline"}
+                        size="sm"
+                        className="rounded-full text-xs"
+                        onClick={() => setHistoryFilter(status)}
+                      >
+                        {status === "all" ? t("dashboard.filterAll", "All") :
+                         status === "completed" ? t("dashboard.filterCompleted", "Completed") :
+                         t("dashboard.filterFailed", "Failed")}
+                      </Button>
+                    ))}
+                    <Button
+                      variant={historyFilter === "favorites" ? "default" : "outline"}
+                      size="sm"
+                      className="rounded-full text-xs gap-1"
+                      onClick={() => setHistoryFilter(historyFilter === "favorites" ? "all" : "favorites")}
+                    >
+                      <Heart className="h-3 w-3" />
+                      {t("dashboard.filterFavorites", "Favorites")}
+                    </Button>
+                  </div>
+                </div>
+                {(() => {
+                  const filteredGenerations = generations.filter((gen) => {
+                    if (historyFilter === "favorites" && !favorites.includes(gen.id)) return false;
+                    if (historyFilter !== "all" && historyFilter !== "favorites" && gen.status !== historyFilter) return false;
+                    if (historySearch) {
+                      const styleName = ((gen as any)?.styles?.name || "").toLowerCase();
+                      if (!styleName.includes(historySearch.toLowerCase())) return false;
+                    }
+                    return true;
+                  });
+                  return filteredGenerations.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {generations.map((gen, i) => (
+                  {filteredGenerations.map((gen, i) => (
                     <motion.div
                       key={gen.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -451,6 +547,16 @@ const Dashboard = () => {
                               <Skeleton className="w-full h-full" />
                             )}
                           </div>
+                        )}
+                        {/* Favorite heart */}
+                        {gen.status === "completed" && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(gen.id); }}
+                            className="absolute top-2 left-2 z-10 h-7 w-7 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors"
+                            aria-label={favorites.includes(gen.id) ? t("dashboard.unfavorite", "Remove from favorites") : t("dashboard.favorite", "Add to favorites")}
+                          >
+                            <Heart className={`h-3.5 w-3.5 ${favorites.includes(gen.id) ? "fill-red-500 text-red-500" : "text-white"}`} />
+                          </button>
                         )}
                         {/* HD/Lock badge */}
                         {gen.status === "completed" && (
@@ -491,6 +597,13 @@ const Dashboard = () => {
                     </motion.div>
                   ))}
                 </div>
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <p>{t("dashboard.noResults", "No portraits match your filters")}</p>
+                    </div>
+                  );
+                })()}
+                </>
               ) : (
                 <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
@@ -617,6 +730,7 @@ const Dashboard = () => {
       />
 
       <CreditPurchaseModal open={creditModalOpen} onOpenChange={setCreditModalOpen} />
+      <OnboardingModal open={showOnboarding} onOpenChange={setShowOnboarding} />
     </div>
   );
 };

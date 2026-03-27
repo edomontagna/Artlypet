@@ -6,6 +6,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
+import { useRef, useCallback } from "react";
+
+const useCountUp = (target: number, duration = 2000) => {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    if (!started) return;
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      setCount(Math.floor(eased * target));
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [started, target, duration]);
+
+  return { count, start: useCallback(() => setStarted(true), []) };
+};
 
 const heroImages = [
   { src: "/images/renaissance.webp", alt: "Renaissance pet portrait" },
@@ -16,6 +43,27 @@ const heroImages = [
 ];
 
 const ease = [0.16, 1, 0.3, 1];
+
+const PortraitCounter = ({ count: targetCount, ease: easeVal, t }: { count: number; ease: number[]; t: (key: string, fallback?: string) => string }) => {
+  const { count: animatedCount, start: startCount } = useCountUp(targetCount, 2500);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.6, duration: 0.6, ease: easeVal }}
+      className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
+      onViewportEnter={() => startCount()}
+      viewport={{ once: true }}
+    >
+      <Sparkles className="h-4 w-4 text-primary" />
+      <span>
+        <strong className="text-foreground font-semibold">{animatedCount.toLocaleString()}+</strong>{" "}
+        {t("hero.portraitsCreated", "portraits created")}
+      </span>
+    </motion.div>
+  );
+};
 
 const HeroSection = () => {
   const { t } = useTranslation();
@@ -134,25 +182,14 @@ const HeroSection = () => {
               </div>
             </motion.div>
 
-            {/* Portrait counter — social proof */}
+            {/* Portrait counter — animated social proof */}
             {portraitCount == null ? (
               <div className="mt-10 flex items-center gap-2">
                 <Skeleton className="h-4 w-4 rounded-full" />
                 <Skeleton className="h-4 w-36 rounded" />
               </div>
             ) : portraitCount > 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.6, duration: 0.6, ease }}
-                className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
-              >
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>
-                  <strong className="text-foreground font-semibold">{portraitCount.toLocaleString()}</strong>{" "}
-                  {t("hero.portraitsCreated", "portraits created")}
-                </span>
-              </motion.div>
+              <PortraitCounter count={portraitCount} ease={ease} t={t} />
             ) : null}
           </div>
 

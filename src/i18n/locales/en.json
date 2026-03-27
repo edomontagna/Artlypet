@@ -273,7 +273,15 @@
     "deletionRequested": "Account deletion requested. Your data will be removed shortly.",
     "printCta": "Your portraits would look stunning on canvas",
     "printCtaDesc": "Museum-quality prints from €59.90 — shipped to your door",
-    "printCtaBtn": "View Prints"
+    "printCtaBtn": "View Prints",
+    "searchStyles": "Search by style...",
+    "filterAll": "All",
+    "filterCompleted": "Completed",
+    "filterFailed": "Failed",
+    "filterFavorites": "Favorites",
+    "noResults": "No portraits match your filters",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites"
   },
   "generate": {
     "title": "Create Portrait",
@@ -380,7 +388,8 @@
     "premiumBanner": "Go Premium — €{{price}}",
     "premiumDesc": "50 portraits · Full HD · Prints from €{{price}}",
     "printNeedsHd": "Unlock HD first to order prints",
-    "hdClearDesc": "Crystal-clear, print-ready quality"
+    "hdClearDesc": "Crystal-clear, print-ready quality",
+    "tryOtherStyles": "Try in other styles"
   },
   "demo": {
     "banner": "Demo Mode — This is a preview with sample data.",
@@ -394,6 +403,26 @@
     "title": "Invite Friends, Earn Credits",
     "desc": "Share your link. Both you and your friend get 150 bonus credits!",
     "copied": "Referral link copied!",
-    "copyLink": "Copy Link"
+    "copyLink": "Copy Link",
+    "friends": "Friends invited",
+    "earned": "Credits earned",
+    "toNextReward": "To next reward"
+  },
+  "onboarding": {
+    "step1Title": "Upload Your Pet's Photo",
+    "step1Desc": "Choose a clear, well-lit photo where your pet's face is visible. The better the photo, the better the portrait!",
+    "step2Title": "Pick an Art Style",
+    "step2Desc": "Browse our collection of 12+ curated art styles — from Renaissance to Pop Art. Each one creates a unique masterpiece.",
+    "step3Title": "Download & Share",
+    "step3Desc": "Your portrait is ready in under 60 seconds. Download in HD, order a canvas print, or share with friends!",
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Start Creating!"
+  },
+  "exitIntent": {
+    "title": "Wait — Don't Miss Out!",
+    "desc": "Get 3 free AI pet portraits. No credit card needed. Your pet deserves a masterpiece!",
+    "cta": "Claim Your Free Portraits",
+    "dismiss": "No thanks, I'll pass"
   }
 }
