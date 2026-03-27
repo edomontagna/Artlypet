@@ -87,6 +87,14 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Redirect first-time users with 0 generations to /generate
+  useEffect(() => {
+    if (!generationsLoading && generations && generations.length === 0 && !localStorage.getItem("artlypet_seen_dashboard")) {
+      localStorage.setItem("artlypet_seen_dashboard", "true");
+      navigate("/generate");
+    }
+  }, [generationsLoading, generations, navigate]);
+
   // Auto-open upgrade modal from URL params
   useEffect(() => {
     if (searchParams.get("upgrade") === "true") {
@@ -405,49 +413,28 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {/* Referral program */}
+              {/* Referral — compact banner */}
               {profile?.referral_code && (
-                <div className="rounded-2xl bg-card border border-border p-5 mt-8">
-                  <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
-                    <h4 className="font-serif text-base font-semibold text-foreground flex items-center gap-2">
-                      <Gift className="h-4 w-4 text-primary" />
-                      {t("referral.title", "Invite Friends, Earn Credits")}
-                    </h4>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full gap-2"
-                      onClick={() => {
-                        const link = `${window.location.origin}/signup?ref=${encodeURIComponent(profile.referral_code)}`;
-                        navigator.clipboard.writeText(link);
-                        toast.success(t("referral.copied", "Referral link copied!"));
-                      }}
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      {t("referral.copyLink", "Copy Link")}
-                    </Button>
+                <div className="rounded-xl bg-card border border-border p-4 mt-8 flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-3">
+                    <Gift className="h-4 w-4 text-primary flex-shrink-0" />
+                    <p className="text-sm text-muted-foreground">
+                      {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
-                  </p>
-                  {/* Progress visualization */}
-                  {/* Note: referral_count is not in the current profile type — would need a backend query or DB column. Using 0 as default. */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="rounded-xl bg-primary/5 p-3 text-center">
-                      <p className="font-serif text-2xl font-bold text-primary">{(profile as any).referral_count ?? 0}</p>
-                      <p className="text-[10px] text-muted-foreground">{t("referral.friends", "Friends invited")}</p>
-                    </div>
-                    <div className="rounded-xl bg-primary/5 p-3 text-center">
-                      <p className="font-serif text-2xl font-bold text-primary">{((profile as any).referral_count ?? 0) * 150}</p>
-                      <p className="text-[10px] text-muted-foreground">{t("referral.earned", "Credits earned")}</p>
-                    </div>
-                    <div className="rounded-xl bg-primary/5 p-3 text-center">
-                      <p className="font-serif text-2xl font-bold text-primary">
-                        {Math.max(0, 5 - ((profile as any).referral_count ?? 0))}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">{t("referral.toNextReward", "To next reward")}</p>
-                    </div>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full gap-2"
+                    onClick={() => {
+                      const link = `${window.location.origin}/signup?ref=${encodeURIComponent(profile.referral_code)}`;
+                      navigator.clipboard.writeText(link);
+                      toast.success(t("referral.copied", "Referral link copied!"));
+                    }}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                    {t("referral.copyLink", "Copy Link")}
+                  </Button>
                 </div>
               )}
 

@@ -75,6 +75,23 @@ const FAQSection = () => {
           </p>
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqKeys.map((key) => ({
+              "@type": "Question",
+              "name": t(`faq.${key}`),
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": t(`faq.a${key.slice(1)}`)
+              }
+            }))
+          })
+        }}
+      />
     </section>
   );
 };

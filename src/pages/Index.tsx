@@ -1,9 +1,7 @@
 import Navbar from "@/components/landing/Navbar";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import HeroSection from "@/components/landing/HeroSection";
-import PressSection from "@/components/landing/PressSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-import VideoSection from "@/components/landing/VideoSection";
 import GallerySection from "@/components/landing/GallerySection";
 import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
@@ -21,9 +19,7 @@ const Index = () => {
       <Navbar />
       <div id="main-content" />
       <HeroSection />
-      <PressSection />
       <HowItWorksSection />
-      <VideoSection />
       <GallerySection />
       <TestimonialsSection />
       <PricingSection />

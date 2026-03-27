@@ -102,7 +102,7 @@ const PricingSection = () => {
           </motion.p>
         </div>
 
-        {/* Urgency banner */}
+        {/* Value banner */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ const PricingSection = () => {
           className="flex items-center justify-center gap-2 bg-primary/10 text-primary rounded-full px-5 py-2 mx-auto w-fit text-sm font-medium mb-8"
         >
           <Sparkles className="h-3.5 w-3.5" />
-          {t("pricing.urgency", "Launch Special \u2014 Premium at \u20AC15 (regular \u20AC29)")}
+          {t("pricing.valueBanner", "One-time payment — No subscription, no hidden fees")}
         </motion.div>
 
         {/* Plans grid */}
