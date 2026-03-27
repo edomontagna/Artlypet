@@ -77,9 +77,12 @@ const Signup = () => {
     if (error) {
       toast.error(error.message);
     } else {
+      // Preserve redirect URL for post-email-confirmation login
+      const redirect = searchParams.get("redirect");
+      if (redirect) localStorage.setItem("artlypet_redirect", redirect);
       toast.success(t("auth.checkEmailConfirmation", "Check your email for a confirmation link to complete your registration."));
       trackCompleteRegistration("email");
-      navigate("/login");
+      navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login");
     }
     setLoading(false);
   };

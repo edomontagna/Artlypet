@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,6 +26,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signIn, signInWithGoogle } = useAuth();
 
   const form = useForm<FormData>({
@@ -39,7 +40,14 @@ const Login = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      navigate("/dashboard");
+      // Check for redirect URL from ProtectedRoute or signup flow
+      const redirect = searchParams.get("redirect") || localStorage.getItem("artlypet_redirect");
+      if (redirect) {
+        localStorage.removeItem("artlypet_redirect");
+        navigate(redirect);
+      } else {
+        navigate("/dashboard");
+      }
     }
     setLoading(false);
   };

@@ -22,7 +22,14 @@ const AuthCallback = () => {
         if (params.get("type") === "recovery") {
           navigate("/dashboard?tab=settings");
         } else {
-          navigate("/dashboard");
+          // Check for saved redirect URL from signup/ProtectedRoute flow
+          const redirect = localStorage.getItem("artlypet_redirect");
+          if (redirect) {
+            localStorage.removeItem("artlypet_redirect");
+            navigate(redirect);
+          } else {
+            navigate("/dashboard");
+          }
         }
       } else {
         navigate("/login");
