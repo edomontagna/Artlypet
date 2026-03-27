@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useStyles } from "@/hooks/useStyles";
@@ -37,6 +37,7 @@ const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
 const GallerySection = () => {
   const { t } = useTranslation();
   const { session } = useAuth();
+  const navigate = useNavigate();
   const { data: dbStyles, isLoading } = useStyles();
   const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
 
@@ -92,6 +93,10 @@ const GallerySection = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.7, ease }}
                 className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300"
+                role="link"
+                tabIndex={0}
+                onClick={() => navigate(session ? "/generate" : "/signup")}
+                onKeyDown={(e) => { if (e.key === "Enter") navigate(session ? "/generate" : "/signup"); }}
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
                 style={{ transition: 'transform 0.3s ease-out' }}
@@ -137,12 +142,9 @@ const GallerySection = () => {
                       {item.description}
                     </p>
                   )}
-                  <Link
-                    to={session ? "/generate" : "/signup"}
-                    className="inline-block mt-2 text-sm font-semibold text-white hover:bg-black/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
-                  >
+                  <span className="inline-block mt-2 text-sm font-semibold text-white hover:bg-black/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                     {t("gallery.tryCta", "Create this look — Free")} &rarr;
-                  </Link>
+                  </span>
                 </div>
               </motion.div>
             ))}

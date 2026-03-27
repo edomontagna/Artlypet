@@ -115,7 +115,7 @@ const PricingSection = () => {
         </motion.div>
 
         {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 max-w-6xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -123,7 +123,7 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
-              className={`relative flex flex-col rounded-2xl p-8 sm:p-12 ${
+              className={`relative flex flex-col rounded-2xl p-6 sm:p-8 ${
                 plan.popular
                   ? "bg-primary text-primary-foreground shadow-2xl lg:scale-105 relative z-10 ring-2 ring-primary/30 ring-offset-4 ring-offset-background"
                   : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
@@ -146,7 +146,7 @@ const PricingSection = () => {
               )}
 
               {/* Plan header */}
-              <div className="mb-8">
+              <div className="mb-6">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
                   plan.popular ? "bg-primary-foreground/20" : "bg-secondary/10"
                 }`}>
@@ -180,10 +180,10 @@ const PricingSection = () => {
               </div>
 
               {/* Divider */}
-              <div className={`h-px mb-8 ${plan.popular ? "bg-primary-foreground/20" : "bg-border"}`} />
+              <div className={`h-px mb-6 ${plan.popular ? "bg-primary-foreground/20" : "bg-border"}`} />
 
               {/* Features */}
-              <ul className="space-y-4 flex-1" role="list">
+              <ul className="space-y-3 flex-1" role="list">
                 {plan.features.map((f) => (
                   <li
                     key={f}
@@ -205,7 +205,7 @@ const PricingSection = () => {
               {/* CTA Button */}
               <Button
                 asChild
-                className={`mt-10 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
+                className={`mt-8 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
                   plan.popular
                     ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
                     : ""
