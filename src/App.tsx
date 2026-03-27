@@ -24,6 +24,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Demo = lazy(() => import("./pages/Demo"));
 const BusinessPlan = lazy(() => import("./pages/BusinessPlan"));
 const StylesGallery = lazy(() => import("./pages/StylesGallery"));
+const StyleDetail = lazy(() => import("./pages/StyleDetail"));
 const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -55,6 +56,7 @@ const AnimatedRoutes = () => {
           <Route path="/demo" element={<Demo />} />
           <Route path="/business" element={<BusinessPlan />} />
           <Route path="/styles" element={<StylesGallery />} />
+          <Route path="/styles/:slug" element={<StyleDetail />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

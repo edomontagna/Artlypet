@@ -47,7 +47,7 @@ export const CookieBanner = () => {
     saveConsent({ essential: true, analytics: true, marketing: true });
   };
 
-  const handleDeclineAll = () => {
+  const handleEssentialOnly = () => {
     saveConsent({ essential: true, analytics: false, marketing: false });
   };
 
@@ -59,48 +59,58 @@ export const CookieBanner = () => {
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-50 p-4 animate-slide-up">
-      <div className="max-w-lg mx-auto bg-card border border-border rounded-xl shadow-luxury p-4">
-        <p className="text-sm text-muted-foreground mb-3">
-          {t("cookie.message")}{" "}
-          <Link to="/privacy" className="text-primary hover:underline">
-            {t("cookie.learnMore")}
-          </Link>
-        </p>
-
-        {showCustomize && (
-          <div className="space-y-2 mb-3 p-3 bg-muted/50 rounded-lg text-sm">
-            <label className="flex items-center justify-between">
-              <span className="text-muted-foreground">{t("cookie.essential", "Essential cookies")}</span>
-              <input type="checkbox" checked disabled className="accent-primary h-4 w-4" />
-            </label>
-            <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-muted-foreground">{t("cookie.analytics", "Analytics (Google Analytics)")}</span>
-              <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} className="accent-primary h-4 w-4" />
-            </label>
-            <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-muted-foreground">{t("cookie.marketing", "Marketing (Meta Pixel)")}</span>
-              <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="accent-primary h-4 w-4" />
-            </label>
+      <div className="container max-w-4xl mx-auto">
+        <div className="backdrop-blur-xl bg-card/80 rounded-2xl p-5 shadow-lg border border-border">
+          {/* Main content */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground mb-1">
+                {t("cookie.title", "We use cookies")}
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {t("cookie.description", "Essential cookies keep the site working. Analytics cookies help us improve your experience.")}{" "}
+                <Link to="/privacy" className="text-primary hover:underline">
+                  {t("cookie.learnMore", "Learn more")}
+                </Link>
+              </p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0 w-full sm:w-auto">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={showCustomize ? handleSavePreferences : () => setShowCustomize(true)}
+                className="rounded-full text-xs flex-1 sm:flex-none"
+              >
+                {showCustomize
+                  ? t("cookie.savePreferences", "Save Preferences")
+                  : t("cookie.essentialOnly", "Essential Only")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleAcceptAll}
+                className="rounded-full text-xs flex-1 sm:flex-none"
+              >
+                {t("cookie.acceptAll", "Accept All")}
+              </Button>
+            </div>
           </div>
-        )}
 
-        <div className="flex flex-wrap gap-2">
-          {showCustomize ? (
-            <Button size="sm" onClick={handleSavePreferences} className="rounded-full">
-              {t("cookie.savePreferences", "Save Preferences")}
-            </Button>
-          ) : (
-            <>
-              <Button size="sm" variant="ghost" onClick={handleDeclineAll}>
-                {t("cookie.decline")}
-              </Button>
-              <Button size="sm" variant="outline" onClick={() => setShowCustomize(true)}>
-                {t("cookie.customize", "Customize")}
-              </Button>
-              <Button size="sm" onClick={handleAcceptAll} className="rounded-full">
-                {t("cookie.accept")}
-              </Button>
-            </>
+          {/* Granular preferences (expandable) */}
+          {showCustomize && (
+            <div className="mt-4 pt-4 border-t border-border space-y-2.5">
+              <label className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">{t("cookie.essential", "Essential cookies")}</span>
+                <input type="checkbox" checked disabled className="accent-primary h-4 w-4" />
+              </label>
+              <label className="flex items-center justify-between cursor-pointer">
+                <span className="text-xs text-muted-foreground">{t("cookie.analytics", "Analytics (Google Analytics)")}</span>
+                <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} className="accent-primary h-4 w-4" />
+              </label>
+              <label className="flex items-center justify-between cursor-pointer">
+                <span className="text-xs text-muted-foreground">{t("cookie.marketing", "Marketing (Meta Pixel)")}</span>
+                <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="accent-primary h-4 w-4" />
+              </label>
+            </div>
           )}
         </div>
       </div>

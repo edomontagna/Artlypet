@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useStyles } from "@/hooks/useStyles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BlurImage } from "@/components/BlurImage";
 
 const fallbackStyles = [
   { id: "1", name: "Oil Painting", description: "Rich textures & golden tones", preview_url: "/images/oil-painting.jpg" },
@@ -114,11 +115,10 @@ const GallerySection = () => {
 
                 {/* Image */}
                 {item.preview_url ? (
-                  <img
+                  <BlurImage
                     src={item.preview_url}
                     alt={`${item.name} pet portrait`}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
-                    loading="lazy"
+                    className="absolute inset-0 w-full h-full"
                   />
                 ) : (
                   <div className="absolute inset-0 bg-secondary/10" />

@@ -102,7 +102,8 @@
       "apiAccess": "API access",
       "dedicatedSupport": "Dedicated support",
       "analytics": "Analytics dashboard"
-    }
+    },
+    "urgency": "Launch Special — Premium at €15 (regular €29)"
   },
   "printShop": {
     "title": "Bring Your Art Home",
@@ -356,7 +357,16 @@
     "message": "We use cookies to enhance your experience. By continuing, you agree to our use of cookies.",
     "accept": "Accept",
     "decline": "Decline",
-    "learnMore": "Learn more"
+    "learnMore": "Learn more",
+    "title": "We use cookies",
+    "description": "Essential cookies keep the site working. Analytics cookies help us improve your experience.",
+    "acceptAll": "Accept All",
+    "essentialOnly": "Essential Only",
+    "essential": "Essential cookies",
+    "analytics": "Analytics (Google Analytics)",
+    "marketing": "Marketing (Meta Pixel)",
+    "customize": "Customize",
+    "savePreferences": "Save Preferences"
   },
   "share": {
     "share": "Share",
@@ -418,6 +428,43 @@
     "skip": "Skip",
     "next": "Next",
     "start": "Start Creating!"
+  },
+  "video": {
+    "label": "See It in Action",
+    "title": "From Photo to Masterpiece",
+    "watchDemo": "Watch the Transformation",
+    "duration": "30 seconds",
+    "cta": "Try It Free"
+  },
+  "press": {
+    "title": "Trusted by pet lovers across Europe"
+  },
+  "styleDetail": {
+    "artStyle": "Art Style",
+    "notFound": "Style Not Found",
+    "notFoundDesc": "This art style doesn't exist or has been removed.",
+    "browseAll": "Browse All Styles",
+    "defaultDesc": "Transform your pet into a stunning masterpiece with this unique art style.",
+    "tryCta": "Create with {{style}}",
+    "otherStyles": "Explore Other Styles",
+    "feat1Title": "AI-Powered",
+    "feat1Desc": "Our advanced AI captures every detail of your pet's unique personality and features.",
+    "feat2Title": "Ready in 60 Seconds",
+    "feat2Desc": "Upload your photo, choose this style, and your masterpiece is created in under a minute.",
+    "feat3Title": "Print-Ready Quality",
+    "feat3Desc": "2K resolution output, perfect for canvas prints, framing, or digital sharing.",
+    "oilDesc": "Rich, textured brushstrokes bring your pet to life with the warmth and depth of classical oil painting. Golden tones and dramatic lighting create a timeless, gallery-worthy portrait.",
+    "oilTags": "Classic, Rich Textures, Golden Tones, Dramatic",
+    "watercolorDesc": "Soft, flowing washes of color create an ethereal, dreamy portrait of your pet. Gentle blending and transparent layers capture a delicate, artistic beauty.",
+    "watercolorTags": "Soft, Dreamy, Delicate, Flowing",
+    "popArtDesc": "Bold colors, graphic outlines, and high-energy composition transform your pet into a vibrant pop culture icon. Inspired by Warhol and Lichtenstein.",
+    "popArtTags": "Bold, Vibrant, Graphic, Modern",
+    "renaissanceDesc": "Noble bearing, dramatic chiaroscuro lighting, and rich fabrics place your pet in a setting worthy of the great masters. A portrait of true aristocratic elegance.",
+    "renaissanceTags": "Noble, Dramatic, Elegant, Majestic",
+    "artNouveauDesc": "Flowing organic lines, decorative patterns, and natural motifs frame your pet in the distinctive beauty of the Art Nouveau movement.",
+    "artNouveauTags": "Flowing, Organic, Decorative, Elegant",
+    "impressionistDesc": "Dappled light, visible brushstrokes, and a focus on capturing the fleeting moment give your pet portrait the unmistakable charm of Impressionism.",
+    "impressionistTags": "Light, Atmospheric, Vibrant, Spontaneous"
   },
   "exitIntent": {
     "title": "Wait — Don't Miss Out!",

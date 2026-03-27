@@ -102,6 +102,18 @@ const PricingSection = () => {
           </motion.p>
         </div>
 
+        {/* Urgency banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-center gap-2 bg-primary/10 text-primary rounded-full px-5 py-2 mx-auto w-fit text-sm font-medium mb-8"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          {t("pricing.urgency", "Launch Special \u2014 Premium at \u20AC15 (regular \u20AC29)")}
+        </motion.div>
+
         {/* Plans grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
           {plans.map((plan, i) => (
