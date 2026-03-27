@@ -102,7 +102,8 @@
       "apiAccess": "Accès API",
       "dedicatedSupport": "Support dédié",
       "analytics": "Dashboard d'analyse"
-    }
+    },
+    "urgency": "Offre de Lancement — Premium à €15 (prix normal €29)"
   },
   "printShop": {
     "title": "Ramenez l'Art Chez Vous",
@@ -273,7 +274,15 @@
     "deletionRequested": "Suppression du compte demandée. Vos données seront supprimées prochainement.",
     "printCta": "Vos portraits seraient magnifiques sur toile",
     "printCtaDesc": "Impressions qualité musée à partir de 59,90 € — livrées chez vous",
-    "printCtaBtn": "Voir les Impressions"
+    "printCtaBtn": "Voir les Impressions",
+    "searchStyles": "Rechercher par style...",
+    "filterAll": "Tous",
+    "filterCompleted": "Terminés",
+    "filterFailed": "Échoués",
+    "filterFavorites": "Favoris",
+    "noResults": "Aucun portrait ne correspond à vos filtres",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris"
   },
   "demo": {
     "banner": "Mode Démo — Ceci est un aperçu avec des données d'exemple.",
@@ -356,7 +365,16 @@
     "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez l'utilisation des cookies.",
     "accept": "Accepter",
     "decline": "Refuser",
-    "learnMore": "En savoir plus"
+    "learnMore": "En savoir plus",
+    "title": "Nous utilisons des cookies",
+    "description": "Les cookies essentiels assurent le fonctionnement du site. Les cookies analytiques nous aident à améliorer votre expérience.",
+    "acceptAll": "Tout Accepter",
+    "essentialOnly": "Essentiels Uniquement",
+    "essential": "Cookies essentiels",
+    "analytics": "Analyse (Google Analytics)",
+    "marketing": "Marketing (Meta Pixel)",
+    "customize": "Personnaliser",
+    "savePreferences": "Enregistrer les Préférences"
   },
   "share": {
     "share": "Partager",
@@ -388,12 +406,70 @@
     "premiumBanner": "Passer Premium — €{{price}}",
     "premiumDesc": "50 portraits · Full HD · Impressions dès €{{price}}",
     "printNeedsHd": "Débloquez HD pour commander des impressions",
-    "hdClearDesc": "Qualité cristalline, prête à imprimer"
+    "hdClearDesc": "Qualité cristalline, prête à imprimer",
+    "tryOtherStyles": "Essayer dans d'autres styles"
   },
   "referral": {
     "title": "Invitez vos Amis, Gagnez des Crédits",
     "desc": "Partagez votre lien. Vous et votre ami recevez 150 crédits bonus !",
     "copied": "Lien de parrainage copié !",
-    "copyLink": "Copier le Lien"
+    "copyLink": "Copier le Lien",
+    "friends": "Amis invités",
+    "earned": "Crédits gagnés",
+    "toNextReward": "Avant la prochaine récompense"
+  },
+  "onboarding": {
+    "step1Title": "Téléchargez la Photo de Votre Animal",
+    "step1Desc": "Choisissez une photo claire et bien éclairée où le visage de votre animal est visible. Meilleure est la photo, meilleur sera le portrait !",
+    "step2Title": "Choisissez un Style Artistique",
+    "step2Desc": "Parcourez notre collection de plus de 12 styles soignés — de la Renaissance au Pop Art. Chacun crée un chef-d'œuvre unique.",
+    "step3Title": "Téléchargez et Partagez",
+    "step3Desc": "Votre portrait est prêt en moins de 60 secondes. Téléchargez-le en HD, commandez une impression sur toile ou partagez-le avec vos amis !",
+    "skip": "Passer",
+    "next": "Suivant",
+    "start": "Commencer à Créer !"
+  },
+  "video": {
+    "label": "Voyez par Vous-même",
+    "title": "De la Photo au Chef-d'œuvre",
+    "watchDemo": "Regardez la Transformation",
+    "duration": "30 secondes",
+    "cta": "Essayez Gratuitement"
+  },
+  "press": {
+    "title": "Adopté par les amoureux des animaux à travers l'Europe"
+  },
+  "styleDetail": {
+    "artStyle": "Style Artistique",
+    "notFound": "Style Introuvable",
+    "notFoundDesc": "Ce style artistique n'existe pas ou a été supprimé.",
+    "browseAll": "Voir Tous les Styles",
+    "defaultDesc": "Transformez votre animal en un superbe chef-d'œuvre avec ce style artistique unique.",
+    "tryCta": "Créer avec {{style}}",
+    "otherStyles": "Découvrir d'Autres Styles",
+    "feat1Title": "Propulsé par l'IA",
+    "feat1Desc": "Notre IA avancée capture chaque détail de la personnalité et des traits uniques de votre animal.",
+    "feat2Title": "Prêt en 60 Secondes",
+    "feat2Desc": "Téléchargez votre photo, choisissez ce style, et votre chef-d'œuvre est créé en moins d'une minute.",
+    "feat3Title": "Qualité Prête à Imprimer",
+    "feat3Desc": "Résolution 2K, parfaite pour les impressions sur toile, l'encadrement ou le partage numérique.",
+    "oilDesc": "Des coups de pinceau riches et texturés donnent vie à votre animal avec la chaleur et la profondeur de la peinture à l'huile classique. Des tons dorés et un éclairage dramatique créent un portrait intemporel digne d'une galerie.",
+    "oilTags": "Classique, Textures Riches, Tons Dorés, Dramatique",
+    "watercolorDesc": "De douces couches de couleur fluides créent un portrait éthéré et rêveur de votre animal. Des fondus délicats et des couches transparentes capturent une beauté artistique raffinée.",
+    "watercolorTags": "Doux, Rêveur, Délicat, Fluide",
+    "popArtDesc": "Des couleurs audacieuses, des contours graphiques et des compositions énergiques transforment votre animal en une icône vibrante de la culture pop. Inspiré de Warhol et Lichtenstein.",
+    "popArtTags": "Audacieux, Vibrant, Graphique, Moderne",
+    "renaissanceDesc": "Un port noble, un éclairage clair-obscur dramatique et des tissus riches placent votre animal dans un décor digne des grands maîtres. Un portrait d'une véritable élégance aristocratique.",
+    "renaissanceTags": "Noble, Dramatique, Élégant, Majestueux",
+    "artNouveauDesc": "Des lignes organiques fluides, des motifs décoratifs et des éléments naturels encadrent votre animal dans la beauté caractéristique du mouvement Art Nouveau.",
+    "artNouveauTags": "Fluide, Organique, Décoratif, Élégant",
+    "impressionistDesc": "Une lumière tachetée, des coups de pinceau visibles et l'attention portée à capturer l'instant fugace confèrent au portrait de votre animal le charme incomparable de l'Impressionnisme.",
+    "impressionistTags": "Lumineux, Atmosphérique, Vibrant, Spontané"
+  },
+  "exitIntent": {
+    "title": "Attendez — Ne Manquez Pas Ça !",
+    "desc": "Obtenez 3 portraits IA gratuits de votre animal. Aucune carte bancaire requise. Votre animal mérite un chef-d'œuvre !",
+    "cta": "Réclamez Vos Portraits Gratuits",
+    "dismiss": "Non merci, je passe"
   }
 }

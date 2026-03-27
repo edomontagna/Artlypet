@@ -102,7 +102,8 @@
       "apiAccess": "Accesso API",
       "dedicatedSupport": "Supporto dedicato",
       "analytics": "Dashboard di analisi"
-    }
+    },
+    "urgency": "Offerta Lancio — Premium a €15 (prezzo normale €29)"
   },
   "printShop": {
     "title": "Porta l'Arte a Casa Tua",
@@ -273,7 +274,15 @@
     "deletionRequested": "Richiesta di eliminazione account inviata. I tuoi dati saranno rimossi a breve.",
     "printCta": "I tuoi ritratti starebbero benissimo su tela",
     "printCtaDesc": "Stampe di qualità museale da €59,90 — consegnate a casa tua",
-    "printCtaBtn": "Vedi Stampe"
+    "printCtaBtn": "Vedi Stampe",
+    "searchStyles": "Cerca per stile...",
+    "filterAll": "Tutti",
+    "filterCompleted": "Completati",
+    "filterFailed": "Falliti",
+    "filterFavorites": "Preferiti",
+    "noResults": "Nessun ritratto corrisponde ai tuoi filtri",
+    "favorite": "Aggiungi ai preferiti",
+    "unfavorite": "Rimuovi dai preferiti"
   },
   "demo": {
     "banner": "Modalità Demo — Questa è un'anteprima con dati di esempio.",
@@ -356,7 +365,16 @@
     "message": "Utilizziamo i cookie per migliorare la tua esperienza. Continuando, accetti l'uso dei cookie.",
     "accept": "Accetta",
     "decline": "Rifiuta",
-    "learnMore": "Scopri di più"
+    "learnMore": "Scopri di più",
+    "title": "Utilizziamo i cookie",
+    "description": "I cookie essenziali mantengono il sito funzionante. I cookie analitici ci aiutano a migliorare la tua esperienza.",
+    "acceptAll": "Accetta Tutti",
+    "essentialOnly": "Solo Essenziali",
+    "essential": "Cookie essenziali",
+    "analytics": "Analisi (Google Analytics)",
+    "marketing": "Marketing (Meta Pixel)",
+    "customize": "Personalizza",
+    "savePreferences": "Salva Preferenze"
   },
   "share": {
     "share": "Condividi",
@@ -388,12 +406,70 @@
     "premiumBanner": "Passa a Premium — €{{price}}",
     "premiumDesc": "50 ritratti · Full HD · Stampe da €{{price}}",
     "printNeedsHd": "Sblocca HD per ordinare le stampe",
-    "hdClearDesc": "Qualità cristallina, pronta per la stampa"
+    "hdClearDesc": "Qualità cristallina, pronta per la stampa",
+    "tryOtherStyles": "Prova con altri stili"
   },
   "referral": {
     "title": "Invita Amici, Guadagna Crediti",
     "desc": "Condividi il tuo link. Tu e il tuo amico riceverete 150 crediti bonus!",
     "copied": "Link di invito copiato!",
-    "copyLink": "Copia Link"
+    "copyLink": "Copia Link",
+    "friends": "Amici invitati",
+    "earned": "Crediti guadagnati",
+    "toNextReward": "Al prossimo premio"
+  },
+  "onboarding": {
+    "step1Title": "Carica la Foto del Tuo Animale",
+    "step1Desc": "Scegli una foto chiara e ben illuminata in cui il muso del tuo animale sia visibile. Migliore è la foto, migliore sarà il ritratto!",
+    "step2Title": "Scegli uno Stile Artistico",
+    "step2Desc": "Sfoglia la nostra collezione di oltre 12 stili curati — dal Rinascimento alla Pop Art. Ognuno crea un capolavoro unico.",
+    "step3Title": "Scarica e Condividi",
+    "step3Desc": "Il tuo ritratto è pronto in meno di 60 secondi. Scaricalo in HD, ordina una stampa su tela o condividilo con gli amici!",
+    "skip": "Salta",
+    "next": "Avanti",
+    "start": "Inizia a Creare!"
+  },
+  "video": {
+    "label": "Guardalo in Azione",
+    "title": "Da Foto a Capolavoro",
+    "watchDemo": "Guarda la Trasformazione",
+    "duration": "30 secondi",
+    "cta": "Provalo Gratis"
+  },
+  "press": {
+    "title": "Scelto dagli amanti degli animali in tutta Europa"
+  },
+  "styleDetail": {
+    "artStyle": "Stile Artistico",
+    "notFound": "Stile Non Trovato",
+    "notFoundDesc": "Questo stile artistico non esiste o è stato rimosso.",
+    "browseAll": "Sfoglia Tutti gli Stili",
+    "defaultDesc": "Trasforma il tuo animale in uno straordinario capolavoro con questo stile artistico unico.",
+    "tryCta": "Crea con {{style}}",
+    "otherStyles": "Esplora Altri Stili",
+    "feat1Title": "Basato sull'IA",
+    "feat1Desc": "La nostra IA avanzata cattura ogni dettaglio della personalità e delle caratteristiche uniche del tuo animale.",
+    "feat2Title": "Pronto in 60 Secondi",
+    "feat2Desc": "Carica la tua foto, scegli questo stile e il tuo capolavoro viene creato in meno di un minuto.",
+    "feat3Title": "Qualità Pronta per la Stampa",
+    "feat3Desc": "Risoluzione 2K, perfetta per stampe su tela, cornici o condivisione digitale.",
+    "oilDesc": "Pennellate ricche e strutturate danno vita al tuo animale con il calore e la profondità della pittura a olio classica. Toni dorati e illuminazione drammatica creano un ritratto senza tempo, degno di una galleria.",
+    "oilTags": "Classico, Texture Ricche, Toni Dorati, Drammatico",
+    "watercolorDesc": "Morbide velature di colore creano un ritratto etereo e sognante del tuo animale. Sfumature delicate e strati trasparenti catturano una bellezza artistica raffinata.",
+    "watercolorTags": "Morbido, Sognante, Delicato, Fluido",
+    "popArtDesc": "Colori audaci, contorni grafici e composizioni ad alta energia trasformano il tuo animale in un'icona vibrante della cultura pop. Ispirato a Warhol e Lichtenstein.",
+    "popArtTags": "Audace, Vibrante, Grafico, Moderno",
+    "renaissanceDesc": "Portamento nobile, illuminazione chiaroscurale drammatica e tessuti ricchi collocano il tuo animale in un contesto degno dei grandi maestri. Un ritratto di vera eleganza aristocratica.",
+    "renaissanceTags": "Nobile, Drammatico, Elegante, Maestoso",
+    "artNouveauDesc": "Linee organiche fluenti, motivi decorativi e elementi naturali incorniciano il tuo animale nella bellezza distintiva del movimento Art Nouveau.",
+    "artNouveauTags": "Fluente, Organico, Decorativo, Elegante",
+    "impressionistDesc": "Luce screziata, pennellate visibili e l'attenzione a catturare l'attimo fugace conferiscono al ritratto del tuo animale il fascino inconfondibile dell'Impressionismo.",
+    "impressionistTags": "Luminoso, Atmosferico, Vibrante, Spontaneo"
+  },
+  "exitIntent": {
+    "title": "Aspetta — Non Perderti Questo!",
+    "desc": "Ottieni 3 ritratti AI gratuiti del tuo animale. Nessuna carta di credito richiesta. Il tuo animale merita un capolavoro!",
+    "cta": "Richiedi i Tuoi Ritratti Gratuiti",
+    "dismiss": "No grazie, passo"
   }
 }

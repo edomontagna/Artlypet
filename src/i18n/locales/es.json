@@ -102,7 +102,8 @@
       "apiAccess": "Acceso API",
       "dedicatedSupport": "Soporte dedicado",
       "analytics": "Dashboard de análisis"
-    }
+    },
+    "urgency": "Oferta de Lanzamiento — Premium a €15 (precio normal €29)"
   },
   "printShop": {
     "title": "Lleva el Arte a Tu Hogar",
@@ -273,7 +274,15 @@
     "deletionRequested": "Solicitud de eliminación de cuenta enviada. Tus datos se eliminarán en breve.",
     "printCta": "Tus retratos lucirían increíbles en lienzo",
     "printCtaDesc": "Impresiones de calidad museo desde €59,90 — enviadas a tu puerta",
-    "printCtaBtn": "Ver Impresiones"
+    "printCtaBtn": "Ver Impresiones",
+    "searchStyles": "Buscar por estilo...",
+    "filterAll": "Todos",
+    "filterCompleted": "Completados",
+    "filterFailed": "Fallidos",
+    "filterFavorites": "Favoritos",
+    "noResults": "Ningún retrato coincide con tus filtros",
+    "favorite": "Añadir a favoritos",
+    "unfavorite": "Quitar de favoritos"
   },
   "demo": {
     "banner": "Modo Demo — Esta es una vista previa con datos de ejemplo.",
@@ -356,7 +365,16 @@
     "message": "Usamos cookies para mejorar tu experiencia. Al continuar, aceptas el uso de cookies.",
     "accept": "Aceptar",
     "decline": "Rechazar",
-    "learnMore": "Saber más"
+    "learnMore": "Saber más",
+    "title": "Usamos cookies",
+    "description": "Las cookies esenciales mantienen el sitio funcionando. Las cookies analíticas nos ayudan a mejorar tu experiencia.",
+    "acceptAll": "Aceptar Todo",
+    "essentialOnly": "Solo Esenciales",
+    "essential": "Cookies esenciales",
+    "analytics": "Análisis (Google Analytics)",
+    "marketing": "Marketing (Meta Pixel)",
+    "customize": "Personalizar",
+    "savePreferences": "Guardar Preferencias"
   },
   "share": {
     "share": "Compartir",
@@ -388,12 +406,70 @@
     "premiumBanner": "Hazte Premium — €{{price}}",
     "premiumDesc": "50 retratos · Full HD · Impresiones desde €{{price}}",
     "printNeedsHd": "Desbloquea HD para pedir impresiones",
-    "hdClearDesc": "Calidad cristalina, lista para imprimir"
+    "hdClearDesc": "Calidad cristalina, lista para imprimir",
+    "tryOtherStyles": "Probar en otros estilos"
   },
   "referral": {
     "title": "Invita Amigos, Gana Créditos",
     "desc": "Comparte tu enlace. ¡Tú y tu amigo recibirán 150 créditos de bonus!",
     "copied": "¡Enlace de invitación copiado!",
-    "copyLink": "Copiar Enlace"
+    "copyLink": "Copiar Enlace",
+    "friends": "Amigos invitados",
+    "earned": "Créditos ganados",
+    "toNextReward": "Para la próxima recompensa"
+  },
+  "onboarding": {
+    "step1Title": "Sube la Foto de Tu Mascota",
+    "step1Desc": "Elige una foto clara y bien iluminada donde se vea la cara de tu mascota. Cuanto mejor sea la foto, mejor será el retrato.",
+    "step2Title": "Elige un Estilo Artístico",
+    "step2Desc": "Explora nuestra colección de más de 12 estilos curados — desde el Renacimiento hasta el Pop Art. Cada uno crea una obra maestra única.",
+    "step3Title": "Descarga y Comparte",
+    "step3Desc": "Tu retrato estará listo en menos de 60 segundos. Descárgalo en HD, pide una impresión en lienzo o compártelo con tus amigos.",
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "start": "¡Empieza a Crear!"
+  },
+  "video": {
+    "label": "Míralo en Acción",
+    "title": "De Foto a Obra Maestra",
+    "watchDemo": "Ver la Transformación",
+    "duration": "30 segundos",
+    "cta": "Pruébalo Gratis"
+  },
+  "press": {
+    "title": "Elegido por amantes de mascotas en toda Europa"
+  },
+  "styleDetail": {
+    "artStyle": "Estilo Artístico",
+    "notFound": "Estilo No Encontrado",
+    "notFoundDesc": "Este estilo artístico no existe o ha sido eliminado.",
+    "browseAll": "Ver Todos los Estilos",
+    "defaultDesc": "Transforma a tu mascota en una impresionante obra maestra con este estilo artístico único.",
+    "tryCta": "Crear con {{style}}",
+    "otherStyles": "Explorar Otros Estilos",
+    "feat1Title": "Impulsado por IA",
+    "feat1Desc": "Nuestra IA avanzada captura cada detalle de la personalidad y rasgos únicos de tu mascota.",
+    "feat2Title": "Listo en 60 Segundos",
+    "feat2Desc": "Sube tu foto, elige este estilo y tu obra maestra se crea en menos de un minuto.",
+    "feat3Title": "Calidad Lista para Imprimir",
+    "feat3Desc": "Resolución 2K, perfecta para impresiones en lienzo, enmarcado o compartir digitalmente.",
+    "oilDesc": "Pinceladas ricas y texturizadas dan vida a tu mascota con la calidez y profundidad de la pintura al óleo clásica. Tonos dorados e iluminación dramática crean un retrato atemporal digno de galería.",
+    "oilTags": "Clásico, Texturas Ricas, Tonos Dorados, Dramático",
+    "watercolorDesc": "Suaves capas de color fluidas crean un retrato etéreo y soñador de tu mascota. Mezclas delicadas y capas transparentes capturan una belleza artística refinada.",
+    "watercolorTags": "Suave, Soñador, Delicado, Fluido",
+    "popArtDesc": "Colores audaces, contornos gráficos y composiciones llenas de energía transforman a tu mascota en un vibrante icono de la cultura pop. Inspirado en Warhol y Lichtenstein.",
+    "popArtTags": "Audaz, Vibrante, Gráfico, Moderno",
+    "renaissanceDesc": "Porte noble, iluminación claroscuro dramática y telas ricas sitúan a tu mascota en un escenario digno de los grandes maestros. Un retrato de verdadera elegancia aristocrática.",
+    "renaissanceTags": "Noble, Dramático, Elegante, Majestuoso",
+    "artNouveauDesc": "Líneas orgánicas fluidas, patrones decorativos y motivos naturales enmarcan a tu mascota en la belleza distintiva del movimiento Art Nouveau.",
+    "artNouveauTags": "Fluido, Orgánico, Decorativo, Elegante",
+    "impressionistDesc": "Luz moteada, pinceladas visibles y el enfoque en capturar el instante fugaz otorgan al retrato de tu mascota el encanto inconfundible del Impresionismo.",
+    "impressionistTags": "Luminoso, Atmosférico, Vibrante, Espontáneo"
+  },
+  "exitIntent": {
+    "title": "Espera — ¡No Te Lo Pierdas!",
+    "desc": "Obtén 3 retratos IA gratis de tu mascota. Sin tarjeta de crédito. ¡Tu mascota merece una obra maestra!",
+    "cta": "Reclama Tus Retratos Gratis",
+    "dismiss": "No gracias, paso"
   }
 }

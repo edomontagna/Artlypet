@@ -102,7 +102,8 @@
       "apiAccess": "API-Zugang",
       "dedicatedSupport": "Dedizierter Support",
       "analytics": "Analyse-Dashboard"
-    }
+    },
+    "urgency": "Einführungsangebot — Premium für €15 (regulär €29)"
   },
   "printShop": {
     "title": "Bringe Deine Kunst nach Hause",
@@ -273,7 +274,15 @@
     "deletionRequested": "Kontolöschung beantragt. Ihre Daten werden in Kürze entfernt.",
     "printCta": "Ihre Porträts würden auf Leinwand fantastisch aussehen",
     "printCtaDesc": "Museumsqualität ab €59,90 — direkt an Ihre Tür geliefert",
-    "printCtaBtn": "Drucke ansehen"
+    "printCtaBtn": "Drucke ansehen",
+    "searchStyles": "Nach Stil suchen...",
+    "filterAll": "Alle",
+    "filterCompleted": "Abgeschlossen",
+    "filterFailed": "Fehlgeschlagen",
+    "filterFavorites": "Favoriten",
+    "noResults": "Keine Porträts entsprechen deinen Filtern",
+    "favorite": "Zu Favoriten hinzufügen",
+    "unfavorite": "Aus Favoriten entfernen"
   },
   "demo": {
     "banner": "Demo-Modus — Dies ist eine Vorschau mit Beispieldaten.",
@@ -356,7 +365,16 @@
     "message": "Wir verwenden Cookies, um dein Erlebnis zu verbessern. Durch Fortfahren stimmst du der Verwendung von Cookies zu.",
     "accept": "Akzeptieren",
     "decline": "Ablehnen",
-    "learnMore": "Mehr erfahren"
+    "learnMore": "Mehr erfahren",
+    "title": "Wir verwenden Cookies",
+    "description": "Essentielle Cookies halten die Seite am Laufen. Analyse-Cookies helfen uns, dein Erlebnis zu verbessern.",
+    "acceptAll": "Alle Akzeptieren",
+    "essentialOnly": "Nur Essentielle",
+    "essential": "Essentielle Cookies",
+    "analytics": "Analyse (Google Analytics)",
+    "marketing": "Marketing (Meta Pixel)",
+    "customize": "Anpassen",
+    "savePreferences": "Einstellungen Speichern"
   },
   "share": {
     "share": "Teilen",
@@ -388,12 +406,70 @@
     "premiumBanner": "Premium werden — €{{price}}",
     "premiumDesc": "50 Porträts · Full HD · Drucke ab €{{price}}",
     "printNeedsHd": "Erst HD freischalten, um Drucke zu bestellen",
-    "hdClearDesc": "Kristallklare, druckfertige Qualität"
+    "hdClearDesc": "Kristallklare, druckfertige Qualität",
+    "tryOtherStyles": "In anderen Stilen ausprobieren"
   },
   "referral": {
     "title": "Freunde einladen, Credits verdienen",
     "desc": "Teile deinen Link. Ihr beide erhaltet 150 Bonus-Credits!",
     "copied": "Empfehlungslink kopiert!",
-    "copyLink": "Link Kopieren"
+    "copyLink": "Link Kopieren",
+    "friends": "Eingeladene Freunde",
+    "earned": "Verdiente Credits",
+    "toNextReward": "Bis zur nächsten Belohnung"
+  },
+  "onboarding": {
+    "step1Title": "Foto deines Haustieres hochladen",
+    "step1Desc": "Wähle ein klares, gut beleuchtetes Foto, auf dem das Gesicht deines Haustieres sichtbar ist. Je besser das Foto, desto besser das Porträt!",
+    "step2Title": "Kunststil auswählen",
+    "step2Desc": "Entdecke unsere Sammlung von über 12 kuratierten Stilen — von Renaissance bis Pop Art. Jeder erzeugt ein einzigartiges Meisterwerk.",
+    "step3Title": "Herunterladen & Teilen",
+    "step3Desc": "Dein Porträt ist in unter 60 Sekunden fertig. Lade es in HD herunter, bestelle einen Leinwanddruck oder teile es mit Freunden!",
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "start": "Jetzt Erstellen!"
+  },
+  "video": {
+    "label": "Sieh es in Aktion",
+    "title": "Vom Foto zum Meisterwerk",
+    "watchDemo": "Verwandlung ansehen",
+    "duration": "30 Sekunden",
+    "cta": "Kostenlos Ausprobieren"
+  },
+  "press": {
+    "title": "Geliebt von Tierfreunden in ganz Europa"
+  },
+  "styleDetail": {
+    "artStyle": "Kunststil",
+    "notFound": "Stil nicht gefunden",
+    "notFoundDesc": "Dieser Kunststil existiert nicht oder wurde entfernt.",
+    "browseAll": "Alle Stile durchsuchen",
+    "defaultDesc": "Verwandle dein Haustier mit diesem einzigartigen Kunststil in ein atemberaubendes Meisterwerk.",
+    "tryCta": "Erstellen mit {{style}}",
+    "otherStyles": "Weitere Stile entdecken",
+    "feat1Title": "KI-gestützt",
+    "feat1Desc": "Unsere fortschrittliche KI erfasst jedes Detail der einzigartigen Persönlichkeit und Merkmale deines Haustieres.",
+    "feat2Title": "Fertig in 60 Sekunden",
+    "feat2Desc": "Lade dein Foto hoch, wähle diesen Stil und dein Meisterwerk wird in unter einer Minute erstellt.",
+    "feat3Title": "Druckfertige Qualität",
+    "feat3Desc": "2K-Auflösung, perfekt für Leinwanddrucke, Rahmung oder digitales Teilen.",
+    "oilDesc": "Reiche, strukturierte Pinselstriche erwecken dein Haustier mit der Wärme und Tiefe klassischer Ölmalerei zum Leben. Goldene Töne und dramatische Beleuchtung schaffen ein zeitloses, galeriereifes Porträt.",
+    "oilTags": "Klassisch, Reiche Texturen, Goldene Töne, Dramatisch",
+    "watercolorDesc": "Sanfte, fließende Farbverläufe erzeugen ein ätherisches, verträumtes Porträt deines Haustieres. Zarte Übergänge und transparente Schichten fangen eine filigrane, künstlerische Schönheit ein.",
+    "watercolorTags": "Sanft, Verträumt, Zart, Fließend",
+    "popArtDesc": "Kräftige Farben, grafische Konturen und dynamische Kompositionen verwandeln dein Haustier in eine lebhafte Popkultur-Ikone. Inspiriert von Warhol und Lichtenstein.",
+    "popArtTags": "Kräftig, Lebendig, Grafisch, Modern",
+    "renaissanceDesc": "Edle Haltung, dramatisches Chiaroscuro und edle Stoffe versetzen dein Haustier in ein Umfeld, das der großen Meister würdig ist. Ein Porträt wahrer aristokratischer Eleganz.",
+    "renaissanceTags": "Edel, Dramatisch, Elegant, Majestätisch",
+    "artNouveauDesc": "Fließende organische Linien, dekorative Muster und natürliche Motive rahmen dein Haustier in der unverwechselbaren Schönheit des Jugendstils.",
+    "artNouveauTags": "Fließend, Organisch, Dekorativ, Elegant",
+    "impressionistDesc": "Gesprenkeltes Licht, sichtbare Pinselstriche und der Fokus auf den flüchtigen Moment verleihen dem Porträt deines Haustieres den unverwechselbaren Charme des Impressionismus.",
+    "impressionistTags": "Licht, Atmosphärisch, Lebendig, Spontan"
+  },
+  "exitIntent": {
+    "title": "Warte — Verpasse das nicht!",
+    "desc": "Erhalte 3 kostenlose KI-Porträts deines Haustieres. Keine Kreditkarte nötig. Dein Haustier verdient ein Meisterwerk!",
+    "cta": "Sichere dir deine kostenlosen Porträts",
+    "dismiss": "Nein danke, ich verzichte"
   }
 }
