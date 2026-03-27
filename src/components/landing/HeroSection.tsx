@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRef, useCallback } from "react";
 
 const useCountUp = (target: number, duration = 2000) => {
@@ -67,6 +68,7 @@ const PortraitCounter = ({ count: targetCount, ease: easeVal, t }: { count: numb
 
 const HeroSection = () => {
   const { t } = useTranslation();
+  const { session } = useAuth();
   const { data: portraitCount } = usePortraitCount();
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -127,7 +129,7 @@ const HeroSection = () => {
               className="flex flex-col sm:flex-row items-start gap-4"
             >
               <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
-                <Link to="/generate" className="inline-flex items-center gap-2 group">
+                <Link to={session ? "/generate" : "/signup"} className="inline-flex items-center gap-2 group">
                   {t("hero.cta")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>

@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useStyles } from "@/hooks/useStyles";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Star, ArrowRight } from "lucide-react";
@@ -19,6 +20,7 @@ const styleDescriptions: Record<string, { descKey: string; tagsKey: string }> = 
 
 const StyleDetail = () => {
   const { t } = useTranslation();
+  const { session } = useAuth();
   const { slug } = useParams<{ slug: string }>();
   const { data: styles, isLoading } = useStyles();
 
@@ -100,7 +102,7 @@ const StyleDetail = () => {
             )}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
-                <Link to="/generate">
+                <Link to={session ? "/generate" : "/signup"}>
                   <Sparkles className="mr-2 h-4 w-4" />
                   {t("styleDetail.tryCta", "Create with {{style}}", { style: style.name })}
                 </Link>
