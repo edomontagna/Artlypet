@@ -1,8 +1,21 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Instagram, Twitter, Facebook } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
+
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
+
+const socialLinks = [
+  { icon: Instagram, href: "https://instagram.com/artlypet", label: "Instagram" },
+  { icon: Twitter, href: "https://x.com/artlypet", label: "X (Twitter)" },
+  { icon: Facebook, href: "https://facebook.com/artlypet", label: "Facebook" },
+  { icon: TikTokIcon, href: "https://tiktok.com/@artlypet", label: "TikTok" },
+];
 
 const FooterSection = () => {
   const { t } = useTranslation();
@@ -44,6 +57,20 @@ const FooterSection = () => {
               )}
             </p>
             <LanguageSwitcher variant="outline" />
+            <div className="flex items-center gap-3">
+              {socialLinks.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-muted-foreground hover:text-primary transition-colors duration-200"
+                >
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Column 2: Product */}
@@ -96,6 +123,9 @@ const FooterSection = () => {
               </Link>
               <Link to="/terms" className={linkClass}>
                 {t("footer.terms")}
+              </Link>
+              <Link to="/terms" className={linkClass}>
+                {t("footer.refundPolicy", "Refund Policy")}
               </Link>
             </nav>
           </div>

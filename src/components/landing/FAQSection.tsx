@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -6,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const faqKeys = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
 
-const FAQSection = () => {
+const FAQSection = memo(() => {
   const { t } = useTranslation();
 
   return (
@@ -94,6 +95,8 @@ const FAQSection = () => {
       />
     </section>
   );
-};
+});
+
+FAQSection.displayName = "FAQSection";
 
 export default FAQSection;

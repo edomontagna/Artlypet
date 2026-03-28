@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,8 +11,22 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { resendConfirmationEmail } from "@/services/auth";
 import { toast } from "sonner";
 import { Loader2, Star, Shield, Lock } from "lucide-react";
+
+const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
+  if (message.includes("Invalid login credentials")) {
+    return t("auth.errors.invalidCredentials", "Invalid email or password. Please check your credentials and try again.");
+  }
+  if (message.includes("Email not confirmed")) {
+    return t("auth.errors.emailNotConfirmed", "Your email has not been confirmed yet. Please check your inbox for the confirmation link.");
+  }
+  if (message.includes("User already registered")) {
+    return t("auth.errors.userAlreadyRegistered", "An account with this email already exists. Please sign in instead.");
+  }
+  return t("auth.errors.generic", "Something went wrong. Please try again later.");
+};
 
 const schema = z.object({
   email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
@@ -25,20 +39,47 @@ const Login = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
+  const [resending, setResending] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { user, loading: authLoading, signIn, signInWithGoogle } = useAuth();
+
+  // Redirect already-authenticated users to dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      navigate(redirect, { replace: true });
+    }
+  }, [user, authLoading, navigate, searchParams]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { email: "", password: "" },
   });
 
+  const handleResendConfirmation = async () => {
+    const email = form.getValues("email");
+    if (!email) return;
+    setResending(true);
+    const { error } = await resendConfirmationEmail(email);
+    if (error) {
+      toast.error(t("auth.resendError", "Failed to resend confirmation email. Please try again."));
+    } else {
+      toast.success(t("auth.resendSuccess", "Confirmation email sent! Please check your inbox."));
+    }
+    setResending(false);
+  };
+
   const onSubmit = async (values: FormData) => {
     setLoading(true);
+    setEmailNotConfirmed(false);
     const { error } = await signIn(values.email, values.password);
     if (error) {
-      toast.error(error.message);
+      if (error.message.includes("Email not confirmed")) {
+        setEmailNotConfirmed(true);
+      }
+      toast.error(mapAuthError(error.message, t));
     } else {
       // Check for redirect URL from ProtectedRoute or signup flow
       const redirect = searchParams.get("redirect") || localStorage.getItem("artlypet_redirect");
@@ -56,7 +97,7 @@ const Login = () => {
     setGoogleLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message, t));
       setGoogleLoading(false);
     }
   };
@@ -176,6 +217,18 @@ const Login = () => {
                 {loading && <span role="status" aria-label="Loading"><Loader2 className="mr-2 h-4 w-4 animate-spin" /></span>}
                 {t("auth.signIn", "Sign In")}
               </Button>
+              {emailNotConfirmed && (
+                <button
+                  type="button"
+                  onClick={handleResendConfirmation}
+                  disabled={resending}
+                  className="text-sm font-sans text-primary hover:underline disabled:opacity-50"
+                >
+                  {resending
+                    ? t("auth.resending", "Sending...")
+                    : t("auth.resendConfirmation", "Resend confirmation email")}
+                </button>
+              )}
               <div className="flex items-center justify-center gap-4 pt-4 border-t border-border mt-6">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="h-3 w-3" />

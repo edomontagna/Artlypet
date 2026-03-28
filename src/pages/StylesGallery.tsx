@@ -7,6 +7,7 @@ import { useStyles } from "@/hooks/useStyles";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const StylesGallery = () => {
   const { t } = useTranslation();
@@ -19,6 +20,11 @@ const StylesGallery = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <SEOHead
+        title="AI Pet Portrait Styles | 12+ Artistic Styles | Artlypet"
+        description="Explore 12+ AI art styles for your pet portrait. Renaissance, Pop Art, Watercolor, Impressionist, and more. Preview each style before creating your masterpiece."
+        canonical="/styles"
+      />
       <Navbar />
 
       {/* Hero */}

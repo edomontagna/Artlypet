@@ -1,13 +1,17 @@
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useStyles } from "@/hooks/useStyles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sparkles, Star, ArrowRight } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
+import { Sparkles, Star, ArrowRight, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+
+const SITE_URL = "https://artlypet.com";
 
 const styleDescriptions: Record<string, { descKey: string; tagsKey: string }> = {
   "oil-painting": { descKey: "styleDetail.oilDesc", tagsKey: "styleDetail.oilTags" },
@@ -30,6 +34,51 @@ const StyleDetail = () => {
 
   const otherStyles = styles?.filter((s) => s.id !== style?.id).slice(0, 4);
   const meta = slug ? styleDescriptions[slug] : undefined;
+
+  const styleDescription = style
+    ? meta
+      ? t(meta.descKey, style.description || "")
+      : (style.description || t("styleDetail.defaultDesc", "Transform your pet into a stunning masterpiece with this unique art style."))
+    : "";
+
+  // BreadcrumbList structured data
+  useEffect(() => {
+    if (!style || !slug) return;
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: SITE_URL,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: t("nav.styles", "Styles"),
+          item: `${SITE_URL}/styles`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: style.name,
+          item: `${SITE_URL}/styles/${slug}`,
+        },
+      ],
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(breadcrumbSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [style, slug, t]);
 
   if (isLoading) {
     return (
@@ -66,14 +115,24 @@ const StyleDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${style.name} Pet Portraits | Artlypet`}
+        description={styleDescription}
+        canonical={`/styles/${slug}`}
+        ogImage={style.preview_url || undefined}
+      />
       <Navbar />
       <main className="container px-6 lg:px-8 py-16 lg:py-24 max-w-5xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm mb-8" aria-label="Breadcrumb">
+          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            {t("nav.home", "Home")}
+          </Link>
+          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
           <Link to="/styles" className="text-muted-foreground hover:text-foreground transition-colors">
             {t("nav.styles", "Styles")}
           </Link>
-          <span className="text-muted-foreground/50">/</span>
+          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
           <span className="text-foreground font-medium">{style.name}</span>
         </nav>
 

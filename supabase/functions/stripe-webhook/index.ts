@@ -2,10 +2,20 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 
+const REQUIRED_ENV_VARS = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"];
+const missingEnvVars = REQUIRED_ENV_VARS.filter((v) => !Deno.env.get(v));
+if (missingEnvVars.length > 0) {
+  console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
+}
+
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2024-12-18.acacia" });
 const endpointSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
 
 serve(async (req) => {
+  if (missingEnvVars.length > 0) {
+    return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { "Content-Type": "application/json" } });
+  }
+
   const signature = req.headers.get("stripe-signature");
   if (!signature) return new Response("Missing signature", { status: 400 });
 

@@ -65,8 +65,12 @@ const Navbar = () => {
     }
   }, [theme]);
 
-  const navLinkClass =
-    "text-sm text-muted-foreground hover:text-primary transition-colors duration-300";
+  const navLinkClass = (path: string) =>
+    `text-sm transition-colors duration-300 ${
+      location.pathname === path
+        ? "text-primary font-semibold"
+        : "text-muted-foreground hover:text-primary"
+    }`;
 
   return (
     <>
@@ -104,15 +108,15 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/styles" className={navLinkClass}>
+          <Link to="/styles" className={navLinkClass("/styles")}>
             {t("nav.styles", "Styles")}
           </Link>
-          <Link to="/how-it-works" className={navLinkClass}>
+          <Link to="/how-it-works" className={navLinkClass("/how-it-works")}>
             {t("nav.howItWorks", "How It Works")}
           </Link>
           <button
             onClick={() => handleHashNavigation("pricing")}
-            className={navLinkClass}
+            className={navLinkClass("")}
           >
             {t("nav.pricing")}
           </button>
@@ -120,7 +124,7 @@ const Navbar = () => {
 
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="outline" asChild className="rounded-full h-10 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
+          <Button variant="outline" asChild className="rounded-full h-11 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
             <Link to="/login">{t("nav.signIn")}</Link>
           </Button>
 
@@ -133,7 +137,7 @@ const Navbar = () => {
               </motion.div>
             ) : (
               <motion.div key="default-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <Button asChild className="rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button asChild className="rounded-full h-11 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Link to="/signup">{t("nav.getStarted")}</Link>
                 </Button>
               </motion.div>
@@ -157,21 +161,21 @@ const Navbar = () => {
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg px-6 py-6 space-y-1">
           <Link
             to="/styles"
-            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            className={`block py-3 ${navLinkClass("/styles")}`}
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.styles", "Styles")}
           </Link>
           <Link
             to="/how-it-works"
-            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors"
+            className={`block py-3 ${navLinkClass("/how-it-works")}`}
             onClick={() => setMobileOpen(false)}
           >
             {t("nav.howItWorks", "How It Works")}
           </Link>
           <button
             onClick={() => { handleHashNavigation("pricing"); setMobileOpen(false); }}
-            className="block text-sm text-muted-foreground hover:text-primary py-3 transition-colors w-full text-left"
+            className={`block py-3 w-full text-left ${navLinkClass("")}`}
           >
             {t("nav.pricing")}
           </button>

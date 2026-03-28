@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer, Shield } from "lucide-react";
+import { Loader2, Crown, Check, Sparkles, Image as ImageIcon, Printer, Shield, Lock } from "lucide-react";
 import { PREMIUM_CREDITS, PREMIUM_PRICE, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_PREMIUM, HD_UNLOCK_PRICE } from "@/lib/constants";
 import { trackInitiateCheckout } from "@/hooks/useAnalytics";
 
@@ -149,6 +149,10 @@ export const CreditPurchaseModal = ({ open, onOpenChange }: Props) => {
               </>
             )}
           </Button>
+          <div className="flex items-center justify-center gap-1.5 mt-2 text-muted-foreground">
+            <Lock className="h-3 w-3" />
+            <span className="text-xs">{t("pricing.secureCheckout", "Secure checkout powered by Stripe")}</span>
+          </div>
           <button
             onClick={() => onOpenChange(false)}
             className="w-full text-center mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"

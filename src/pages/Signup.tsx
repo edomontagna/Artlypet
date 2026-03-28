@@ -16,6 +16,19 @@ import { toast } from "sonner";
 import { Loader2, Sparkles, Star, Shield, Lock } from "lucide-react";
 import { trackCompleteRegistration } from "@/hooks/useAnalytics";
 
+const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
+  if (message.includes("Invalid login credentials")) {
+    return t("auth.errors.invalidCredentials", "Invalid email or password. Please check your credentials and try again.");
+  }
+  if (message.includes("Email not confirmed")) {
+    return t("auth.errors.emailNotConfirmed", "Your email has not been confirmed yet. Please check your inbox for the confirmation link.");
+  }
+  if (message.includes("User already registered")) {
+    return t("auth.errors.userAlreadyRegistered", "An account with this email already exists. Please sign in instead.");
+  }
+  return t("auth.errors.generic", "Something went wrong. Please try again later.");
+};
+
 const schema = z.object({
   displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")).max(50).trim(),
   email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
@@ -50,7 +63,15 @@ const Signup = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { signUp, signInWithGoogle } = useAuth();
+  const { user, loading: authLoading, signUp, signInWithGoogle } = useAuth();
+
+  // Redirect already-authenticated users to dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      navigate(redirect, { replace: true });
+    }
+  }, [user, authLoading, navigate, searchParams]);
 
   // Capture referral code from URL (?ref=ABC123) and persist in localStorage
   const [hasReferral, setHasReferral] = useState(false);
@@ -75,7 +96,7 @@ const Signup = () => {
     const refCode = localStorage.getItem("artlypet_ref") || undefined;
     const { error } = await signUp(values.email, values.password, values.displayName, refCode);
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message, t));
     } else {
       // Preserve redirect URL for post-email-confirmation login
       const redirect = searchParams.get("redirect");
@@ -91,8 +112,10 @@ const Signup = () => {
     setGoogleLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message, t));
       setGoogleLoading(false);
+    } else {
+      trackCompleteRegistration("google");
     }
   };
 

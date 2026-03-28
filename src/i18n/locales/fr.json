@@ -25,7 +25,8 @@
     "socialProof": "Adoré par plus de 10 000 propriétaires d'animaux",
     "noSub": "Sans abonnement",
     "cancelAnytime": "Annulation à tout moment",
-    "freeCredits": "3 portraits gratuits"
+    "freeCredits": "3 portraits gratuits",
+    "freeTier": "Commencez gratuitement — 3 portraits inclus, sans carte requise"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -49,7 +50,20 @@
     "new": "Nouveau",
     "forGifts": "Parfait pour Offrir",
     "romantic": "Doux & Romantique",
-    "tryCta": "Créer ce style — Gratuit"
+    "tryCta": "Créer ce style — Gratuit",
+    "label": "La Collection",
+    "style1Name": "Peinture à l'Huile",
+    "style1Desc": "Textures riches & tons dorés",
+    "style2Name": "Aquarelle",
+    "style2Desc": "Lavis doux & fondus délicats",
+    "style3Name": "Pop Art",
+    "style3Desc": "Couleurs vives & énergie graphique",
+    "style4Name": "Renaissance",
+    "style4Desc": "Allure noble & lumière dramatique",
+    "style5Name": "Art Nouveau",
+    "style5Desc": "Lignes fluides & formes organiques",
+    "style6Name": "Impressionniste",
+    "style6Desc": "Lumière tachetée & touches visibles"
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
@@ -103,9 +117,11 @@
       "dedicatedSupport": "Support dédié",
       "analytics": "Dashboard d'analyse"
     },
-    "urgency": "Offre de Lancement — Premium à €15 (prix normal €29)"
+    "urgency": "Offre de Lancement — Premium à €15 (prix normal €29)",
+    "vatIncluded": "Tous les prix incluent la TVA le cas échéant."
   },
   "printShop": {
+    "badge": "Impressions Physiques",
     "title": "Ramenez l'Art Chez Vous",
     "subtitle": "Transformez vos portraits numériques en superbes impressions physiques, livrées à votre porte.",
     "quality": "Impressions Qualité Musée",
@@ -117,12 +133,15 @@
     "cta": "Commencer & Imprimer",
     "delivered": "5 000+ impressions livrées en Europe",
     "shippingInfo": "Livraison en 7-10 jours · Gratuite dès 50 €",
-    "giftCta": "Le cadeau parfait pour les amoureux des animaux"
+    "giftCta": "Le cadeau parfait pour les amoureux des animaux",
+    "sizeSmall": "Bureau",
+    "sizeMedium": "Mur",
+    "sizeLarge": "Grand Format"
   },
   "testimonials": {
     "title": "Adoré par les Propriétaires d'Animaux",
     "subtitle": "Découvrez ce que nos clients disent de leurs portraits Artlypet",
-    "count": "Plus de 10 000 propriétaires satisfaits",
+    "count": "2 000+ propriétaires satisfaits",
     "label": "Témoignages",
     "cta": "Rejoignez 10 000+ Amoureux des Animaux",
     "ctaSub": "Commencez gratuitement, pas de carte requise",
@@ -207,7 +226,11 @@
     "good": "Bon",
     "strong": "Fort",
     "showcaseTitle": "Transformez votre animal en œuvre d'art",
-    "showcaseDesc": "Rejoignez des milliers d'amoureux des animaux qui créent de superbes portraits IA"
+    "showcaseDesc": "Rejoignez des milliers d'amoureux des animaux qui créent de superbes portraits IA",
+    "resendConfirmation": "Renvoyer l'e-mail de confirmation",
+    "resending": "Envoi en cours...",
+    "resendSuccess": "E-mail de confirmation envoyé ! Veuillez vérifier votre boîte de réception.",
+    "resendError": "Échec de l'envoi de l'e-mail de confirmation. Veuillez réessayer."
   },
   "validation": {
     "invalidEmail": "Veuillez entrer une adresse e-mail valide",

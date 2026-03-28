@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import * as authService from "@/services/auth";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const userInitiatedSignOutRef = useRef(false);
 
   useEffect(() => {
     // Get initial session
@@ -31,10 +33,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, s) => {
+      (event, s) => {
         setSession(s);
         setUser(s?.user ?? null);
         setLoading(false);
+
+        if (event === "SIGNED_OUT") {
+          setSession(null);
+          setUser(null);
+          // Show toast only for unexpected sign-outs (e.g. token expiry)
+          if (!userInitiatedSignOutRef.current) {
+            toast.error("Your session has expired. Please sign in again.");
+          }
+          userInitiatedSignOutRef.current = false;
+        }
+
+        if (event === "TOKEN_REFRESHED" && !s) {
+          // Token refresh failed — session is gone
+          setSession(null);
+          setUser(null);
+          toast.error("Your session has expired. Please sign in again.");
+        }
       },
     );
 
@@ -48,7 +67,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signIn: authService.signInWithPassword,
     signUp: authService.signUpWithEmail,
     signInWithGoogle: authService.signInWithGoogle,
-    signOut: authService.signOut,
+    signOut: () => {
+      userInitiatedSignOutRef.current = true;
+      return authService.signOut();
+    },
     resetPassword: authService.resetPassword,
   };
 

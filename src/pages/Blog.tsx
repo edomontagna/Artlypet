@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 import { blogPosts } from "@/data/blogPosts";
 import { BlurImage } from "@/components/BlurImage";
 
@@ -11,6 +12,11 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Pet Portrait Inspiration & Tips | Artlypet Blog"
+        description="Discover guides, tips, and inspiration for AI pet portraits. Learn how to take the perfect pet photo, choose art styles, and create stunning pet masterpieces."
+        canonical="/blog"
+      />
       <Navbar />
       <main className="container px-6 lg:px-8 py-16 lg:py-24 max-w-5xl">
         <div className="text-center mb-12">

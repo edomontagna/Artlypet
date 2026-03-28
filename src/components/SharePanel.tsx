@@ -8,18 +8,21 @@ const SITE_URL = "https://artlypet.com";
 interface SharePanelProps {
   imageUrl: string;
   styleName?: string;
+  generationId?: string;
 }
 
-export const SharePanel = ({ imageUrl, styleName }: SharePanelProps) => {
+export const SharePanel = ({ imageUrl, styleName, generationId }: SharePanelProps) => {
   const { t } = useTranslation();
+
+  const shareUrl = generationId ? `${SITE_URL}/share/${generationId}` : SITE_URL;
 
   const shareText = styleName
     ? t("share.captionWithStyle", "My pet just became a {{style}} masterpiece! Create yours free", { style: styleName })
     : t("share.caption", "My pet just became a work of art! Create yours free");
 
-  const fullText = `${shareText} ${SITE_URL}`;
+  const fullText = `${shareText} ${shareUrl}`;
   const encodedText = encodeURIComponent(fullText);
-  const encodedUrl = encodeURIComponent(SITE_URL);
+  const encodedUrl = encodeURIComponent(shareUrl);
 
   const handleNativeShare = async () => {
     if (navigator.share) {
@@ -27,7 +30,7 @@ export const SharePanel = ({ imageUrl, styleName }: SharePanelProps) => {
         await navigator.share({
           title: t("share.title", "My Artlypet Portrait"),
           text: shareText,
-          url: SITE_URL,
+          url: shareUrl,
         });
       } catch {
         // User cancelled — not an error
@@ -36,7 +39,7 @@ export const SharePanel = ({ imageUrl, styleName }: SharePanelProps) => {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`${shareText}\n${imageUrl}`);
+    navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
     toast.success(t("share.copied", "Link copied!"));
   };
 

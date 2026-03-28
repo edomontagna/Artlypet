@@ -25,7 +25,8 @@
     "socialProof": "Loved by 10,000+ pet owners",
     "noSub": "No subscription",
     "cancelAnytime": "Cancel anytime",
-    "freeCredits": "3 free portraits"
+    "freeCredits": "3 free portraits",
+    "freeTier": "Start free — 3 portraits included, no card required"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -49,7 +50,20 @@
     "new": "New",
     "forGifts": "Perfect for Gifts",
     "romantic": "Dreamy & Romantic",
-    "tryCta": "Create this look — Free"
+    "tryCta": "Create this look — Free",
+    "label": "The Collection",
+    "style1Name": "Oil Painting",
+    "style1Desc": "Rich textures & golden tones",
+    "style2Name": "Watercolor",
+    "style2Desc": "Soft washes & gentle blending",
+    "style3Name": "Pop Art",
+    "style3Desc": "Bold colors & graphic energy",
+    "style4Name": "Renaissance",
+    "style4Desc": "Noble bearing & dramatic light",
+    "style5Name": "Art Nouveau",
+    "style5Desc": "Flowing lines & organic forms",
+    "style6Name": "Impressionist",
+    "style6Desc": "Dappled light & visible strokes"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
@@ -73,6 +87,7 @@
     "anchor": "That's just €0.30 per portrait",
     "guaranteeBold": "30-day money-back guarantee",
     "continueFree": "Not ready? Continue with free plan →",
+    "secureCheckout": "Secure checkout powered by Stripe",
     "contactUs": "Contact Us",
     "premiumSubtitle": "Unlock the full Artlypet experience",
     "premiumFeature1": "{{credits}} credits included",
@@ -103,9 +118,11 @@
       "dedicatedSupport": "Dedicated support",
       "analytics": "Analytics dashboard"
     },
-    "urgency": "Launch Special — Premium at €15 (regular €29)"
+    "urgency": "Launch Special — Premium at €15 (regular €29)",
+    "vatIncluded": "All prices include VAT where applicable."
   },
   "printShop": {
+    "badge": "Physical Prints",
     "title": "Bring Your Art Home",
     "subtitle": "Transform your digital portraits into stunning physical prints, delivered to your door.",
     "quality": "Museum-Quality Prints",
@@ -117,12 +134,15 @@
     "cta": "Get Started & Print",
     "delivered": "5,000+ prints delivered across Europe",
     "shippingInfo": "Ships in 7-10 days · Free shipping over €50",
-    "giftCta": "Perfect as a gift for any pet lover"
+    "giftCta": "Perfect as a gift for any pet lover",
+    "sizeSmall": "Desk",
+    "sizeMedium": "Wall",
+    "sizeLarge": "Statement"
   },
   "testimonials": {
     "title": "Loved by Pet Owners",
     "subtitle": "See what our customers say about their Artlypet portraits",
-    "count": "10,000+ happy pet owners",
+    "count": "2,000+ happy pet owners",
     "label": "Testimonials",
     "cta": "Join 10,000+ Happy Pet Owners",
     "ctaSub": "Start free, no card needed",
@@ -168,7 +188,8 @@
     "allRights": "All rights reserved.",
     "madeWith": "Made with love for pet lovers in the EU",
     "ctaTitle": "Ready to Transform Your Pet?",
-    "ctaDesc": "Create stunning AI portraits of your pet in seconds. Free to start."
+    "ctaDesc": "Create stunning AI portraits of your pet in seconds. Free to start.",
+    "refundPolicy": "Refund Policy"
   },
   "auth": {
     "welcomeBack": "Welcome Back",
@@ -207,7 +228,12 @@
     "good": "Good",
     "strong": "Strong",
     "showcaseTitle": "Transform Your Pet Into Art",
-    "showcaseDesc": "Join thousands of pet lovers creating stunning AI portraits"
+    "showcaseDesc": "Join thousands of pet lovers creating stunning AI portraits",
+    "resendConfirmation": "Resend confirmation email",
+    "resending": "Sending...",
+    "resendSuccess": "Confirmation email sent! Please check your inbox.",
+    "resendError": "Failed to resend confirmation email. Please try again.",
+    "socialProof": "Rated 4.9/5 by 2,000+ pet owners"
   },
   "validation": {
     "invalidEmail": "Please enter a valid email address",
@@ -437,7 +463,11 @@
     "cta": "Try It Free"
   },
   "press": {
-    "title": "Trusted by pet lovers across Europe"
+    "title": "Trusted by Pet Owners Worldwide",
+    "statPortraits": "Portraits Created",
+    "statRating": "Average Rating",
+    "statUsers": "Happy Pet Owners",
+    "statCountries": "Countries"
   },
   "styleDetail": {
     "artStyle": "Art Style",

@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -78,6 +79,11 @@ const HowItWorksPage = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <SEOHead
+        title="How AI Pet Portraits Work | 3 Easy Steps | Artlypet"
+        description="Create AI pet portraits in 3 easy steps: upload your pet's photo, choose an art style, and download your masterpiece. Learn tips for the best results."
+        canonical="/how-it-works"
+      />
       <Navbar />
 
       {/* Hero */}

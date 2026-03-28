@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Home, ImageIcon, UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { SEOHead } from "@/components/SEOHead";
 
 const NotFound = () => {
   const { t } = useTranslation();
@@ -18,6 +19,11 @@ const NotFound = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <SEOHead
+        title="Page Not Found | Artlypet"
+        description="The page you're looking for doesn't exist or has been moved. Return to Artlypet to create AI pet portraits."
+        canonical={location.pathname}
+      />
       <div className="text-center max-w-md">
         <h1 className="font-serif text-7xl font-bold text-primary mb-4">404</h1>
         <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">

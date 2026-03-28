@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -93,6 +94,11 @@ const PrintQuality = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <SEOHead
+        title="Museum-Quality Pet Portrait Prints | Canvas Delivery EU | Artlypet"
+        description="Order museum-quality canvas prints of your AI pet portraits. Premium materials, vibrant colours, EU-wide delivery. Turn your digital masterpiece into wall art."
+        canonical="/prints"
+      />
       <Navbar />
 
       {/* Hero */}

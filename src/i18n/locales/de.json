@@ -25,7 +25,8 @@
     "socialProof": "Geliebt von über 10.000 Tierbesitzern",
     "noSub": "Kein Abonnement",
     "cancelAnytime": "Jederzeit kündbar",
-    "freeCredits": "3 kostenlose Porträts"
+    "freeCredits": "3 kostenlose Porträts",
+    "freeTier": "Starte kostenlos — 3 Porträts inklusive, keine Karte nötig"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -49,7 +50,20 @@
     "new": "Neu",
     "forGifts": "Perfekt zum Verschenken",
     "romantic": "Verträumt & Romantisch",
-    "tryCta": "Diesen Look erstellen — Kostenlos"
+    "tryCta": "Diesen Look erstellen — Kostenlos",
+    "label": "Die Kollektion",
+    "style1Name": "Ölgemälde",
+    "style1Desc": "Reiche Texturen & goldene Töne",
+    "style2Name": "Aquarell",
+    "style2Desc": "Sanfte Waschungen & zartes Verblenden",
+    "style3Name": "Pop Art",
+    "style3Desc": "Kräftige Farben & grafische Energie",
+    "style4Name": "Renaissance",
+    "style4Desc": "Edle Haltung & dramatisches Licht",
+    "style5Name": "Jugendstil",
+    "style5Desc": "Fließende Linien & organische Formen",
+    "style6Name": "Impressionismus",
+    "style6Desc": "Geflecktes Licht & sichtbare Pinselstriche"
   },
   "pricing": {
     "title": "Einfache, Transparente Preise",
@@ -103,9 +117,11 @@
       "dedicatedSupport": "Dedizierter Support",
       "analytics": "Analyse-Dashboard"
     },
-    "urgency": "Einführungsangebot — Premium für €15 (regulär €29)"
+    "urgency": "Einführungsangebot — Premium für €15 (regulär €29)",
+    "vatIncluded": "Alle Preise verstehen sich inklusive MwSt., soweit zutreffend."
   },
   "printShop": {
+    "badge": "Physische Drucke",
     "title": "Bringe Deine Kunst nach Hause",
     "subtitle": "Verwandle deine digitalen Porträts in atemberaubende physische Drucke, direkt an deine Tür geliefert.",
     "quality": "Museumsqualität Drucke",
@@ -117,12 +133,15 @@
     "cta": "Starten & Drucken",
     "delivered": "5.000+ Drucke in ganz Europa geliefert",
     "shippingInfo": "Lieferung in 7–10 Tagen · Ab €50 kostenloser Versand",
-    "giftCta": "Das perfekte Geschenk für Tierliebhaber"
+    "giftCta": "Das perfekte Geschenk für Tierliebhaber",
+    "sizeSmall": "Schreibtisch",
+    "sizeMedium": "Wand",
+    "sizeLarge": "Statement"
   },
   "testimonials": {
     "title": "Geliebt von Tierbesitzern",
     "subtitle": "Erfahre, was unsere Kunden über ihre Artlypet-Porträts sagen",
-    "count": "Über 10.000 zufriedene Tierbesitzer",
+    "count": "2.000+ zufriedene Tierbesitzer",
     "label": "Kundenstimmen",
     "cta": "Schließe dich 10.000+ Tierliebhabern an",
     "ctaSub": "Starte kostenlos, keine Karte nötig",
@@ -207,7 +226,11 @@
     "good": "Gut",
     "strong": "Stark",
     "showcaseTitle": "Verwandle dein Haustier in Kunst",
-    "showcaseDesc": "Schließe dich Tausenden von Tierliebhabern an, die atemberaubende KI-Porträts erstellen"
+    "showcaseDesc": "Schließe dich Tausenden von Tierliebhabern an, die atemberaubende KI-Porträts erstellen",
+    "resendConfirmation": "Bestätigungsmail erneut senden",
+    "resending": "Wird gesendet...",
+    "resendSuccess": "Bestätigungsmail gesendet! Bitte überprüfe deinen Posteingang.",
+    "resendError": "Bestätigungsmail konnte nicht erneut gesendet werden. Bitte versuche es erneut."
   },
   "validation": {
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",

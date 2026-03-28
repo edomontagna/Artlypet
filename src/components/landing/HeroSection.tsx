@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Sparkles, Shield } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
 import { useAuth } from "@/contexts/AuthContext";
@@ -66,7 +66,7 @@ const PortraitCounter = ({ count: targetCount, ease: easeVal, t }: { count: numb
   );
 };
 
-const HeroSection = () => {
+const HeroSection = memo(() => {
   const { t } = useTranslation();
   const { session } = useAuth();
   const { data: portraitCount } = usePortraitCount();
@@ -84,8 +84,8 @@ const HeroSection = () => {
       {/* Decorative blur behind image */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container px-6 lg:px-8 pt-20 pb-20 lg:pt-28 lg:pb-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="container px-6 lg:px-8 pt-10 pb-10 sm:pt-16 sm:pb-20 lg:pt-28 lg:pb-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Left — Text */}
           <div>
             <motion.div
@@ -141,12 +141,25 @@ const HeroSection = () => {
               </Button>
             </motion.div>
 
+            {/* Trust pill — money-back guarantee */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.15, duration: 0.5, ease }}
+              className="mt-4"
+            >
+              <span className="inline-flex items-center gap-1.5 bg-primary/5 border border-primary/15 rounded-full px-3 py-1.5 text-xs font-medium text-primary">
+                <Shield className="h-3.5 w-3.5" />
+                {t("pricing.guaranteeBold", "30-day money-back guarantee")}
+              </span>
+            </motion.div>
+
             {/* Free tier mention */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2, duration: 0.5, ease }}
-              className="mt-4 text-sm text-muted-foreground"
+              className="mt-3 text-sm text-muted-foreground"
             >
               {t("hero.freeTier", "Start free — 3 portraits included, no card required")}
             </motion.p>
@@ -236,6 +249,8 @@ const HeroSection = () => {
       </div>
     </section>
   );
-};
+});
+
+HeroSection.displayName = "HeroSection";
 
 export default HeroSection;

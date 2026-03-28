@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
@@ -31,7 +31,7 @@ const useVisibleCount = () => {
   return count;
 };
 
-const TestimonialsSection = () => {
+const TestimonialsSection = memo(() => {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -260,6 +260,8 @@ const TestimonialsSection = () => {
       </div>
     </section>
   );
-};
+});
+
+TestimonialsSection.displayName = "TestimonialsSection";
 
 export default TestimonialsSection;

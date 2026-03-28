@@ -2,12 +2,16 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Download, Lock, Printer, Share2, Crown, X } from "lucide-react";
+import { Download, Lock, Printer, Share2, Crown, X, Trash2, ZoomIn, ZoomOut, ArrowLeftRight } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { SharePanel } from "@/components/SharePanel";
-import { useState, useEffect } from "react";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { getSignedUrl } from "@/services/storage";
+import { deleteGeneration } from "@/services/generations";
 import { HD_UNLOCK_PRICE, PREMIUM_PRICE, PRINT_PRICE_PREMIUM } from "@/lib/constants";
 import { useStyles } from "@/hooks/useStyles";
 
@@ -21,6 +25,8 @@ interface PortraitLightboxProps {
     created_at: string;
     style_id?: string | null;
     styles?: { name: string } | null;
+    original_id?: string | null;
+    image_originals?: { storage_path: string } | null;
   } | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,8 +38,13 @@ interface PortraitLightboxProps {
 
 export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, onUnlockHd, onDownload, onOpenUpgrade }: PortraitLightboxProps) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
   const [showShare, setShowShare] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { data: styles } = useStyles();
 
   const isHd = isPremium || generation?.is_hd_unlocked;
@@ -53,6 +64,44 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
     }
   }, [generation?.storage_path, open]);
 
+  // Fetch original image URL when comparison is toggled on
+  useEffect(() => {
+    if (showComparison && generation?.image_originals?.storage_path && open) {
+      let cancelled = false;
+      getSignedUrl("pet-originals", generation.image_originals.storage_path, 3600)
+        .then(url => { if (!cancelled) setOriginalUrl(url); })
+        .catch(() => { if (!cancelled) setOriginalUrl(null); });
+      return () => { cancelled = true; };
+    }
+  }, [showComparison, generation?.image_originals?.storage_path, open]);
+
+  // Reset state when lightbox closes
+  useEffect(() => {
+    if (!open) {
+      setIsZoomed(false);
+      setShowShare(false);
+      setShowComparison(false);
+      setOriginalUrl(null);
+    }
+  }, [open]);
+
+  const handleDelete = useCallback(async () => {
+    if (!generation) return;
+    if (!confirm(t("lightbox.confirmDelete", "Are you sure you want to delete this portrait? This action cannot be undone."))) return;
+    setIsDeleting(true);
+    try {
+      await deleteGeneration(generation.id);
+      await queryClient.invalidateQueries({ queryKey: ["generations"] });
+      await queryClient.invalidateQueries({ queryKey: ["generations-infinite"] });
+      toast.success(t("lightbox.deleted", "Portrait deleted successfully"));
+      onOpenChange(false);
+    } catch {
+      toast.error(t("lightbox.deleteFailed", "Failed to delete portrait"));
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [generation, queryClient, t, onOpenChange]);
+
   if (!generation) return null;
 
   return (
@@ -65,13 +114,23 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,340px]">
           {/* Left — Image */}
-          <div className="relative bg-muted/30 flex items-center justify-center p-6 lg:p-8 min-h-[300px] lg:min-h-[500px]">
-            {imageUrl ? (
+          <div className="relative bg-muted/30 flex items-center justify-center p-6 lg:p-8 min-h-[300px] lg:min-h-[500px] overflow-hidden" style={{ touchAction: "pinch-zoom" }}>
+            {showComparison && imageUrl && originalUrl ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="relative w-full max-w-md"
+                className="w-full max-w-md"
+              >
+                <BeforeAfterSlider beforeUrl={originalUrl} afterUrl={imageUrl} />
+              </motion.div>
+            ) : imageUrl ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: isZoomed ? 1.8 : 1 }}
+                transition={{ duration: 0.4 }}
+                className={`relative w-full max-w-md ${isZoomed ? "cursor-zoom-out overflow-auto" : "cursor-zoom-in"}`}
+                onClick={() => setIsZoomed(!isZoomed)}
               >
                 <img
                   src={imageUrl}
@@ -89,6 +148,16 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
               </motion.div>
             ) : (
               <div className="w-full max-w-md aspect-[4/5] rounded-2xl bg-muted animate-pulse" />
+            )}
+            {/* Zoom toggle — hide when comparison is active */}
+            {imageUrl && !showComparison && (
+              <button
+                onClick={() => setIsZoomed(!isZoomed)}
+                className="absolute bottom-4 left-4 z-10 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={isZoomed ? t("lightbox.zoomOut", "Zoom out") : t("lightbox.zoomIn", "Zoom in")}
+              >
+                {isZoomed ? <ZoomOut className="h-4 w-4" /> : <ZoomIn className="h-4 w-4" />}
+              </button>
             )}
           </div>
 
@@ -123,6 +192,23 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                   <p className="text-[10px] text-muted-foreground">{isHd ? t("lightbox.downloadHd", "Full HD Quality") : t("lightbox.downloadPreview", "Preview Quality")}</p>
                 </div>
               </Button>
+
+              {/* Compare with original — only when original image is available */}
+              {generation.image_originals?.storage_path && (
+                <Button
+                  className={`w-full justify-start gap-3 h-12 rounded-full btn-press ${showComparison ? "border-primary bg-primary/5" : ""}`}
+                  variant="outline"
+                  onClick={() => {
+                    setShowComparison(!showComparison);
+                    if (!showComparison) setIsZoomed(false);
+                  }}
+                >
+                  <ArrowLeftRight className={`h-4 w-4 ${showComparison ? "text-primary" : "text-primary"}`} />
+                  <p className="text-sm font-medium">
+                    {showComparison ? t("lightbox.hideCompare", "Hide Comparison") : t("lightbox.compare", "Compare with Original")}
+                  </p>
+                </Button>
+              )}
 
               {/* Unlock HD — only for non-premium, non-unlocked */}
               {!isPremium && !generation.is_hd_unlocked && (
@@ -180,10 +266,21 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
               {showShare && imageUrl && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="overflow-hidden">
                   <div className="pt-2 pb-1">
-                    <SharePanel imageUrl={imageUrl} styleName={styleName} />
+                    <SharePanel imageUrl={imageUrl} styleName={styleName} generationId={generation?.id} />
                   </div>
                 </motion.div>
               )}
+
+              {/* Delete */}
+              <Button
+                className="w-full justify-start gap-3 h-12 rounded-full btn-press text-destructive hover:text-destructive"
+                variant="outline"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4" />
+                <p className="text-sm font-medium">{isDeleting ? t("lightbox.deleting", "Deleting...") : t("lightbox.delete", "Delete Portrait")}</p>
+              </Button>
 
               {/* Try other styles */}
               {styles && styles.length > 0 && (

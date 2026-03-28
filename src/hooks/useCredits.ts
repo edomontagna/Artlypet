@@ -1,9 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import * as creditsService from "@/services/credits";
 
 export const useCreditBalance = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // Cross-tab credit sync: when another tab updates credits, invalidate cache
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === "credits-updated") {
+        queryClient.invalidateQueries({ queryKey: ["credits"] });
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, [queryClient]);
 
   return useQuery({
     queryKey: ["credits", user?.id],

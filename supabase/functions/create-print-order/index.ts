@@ -10,7 +10,13 @@ const PRINT_PRICE_PREMIUM = 5990; // €59.90
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const isUUID = (v: unknown): v is string => typeof v === "string" && UUID_RE.test(v);
 
-const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",");
+const REQUIRED_ENV_VARS = ["SUPABASE_URL", "SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY", "STRIPE_SECRET_KEY", "ALLOWED_ORIGIN"];
+const missingEnvVars = REQUIRED_ENV_VARS.filter((v) => !Deno.env.get(v));
+if (missingEnvVars.length > 0) {
+  console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
+}
+
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
 
 const getCorsHeaders = (req: Request) => {
   const origin = req.headers.get("origin") || "";
@@ -24,6 +30,10 @@ const getCorsHeaders = (req: Request) => {
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  if (missingEnvVars.length > 0) {
+    return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
 
   try {
     const authHeader = req.headers.get("Authorization");

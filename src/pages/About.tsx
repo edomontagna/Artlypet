@@ -5,6 +5,7 @@ import { Heart, Sparkles, Globe, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -61,6 +62,11 @@ const About = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <SEOHead
+        title="About Artlypet | Premium AI Pet Art Creator"
+        description="Learn about Artlypet, the AI-powered pet portrait platform. Powered by Google Gemini AI, we create stunning art from your pet photos in 12+ styles."
+        canonical="/about"
+      />
       <Navbar />
 
       {/* Hero */}

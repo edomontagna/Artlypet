@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,23 +14,36 @@ import { uploadOriginalImage } from "@/services/storage";
 import { requestGeneration, getServedImage, purchaseHdImage } from "@/services/generations";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
+import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM } from "@/lib/constants";
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { SharePanel } from "@/components/SharePanel";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { trackEvent } from "@/hooks/useAnalytics";
+import { compressImage } from "@/lib/imageCompression";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+/** Map raw backend/Gemini error messages to user-friendly strings */
+const getFriendlyErrorMessage = (raw: string | undefined | null): string => {
+  if (!raw) return "Generation failed. Your credits have been refunded.";
+  if (raw.includes("Gemini API error")) return "AI service temporarily unavailable. Please try again.";
+  if (raw.includes("No image in Gemini response")) return "The AI couldn't generate an image from this photo. Try a different photo or style.";
+  if (raw.includes("Original image not found")) return "Your uploaded photo couldn't be found. Please re-upload.";
+  return "Generation failed. Your credits have been refunded.";
+};
 
 const Generate = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
   const { data: profile, isError: profileError } = useProfile();
-  const { data: styles, isLoading: stylesLoading } = useStyles();
+  const { data: styles, isLoading: stylesLoading, isError: stylesError, refetch: refetchStyles } = useStyles();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
 
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [generationType, setGenerationType] = useState<GenerationType>("single");
@@ -57,7 +70,17 @@ const Generate = () => {
     ? Math.max(0, (creditBalance ?? 0) - optimisticCreditDeduction)
     : (creditBalance ?? 0);
 
-  const { data: generationStatus } = useGenerationStatus(generationId, generating);
+  const { data: generationStatus } = useGenerationStatus(generationId, generating, generationStartTime);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [generationComplete, setGenerationComplete] = useState(false);
+
+  // Pre-select style from URL search param (e.g., /generate?style=abc123)
+  useEffect(() => {
+    const styleParam = searchParams.get("style");
+    if (styleParam && styles && styles.some((s) => s.id === styleParam)) {
+      setSelectedStyleId(styleParam);
+    }
+  }, [searchParams, styles]);
 
   useEffect(() => {
     return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
@@ -79,32 +102,82 @@ const Generate = () => {
     if (!generationId || !generating) return;
     const controller = new AbortController();
     if (generationStatus?.status === "completed") {
-      setGenerating(false);
+      setGenerationComplete(true);
       isGeneratingRef.current = false;
+      trackEvent("GenerationCompleted", "generation_completed", { generation_id: generationId, generation_type: generationType });
       setOptimisticCreditDeduction(0);
-      getServedImage(generationId)
-        .then((data) => { if (!controller.signal.aborted) { setResultUrl(data.url); setResultMode(data.mode); } })
-        .catch(() => { if (!controller.signal.aborted) toast.error("Failed to load result"); });
+      // Delay hiding the theater so progress bar can animate to 100%
+      setTimeout(() => {
+        setGenerating(false);
+        getServedImage(generationId)
+          .then((data) => { if (!controller.signal.aborted) { setResultUrl(data.url); setResultMode(data.mode); } })
+          .catch(() => { if (!controller.signal.aborted) toast.error("Failed to load result"); });
+      }, 800);
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
+      localStorage.setItem("credits-updated", Date.now().toString());
     } else if (generationStatus?.status === "failed") {
       setGenerating(false);
       isGeneratingRef.current = false;
       setGenerationId(null);
       setShowRetry(true);
       setOptimisticCreditDeduction(0);
-      toast.error(generationStatus.error_message || "Generation failed. Credits have been refunded.");
+      trackEvent("GenerationFailed", "generation_failed", { generation_id: generationId, generation_type: generationType, error: generationStatus.error_message });
+      toast.error(getFriendlyErrorMessage(generationStatus.error_message));
       queryClient.invalidateQueries({ queryKey: ["credits"] });
+      localStorage.setItem("credits-updated", Date.now().toString());
     }
     return () => controller.abort();
   }, [generationStatus?.status, generationId, generating, queryClient]);
 
-  const handleFile = useCallback((file: File) => {
+  // Polling timeout: stop after 120 seconds
+  useEffect(() => {
+    if (!generating || !generationStartTime) return;
+    const timeoutMs = 120_000;
+    const elapsed = Date.now() - generationStartTime;
+    const remaining = timeoutMs - elapsed;
+    if (remaining <= 0) {
+      setGenerating(false);
+      isGeneratingRef.current = false;
+      setGenerationId(null);
+      setShowRetry(true);
+      setOptimisticCreditDeduction(0);
+      toast.error(t("generate.timeoutError", "Generation timed out. Please try again. Your credits have been refunded."));
+      queryClient.invalidateQueries({ queryKey: ["credits"] });
+      return;
+    }
+    const timer = setTimeout(() => {
+      if (!isGeneratingRef.current) return;
+      setGenerating(false);
+      isGeneratingRef.current = false;
+      setGenerationId(null);
+      setShowRetry(true);
+      setOptimisticCreditDeduction(0);
+      toast.error(t("generate.timeoutError", "Generation timed out. Please try again. Your credits have been refunded."));
+      queryClient.invalidateQueries({ queryKey: ["credits"] });
+    }, remaining);
+    return () => clearTimeout(timer);
+  }, [generating, generationStartTime, queryClient, t]);
+
+  const [compressing, setCompressing] = useState(false);
+
+  const handleFile = useCallback(async (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setUploadedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+
+    setCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setUploadedFile(compressed);
+      setPreviewUrl(URL.createObjectURL(compressed));
+    } catch {
+      // Fallback to original file if compression fails
+      setUploadedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    } finally {
+      setCompressing(false);
+    }
     setResultUrl(null); setResultMode(null); setGenerationId(null);
   }, [previewUrl, t]);
 
@@ -114,11 +187,22 @@ const Generate = () => {
   const handleDrop = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); const file = e.dataTransfer.files[0]; if (file) handleFile(file); };
   const removeFile = () => { if (previewUrl) URL.revokeObjectURL(previewUrl); setUploadedFile(null); setPreviewUrl(null); setResultUrl(null); setResultMode(null); setGenerationId(null); };
 
-  const handleFile2 = useCallback((file: File) => {
+  const handleFile2 = useCallback(async (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
     if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-    setUploadedFile2(file); setPreviewUrl2(URL.createObjectURL(file));
+
+    setCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setUploadedFile2(compressed);
+      setPreviewUrl2(URL.createObjectURL(compressed));
+    } catch {
+      setUploadedFile2(file);
+      setPreviewUrl2(URL.createObjectURL(file));
+    } finally {
+      setCompressing(false);
+    }
   }, [previewUrl2, t]);
 
   const handleFile2Change = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) handleFile2(file); };
@@ -132,14 +216,17 @@ const Generate = () => {
     if (generationType === "mix" && !uploadedFile2) return;
     if (isGeneratingRef.current) return;
 
-    const remaining = (creditBalance ?? 0) - creditCost;
-    const confirmed = window.confirm(
-      t("generate.confirmGeneration", "This will cost {{cost}} credits. You'll have {{remaining}} credits left. Continue?", { cost: creditCost, remaining })
-    );
-    if (!confirmed) return;
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmGenerate = async () => {
+    setShowConfirmDialog(false);
+    if (!uploadedFile || !selectedStyleId || !user) return;
+    if (generationType === "mix" && !uploadedFile2) return;
+    if (isGeneratingRef.current) return;
 
     isGeneratingRef.current = true;
-    setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setOptimisticCreditDeduction(creditCost);
+    setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setGenerationComplete(false); setOptimisticCreditDeduction(creditCost);
     try {
       setUploading(true);
       const original = await uploadOriginalImage(user.id, uploadedFile);
@@ -148,6 +235,7 @@ const Generate = () => {
       setUploading(false);
       const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
+      trackEvent("GenerationStarted", "generation_started", { generation_type: generationType, style_id: selectedStyleId });
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
     } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setUploading(false); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0); }
   };
@@ -158,7 +246,7 @@ const Generate = () => {
     catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start HD unlock"); }
   };
 
-  const canGenerate = uploadedFile && selectedStyleId && (creditBalance ?? 0) >= creditCost && (generationType === "single" || uploadedFile2);
+  const canGenerate = uploadedFile && selectedStyleId && !creditsLoading && (creditBalance ?? 0) >= creditCost && (generationType === "single" || uploadedFile2);
 
   return (
     <div className="min-h-screen bg-background">
@@ -249,6 +337,27 @@ const Generate = () => {
             )}
             </motion.div>
 
+            {/* Subtle print upsell banner */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="max-w-xl mx-auto"
+            >
+              <Link to="/prints" className="block">
+                <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/40 px-5 py-3.5 hover:bg-muted/70 transition-colors">
+                  <Printer className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <p className="text-sm text-muted-foreground flex-1">
+                    {t("generate.printUpsell", "This would look amazing on canvas")}
+                  </p>
+                  <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                    {t("generate.printUpsellPrice", "From €{{price}}", { price: isPremium ? PRINT_PRICE_PREMIUM.toFixed(2) : PRINT_PRICE_FREE.toFixed(2) })}
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                </div>
+              </Link>
+            </motion.div>
+
             {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
             <div className="space-y-4 max-w-2xl mx-auto">
 
@@ -336,7 +445,7 @@ const Generate = () => {
                         <Button variant="outline" asChild size="lg" className="rounded-full gap-2 h-12 px-8 text-base">
                           <Link to="/prints">
                             <Printer className="h-4 w-4" />
-                            {t("generate.printBtn", "Order Canvas — {{price}}", { price: isPremium ? "€59.90" : "€79.90" })}
+                            {t("generate.printBtn", "Order Canvas — {{price}}", { price: isPremium ? `€${PRINT_PRICE_PREMIUM.toFixed(2)}` : `€${PRINT_PRICE_FREE.toFixed(2)}` })}
                           </Link>
                         </Button>
                       </div>
@@ -390,7 +499,7 @@ const Generate = () => {
               <h3 className="font-serif text-lg font-semibold text-foreground">
                 {t("generate.shareHeading", "Share your masterpiece!")}
               </h3>
-              <SharePanel imageUrl={resultUrl} />
+              <SharePanel imageUrl={resultUrl} generationId={generationId ?? undefined} />
             </div>
 
             {/* Create another */}
@@ -411,7 +520,7 @@ const Generate = () => {
         {/*  GENERATING — Creation Theater          */}
         {/* ═══════════════════════════════════════ */}
         {generating && !resultUrl && (
-          <CreationTheater previewUrl={previewUrl} styleName={styles?.find((s) => s.id === selectedStyleId)?.name} startTime={generationStartTime} />
+          <CreationTheater previewUrl={previewUrl} styleName={styles?.find((s) => s.id === selectedStyleId)?.name} startTime={generationStartTime} isComplete={generationComplete} />
         )}
 
         {/* ═══════════════════════════════════════ */}
@@ -549,6 +658,12 @@ const Generate = () => {
                       {t("generate.petPhoto", "Your pet's photo")}
                     </p>
                   )}
+                  {compressing && !previewUrl && (
+                    <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 min-h-[160px] sm:min-h-[200px] p-4 sm:p-8">
+                      <Loader2 className="h-8 w-8 text-primary animate-spin mb-3" />
+                      <span className="text-sm font-medium text-foreground">{t("generate.optimizing", "Optimizing image...")}</span>
+                    </div>
+                  )}
                   {previewUrl ? (
                     <div className="relative">
                       <img src={previewUrl} alt="Pet preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
@@ -556,18 +671,18 @@ const Generate = () => {
                         <X className="h-4 w-4" />
                       </button>
                     </div>
-                  ) : (
+                  ) : !compressing ? (
                     <label onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
-                      className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[200px] p-8 cursor-pointer transition-all ${
+                      className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
                         isDragging ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                       }`}
                     >
                       <Upload className="h-12 w-12 text-muted-foreground/30 mb-3" />
                       <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
                       <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="hidden" />
+                      <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFileChange} className="hidden" />
                     </label>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Upload 2 (mix only) */}
@@ -586,14 +701,14 @@ const Generate = () => {
                       </div>
                     ) : (
                       <label onDragOver={handleDragOver2} onDragLeave={handleDragLeave2} onDrop={handleDrop2}
-                        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[200px] p-8 cursor-pointer transition-all ${
+                        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
                           isDragging2 ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                         }`}
                       >
                         <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
                         <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
                         <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile2Change} className="hidden" />
+                        <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile2Change} className="hidden" />
                       </label>
                     )}
                   </div>
@@ -612,7 +727,18 @@ const Generate = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 {t("generate.step3Desc", "Select the artistic style for your portrait")}
               </p>
-              {stylesLoading ? (
+              {stylesError ? (
+                <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-6 flex flex-col items-center gap-3 text-center">
+                  <AlertCircle className="h-8 w-8 text-destructive" />
+                  <p className="text-sm text-destructive font-medium">
+                    {t("generate.stylesLoadError", "Could not load styles. Please try again.")}
+                  </p>
+                  <Button variant="outline" size="sm" className="rounded-full gap-2" onClick={() => refetchStyles()}>
+                    <Loader2 className="h-3 w-3" />
+                    {t("generate.retryLoadStyles", "Retry")}
+                  </Button>
+                </div>
+              ) : stylesLoading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
@@ -662,7 +788,14 @@ const Generate = () => {
             {/* ══ GENERATE BUTTON — BIG, IMPOSSIBLE TO MISS ══ */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
               <div className="bg-card border border-border rounded-2xl p-8 text-center shadow-md">
-                {(creditBalance ?? 0) < creditCost ? (
+                {creditsLoading ? (
+                  <div className="flex items-center justify-center gap-3 py-4">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      {t("generate.loadingCredits", "Loading your credit balance...")}
+                    </p>
+                  </div>
+                ) : (creditBalance ?? 0) < creditCost ? (
                   <div>
                     <p className="text-muted-foreground mb-4 text-lg">
                       {t("generate.needCredits", "You need at least {{cost}} credits", { cost: creditCost })}
@@ -680,8 +813,8 @@ const Generate = () => {
                     <Button
                       size="lg"
                       onClick={handleGenerate}
-                      disabled={!canGenerate || uploading}
-                      className={`rounded-full h-16 px-12 text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate && !uploading ? " shimmer-btn" : ""}`}
+                      disabled={!canGenerate || generating || uploading}
+                      className={`rounded-full h-12 sm:h-14 lg:h-16 px-6 sm:px-8 lg:px-12 text-base sm:text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate && !generating && !uploading ? " shimmer-btn" : ""}`}
                     >
                       {uploading ? (
                         <>
@@ -695,6 +828,16 @@ const Generate = () => {
                         </>
                       )}
                     </Button>
+                    {uploading && (
+                      <div className="mt-4 max-w-xs mx-auto">
+                        <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+                          <div className="h-full w-1/3 rounded-full bg-primary animate-upload-progress" />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {t("generate.uploadingHint", "Preparing your photo for the AI artist...")}
+                        </p>
+                      </div>
+                    )}
                     {!canGenerate && (
                       <p className="text-xs text-muted-foreground mt-3">
                         {!uploadedFile
@@ -719,6 +862,32 @@ const Generate = () => {
         )}
       </div>
       <CreditPurchaseModal open={showPurchaseModal} onOpenChange={setShowPurchaseModal} />
+
+      {/* Confirmation Dialog — replaces window.confirm */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif">
+              {t("generate.confirmTitle", "Confirm Generation")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("generate.confirmGeneration", "This will cost {{cost}} credits. You'll have {{remaining}} credits left. Continue?", {
+                cost: creditCost,
+                remaining: Math.max(0, (creditBalance ?? 0) - creditCost),
+              })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" className="rounded-full" onClick={() => setShowConfirmDialog(false)}>
+              {t("common.cancel", "Cancel")}
+            </Button>
+            <Button className="rounded-full gap-2" onClick={handleConfirmGenerate}>
+              <Sparkles className="h-4 w-4" />
+              {t("generate.confirmBtn", "Create Portrait")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

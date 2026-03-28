@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +9,9 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CookieBanner } from "@/components/CookieBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { motion, AnimatePresence } from "framer-motion";
+import { getConsent } from "@/components/CookieBanner";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import i18n from "@/i18n";
 
 // Lazy-loaded pages
 const Index = lazy(() => import("./pages/Index"));
@@ -31,12 +33,39 @@ const Contact = lazy(() => import("./pages/Contact"));
 const PrintQuality = lazy(() => import("./pages/PrintQuality"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const SharePortrait = lazy(() => import("./pages/SharePortrait"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000, // 1 minute — reduces unnecessary refetches
+    },
+  },
+});
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    const consent = getConsent();
+    if (!consent) return;
+    if (consent.analytics && window.gtag) {
+      window.gtag("event", "page_view", { page_path: location.pathname });
+    }
+    if (consent.marketing && window.fbq) {
+      window.fbq("track", "PageView");
+    }
+  }, [location.pathname]);
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -64,6 +93,7 @@ const AnimatedRoutes = () => {
           <Route path="/prints" element={<PrintQuality />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/share/:generationId" element={<SharePortrait />} />
           <Route
             path="/dashboard"
             element={
@@ -99,18 +129,33 @@ const PageLoader = () => (
 const App = () => {
   useAnalytics();
 
+  // Sync document lang attribute with i18n language changes
+  useEffect(() => {
+    const updateLang = (lng: string) => {
+      document.documentElement.lang = lng.substring(0, 2);
+    };
+    updateLang(i18n.language || "en");
+    i18n.on("languageChanged", updateLang);
+    return () => {
+      i18n.off("languageChanged", updateLang);
+    };
+  }, []);
+
   return (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <Sonner />
-          <BrowserRouter>
-            <CookieBanner />
-            <Suspense fallback={<PageLoader />}>
-              <AnimatedRoutes />
-            </Suspense>
-          </BrowserRouter>
+          <MotionConfig reducedMotion="user">
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <CookieBanner />
+              <Suspense fallback={<PageLoader />}>
+                <AnimatedRoutes />
+              </Suspense>
+            </BrowserRouter>
+          </MotionConfig>
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>

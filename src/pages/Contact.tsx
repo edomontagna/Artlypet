@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/accordion";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -90,6 +91,11 @@ const Contact = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <SEOHead
+        title="Contact Artlypet | Support & Business Inquiries"
+        description="Get in touch with the Artlypet team. Contact us for support, business inquiries, or feedback about our AI pet portrait service."
+        canonical="/contact"
+      />
       <Navbar />
 
       {/* Hero */}

@@ -8,7 +8,13 @@ const PACKAGES: Record<string, { credits: number; price: number; name: string; p
   premium: { credits: 1500, price: 1500, name: "Premium — 1500 Credits + HD", plan_upgrade: "premium" },
 };
 
-const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",");
+const REQUIRED_ENV_VARS = ["SUPABASE_URL", "SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY", "STRIPE_SECRET_KEY", "ALLOWED_ORIGIN"];
+const missingEnvVars = REQUIRED_ENV_VARS.filter((v) => !Deno.env.get(v));
+if (missingEnvVars.length > 0) {
+  console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
+}
+
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
 
 const getCorsHeaders = (req: Request) => {
   const origin = req.headers.get("origin") || "";
@@ -22,6 +28,10 @@ const getCorsHeaders = (req: Request) => {
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  if (missingEnvVars.length > 0) {
+    return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
 
   try {
     const authHeader = req.headers.get("Authorization");
@@ -60,7 +70,7 @@ serve(async (req) => {
         purchase_type: "premium",
         plan_upgrade: pkg.plan_upgrade || "",
       },
-      idempotency_key: `${user.id}-${package_id}-${Date.now()}`,
+      idempotency_key: `${user.id}-${package_id}`,
     });
 
     return new Response(

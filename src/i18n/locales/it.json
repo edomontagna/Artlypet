@@ -25,7 +25,8 @@
     "socialProof": "Amato da oltre 10.000 proprietari di animali",
     "noSub": "Nessun abbonamento",
     "cancelAnytime": "Cancella quando vuoi",
-    "freeCredits": "3 ritratti gratuiti"
+    "freeCredits": "3 ritratti gratuiti",
+    "freeTier": "Inizia gratis — 3 ritratti inclusi, nessuna carta richiesta"
   },
   "howItWorks": {
     "title": "Come Funziona",
@@ -49,7 +50,20 @@
     "new": "Nuovo",
     "forGifts": "Perfetto per Regali",
     "romantic": "Romantico e Sognante",
-    "tryCta": "Crea questo stile — Gratis"
+    "tryCta": "Crea questo stile — Gratis",
+    "label": "La Collezione",
+    "style1Name": "Pittura a Olio",
+    "style1Desc": "Texture ricche e toni dorati",
+    "style2Name": "Acquerello",
+    "style2Desc": "Lavaggi morbidi e sfumature delicate",
+    "style3Name": "Pop Art",
+    "style3Desc": "Colori vivaci ed energia grafica",
+    "style4Name": "Rinascimento",
+    "style4Desc": "Portamento nobile e luce drammatica",
+    "style5Name": "Art Nouveau",
+    "style5Desc": "Linee fluide e forme organiche",
+    "style6Name": "Impressionista",
+    "style6Desc": "Luce screziata e pennellate visibili"
   },
   "pricing": {
     "title": "Prezzi Semplici e Trasparenti",
@@ -103,9 +117,11 @@
       "dedicatedSupport": "Supporto dedicato",
       "analytics": "Dashboard di analisi"
     },
-    "urgency": "Offerta Lancio — Premium a €15 (prezzo normale €29)"
+    "urgency": "Offerta Lancio — Premium a €15 (prezzo normale €29)",
+    "vatIncluded": "Tutti i prezzi includono l'IVA ove applicabile."
   },
   "printShop": {
+    "badge": "Stampe Fisiche",
     "title": "Porta l'Arte a Casa Tua",
     "subtitle": "Trasforma i tuoi ritratti digitali in stampe fisiche straordinarie, consegnate a domicilio.",
     "quality": "Stampe di Qualità Museale",
@@ -117,12 +133,15 @@
     "cta": "Inizia e Stampa",
     "delivered": "5.000+ stampe consegnate in tutta Europa",
     "shippingInfo": "Spedizione in 7-10 giorni · Gratis sopra i €50",
-    "giftCta": "Il regalo perfetto per chi ama gli animali"
+    "giftCta": "Il regalo perfetto per chi ama gli animali",
+    "sizeSmall": "Scrivania",
+    "sizeMedium": "Parete",
+    "sizeLarge": "Dichiarazione"
   },
   "testimonials": {
     "title": "Amato dai Proprietari di Animali",
     "subtitle": "Scopri cosa dicono i nostri clienti dei loro ritratti Artlypet",
-    "count": "Oltre 10.000 proprietari soddisfatti",
+    "count": "2.000+ proprietari soddisfatti",
     "label": "Testimonianze",
     "cta": "Unisciti a 10.000+ Amanti degli Animali",
     "ctaSub": "Inizia gratis, nessuna carta richiesta",
@@ -207,7 +226,11 @@
     "good": "Buona",
     "strong": "Forte",
     "showcaseTitle": "Trasforma il Tuo Animale in un'Opera d'Arte",
-    "showcaseDesc": "Unisciti a migliaia di amanti degli animali che creano straordinari ritratti con l'IA"
+    "showcaseDesc": "Unisciti a migliaia di amanti degli animali che creano straordinari ritratti con l'IA",
+    "resendConfirmation": "Reinvia email di conferma",
+    "resending": "Invio in corso...",
+    "resendSuccess": "Email di conferma inviata! Controlla la tua casella di posta.",
+    "resendError": "Invio dell'email di conferma fallito. Riprova."
   },
   "validation": {
     "invalidEmail": "Inserisci un indirizzo email valido",

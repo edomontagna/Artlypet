@@ -19,9 +19,9 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   }
 
   if (!user) {
-    // Redirect to signup (not login) and preserve the intended destination
+    // Redirect to login and preserve the intended destination
     const redirect = encodeURIComponent(location.pathname);
-    return <Navigate to={`/signup?redirect=${redirect}`} replace />;
+    return <Navigate to={`/login?redirect=${redirect}`} replace />;
   }
 
   return <>{children}</>;

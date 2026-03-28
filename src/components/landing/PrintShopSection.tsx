@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Truck, ShieldCheck, Frame, Star } from "lucide-react";
@@ -5,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-const PrintShopSection = () => {
+const PrintShopSection = memo(() => {
   const { t } = useTranslation();
 
   const features = [
@@ -137,6 +138,8 @@ const PrintShopSection = () => {
       </div>
     </section>
   );
-};
+});
+
+PrintShopSection.displayName = "PrintShopSection";
 
 export default PrintShopSection;

@@ -8,6 +8,7 @@ interface CreationTheaterProps {
   previewUrl: string | null;
   styleName?: string;
   startTime: number;
+  isComplete?: boolean;
 }
 
 const STAGES = [
@@ -35,15 +36,23 @@ const getFunFacts = (t: (key: string, fallback: string) => string) => [
   t("creation.fact5", "Over 10,000 pet owners have transformed their pets into art."),
 ];
 
-export const CreationTheater = ({ previewUrl, styleName, startTime }: CreationTheaterProps) => {
+export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete = false }: CreationTheaterProps) => {
   const { t } = useTranslation();
   const funFacts = getFunFacts(t);
   const [progress, setProgress] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(50);
 
+  // Jump to 100% when generation completes
+  useEffect(() => {
+    if (isComplete) {
+      setProgress(100);
+    }
+  }, [isComplete]);
+
   // Smooth progress bar over ~50 seconds
   useEffect(() => {
+    if (isComplete) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 98) return 98;
@@ -53,7 +62,7 @@ export const CreationTheater = ({ previewUrl, styleName, startTime }: CreationTh
       });
     }, 300);
     return () => clearInterval(interval);
-  }, []);
+  }, [isComplete]);
 
   // Countdown timer
   useEffect(() => {

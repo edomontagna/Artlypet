@@ -1,12 +1,20 @@
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Check, Sparkles, Crown, Building2, Shield } from "lucide-react";
 import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM, BUSINESS_PRICE_MONTHLY } from "@/lib/constants";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 
-const PricingSection = () => {
+const PricingSection = memo(() => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
+  const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
 
   const plans = [
     {
@@ -24,8 +32,11 @@ const PricingSection = () => {
         t("pricing.features.hdPerImage", "HD unlock: €4.90/image"),
         t("pricing.features.printFree", "Canvas prints: €{{price}}", { price: PRINT_PRICE_FREE.toFixed(2) }),
       ],
-      cta: t("pricing.getStartedFree", "Get Started Free"),
-      ctaLink: "/signup",
+      cta: user
+        ? (isPremium ? t("pricing.startCreating", "Start Creating") : t("pricing.getStartedFree", "Get Started Free"))
+        : t("pricing.getStartedFree", "Get Started Free"),
+      ctaLink: user ? (isPremium ? "/generate" : "#") : "/signup",
+      planKey: "free",
       popular: false,
     },
     {
@@ -44,8 +55,9 @@ const PricingSection = () => {
         t("pricing.features.noExpiry", "Credits never expire"),
         t("pricing.features.savingsMath", "Save vs. HD unlocks: 5 images = €24.50 → Premium only €15"),
       ],
-      cta: t("pricing.goPremium", "Go Premium"),
-      ctaLink: "/signup",
+      cta: user && isPremium ? t("pricing.startCreating", "Start Creating") : t("pricing.goPremium", "Go Premium"),
+      ctaLink: user ? (isPremium ? "/generate" : "#") : "/signup",
+      planKey: "premium",
       popular: true,
     },
     {
@@ -64,6 +76,7 @@ const PricingSection = () => {
       ],
       cta: t("pricing.contactUs", "Contact Us"),
       ctaLink: "/business",
+      planKey: "business",
       popular: false,
     },
   ];
@@ -203,17 +216,31 @@ const PricingSection = () => {
               </ul>
 
               {/* CTA Button */}
-              <Button
-                asChild
-                className={`mt-8 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
-                  plan.popular
-                    ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                    : ""
-                }`}
-                variant={plan.popular ? "default" : "outline"}
-              >
-                <Link to={plan.ctaLink}>{plan.cta}</Link>
-              </Button>
+              {user && plan.ctaLink === "#" ? (
+                <Button
+                  className={`mt-8 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
+                    plan.popular
+                      ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                      : ""
+                  }`}
+                  variant={plan.popular ? "default" : "outline"}
+                  onClick={() => setPurchaseModalOpen(true)}
+                >
+                  {plan.cta}
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className={`mt-8 w-full h-12 rounded-full font-medium transition-all duration-300 btn-press ${
+                    plan.popular
+                      ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                      : ""
+                  }`}
+                  variant={plan.popular ? "default" : "outline"}
+                >
+                  <Link to={plan.ctaLink}>{plan.cta}</Link>
+                </Button>
+              )}
               <div className="flex items-center justify-center gap-1.5 mt-4 text-xs">
                 <Shield className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                 <span className={plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}>
@@ -232,8 +259,13 @@ const PricingSection = () => {
           {t("pricing.vatIncluded", "All prices include VAT where applicable.")}
         </p>
       </div>
+      {user && (
+        <CreditPurchaseModal open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen} />
+      )}
     </section>
   );
-};
+});
+
+PricingSection.displayName = "PricingSection";
 
 export default PricingSection;

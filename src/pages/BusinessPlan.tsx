@@ -28,6 +28,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { SEOHead } from "@/components/SEOHead";
 import { BUSINESS_PRICE_MONTHLY } from "@/lib/constants";
 
 const contactSchema = z.object({
@@ -141,6 +142,11 @@ const BusinessPlan = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="AI Pet Portraits for Business | White-Label Solution | Artlypet"
+        description="Add AI pet portraits to your pet business. White-label solution with unlimited generations, 12 art styles, and full branding control. Start your free trial."
+        canonical="/business"
+      />
       {/* Header */}
       <header className="h-16 border-b border-border flex items-center px-4 lg:px-8 bg-card">
         <Button variant="ghost" size="icon" className="rounded-full" asChild>

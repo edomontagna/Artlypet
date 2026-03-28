@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -34,7 +35,7 @@ const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
   e.currentTarget.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
 };
 
-const GallerySection = () => {
+const GallerySection = memo(() => {
   const { t } = useTranslation();
   const { session } = useAuth();
   const navigate = useNavigate();
@@ -135,11 +136,11 @@ const GallerySection = () => {
                 {/* Content at bottom */}
                 <div className="absolute inset-x-0 bottom-0 p-5 z-10">
                   <h3 className="font-serif font-bold text-xl text-white mb-1">
-                    {item.name}
+                    {t(`gallery.style${i + 1}Name`, item.name)}
                   </h3>
                   {item.description && (
                     <p className="text-sm text-white/90 font-sans opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-                      {item.description}
+                      {t(`gallery.style${i + 1}Desc`, item.description)}
                     </p>
                   )}
                   <span className="inline-block mt-2 text-sm font-semibold text-white hover:bg-black/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
@@ -153,6 +154,8 @@ const GallerySection = () => {
       </div>
     </section>
   );
-};
+});
+
+GallerySection.displayName = "GallerySection";
 
 export default GallerySection;

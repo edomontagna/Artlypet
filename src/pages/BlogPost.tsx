@@ -1,18 +1,82 @@
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Clock, Calendar, Sparkles } from "lucide-react";
+import { Clock, Calendar, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BlurImage } from "@/components/BlurImage";
+import { SEOHead } from "@/components/SEOHead";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { blogPosts } from "@/data/blogPosts";
+
+const SITE_URL = "https://artlypet.com";
 
 const BlogPost = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
   const otherPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 3);
+
+  const postTitle = post ? t(post.titleKey) : "";
+  const postExcerpt = post ? t(post.excerptKey) : "";
+  const postImage = post ? `${SITE_URL}${post.image}` : undefined;
+
+  // BlogPosting + BreadcrumbList structured data
+  useEffect(() => {
+    if (!post) return;
+
+    const blogPostingSchema = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: postTitle,
+      description: postExcerpt,
+      image: postImage,
+      datePublished: post.date,
+      author: { "@type": "Organization", name: "Artlypet" },
+      publisher: { "@type": "Organization", name: "Artlypet" },
+    };
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: SITE_URL,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Blog",
+          item: `${SITE_URL}/blog`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: postTitle,
+          item: `${SITE_URL}/blog/${post.slug}`,
+        },
+      ],
+    };
+
+    const blogScript = document.createElement("script");
+    blogScript.type = "application/ld+json";
+    blogScript.textContent = JSON.stringify(blogPostingSchema);
+    document.head.appendChild(blogScript);
+
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.textContent = JSON.stringify(breadcrumbSchema);
+    document.head.appendChild(breadcrumbScript);
+
+    return () => {
+      document.head.removeChild(blogScript);
+      document.head.removeChild(breadcrumbScript);
+    };
+  }, [post, postTitle, postExcerpt, postImage]);
 
   if (!post) {
     return (
@@ -34,14 +98,25 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${postTitle} | Artlypet Blog`}
+        description={postExcerpt}
+        canonical={`/blog/${post.slug}`}
+        ogImage={postImage}
+        ogType="article"
+      />
       <Navbar />
       <article className="container px-6 lg:px-8 py-16 lg:py-24 max-w-3xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm mb-8" aria-label="Breadcrumb">
+          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            {t("nav.home", "Home")}
+          </Link>
+          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
           <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
             {t("blog.label", "Blog")}
           </Link>
-          <span className="text-muted-foreground/50">/</span>
+          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
           <span className="text-foreground font-medium truncate">{t(post.titleKey)}</span>
         </nav>
 

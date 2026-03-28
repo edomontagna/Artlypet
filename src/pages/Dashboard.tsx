@@ -3,21 +3,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer, Heart, Gift } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer, Heart, Gift, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
-import { useGenerations } from "@/hooks/useGenerations";
+import { useGenerations, useInfiniteGenerations } from "@/hooks/useGenerations";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { getServedImage, purchaseHdImage } from "@/services/generations";
+import { getServedImage, purchaseHdImage, deleteGeneration } from "@/services/generations";
 import { getSignedUrl } from "@/services/storage";
 import { useTranslation } from "react-i18next";
-import { CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
+import { CREDIT_COST_SINGLE, CREDIT_COST_MIX, PREMIUM_PRICE } from "@/lib/constants";
+import { trackPurchase } from "@/hooks/useAnalytics";
 import { PortraitLightbox } from "@/components/PortraitLightbox";
 
 // Thumbnail component that loads signed URL from storage path
@@ -38,12 +40,38 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"dashboard" | "history" | "settings">("dashboard");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const VALID_TABS = ["dashboard", "history", "settings"] as const;
+  type TabId = typeof VALID_TABS[number];
+  const tabParam = searchParams.get("tab");
+  const activeTab: TabId = VALID_TABS.includes(tabParam as TabId) ? (tabParam as TabId) : "dashboard";
+
+  const setActiveTab = (tab: TabId) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (tab === "dashboard") {
+        next.delete("tab");
+      } else {
+        next.set("tab", tab);
+      }
+      return next;
+    }, { replace: true });
+  };
   const { data: profile, isLoading: profileLoading, isError: profileError } = useProfile();
   const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
   const { data: generations, isLoading: generationsLoading, isError: generationsError } = useGenerations();
-  const hasError = profileError || creditsError || generationsError;
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: infiniteLoading,
+    isError: infiniteError,
+  } = useInfiniteGenerations();
+  const allGenerations = infiniteData?.pages.flat() ?? [];
+  const queryClient = useQueryClient();
+  const hasError = profileError || creditsError || generationsError || infiniteError;
   const updateProfile = useUpdateProfile();
 
   const [editName, setEditName] = useState("");
@@ -84,8 +112,13 @@ const Dashboard = () => {
           colors: ["#d4956a", "#c17d52", "#e8b896"],
         });
       });
+      trackPurchase(PREMIUM_PRICE, "premium");
+      localStorage.setItem("credits-updated", Date.now().toString());
     }
-  }, []);
+    if (params.get("payment") === "cancelled") {
+      toast.error(t("dashboard.paymentCancelled", "Payment was cancelled. No charges were made."));
+    }
+  }, [t]);
 
   // Redirect first-time users with 0 generations to /generate
   useEffect(() => {
@@ -461,11 +494,11 @@ const Dashboard = () => {
             <motion.div key="history" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-4xl">
               <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabHistory", "History")}</h2>
               <p className="text-muted-foreground mb-8">{t("dashboard.historyDesc", "All your generated portraits")}</p>
-              {generationsLoading ? (
+              {infiniteLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
                 </div>
-              ) : generations && generations.length > 0 ? (
+              ) : allGenerations.length > 0 ? (
                 <>
                 {/* Filter bar */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -503,7 +536,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 {(() => {
-                  const filteredGenerations = generations.filter((gen) => {
+                  const filteredGenerations = allGenerations.filter((gen) => {
                     if (historyFilter === "favorites" && !favorites.includes(gen.id)) return false;
                     if (historyFilter !== "all" && historyFilter !== "favorites" && gen.status !== historyFilter) return false;
                     if (historySearch) {
@@ -590,6 +623,26 @@ const Dashboard = () => {
                     </div>
                   );
                 })()}
+                {/* Load More button */}
+                {hasNextPage && (
+                  <div className="text-center mt-8">
+                    <Button
+                      variant="outline"
+                      className="rounded-full gap-2"
+                      onClick={() => fetchNextPage()}
+                      disabled={isFetchingNextPage}
+                    >
+                      {isFetchingNextPage ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          {t("dashboard.loading", "Loading...")}
+                        </>
+                      ) : (
+                        t("dashboard.loadMore", "Load More")
+                      )}
+                    </Button>
+                  </div>
+                )}
                 </>
               ) : (
                 <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
