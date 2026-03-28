@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
 
 const COOKIE_KEY = "artlypet-cookie-consent";
 
@@ -12,7 +13,7 @@ export interface CookieConsent {
 }
 
 export const getConsent = (): CookieConsent | null => {
-  const raw = localStorage.getItem(COOKIE_KEY);
+  const raw = safeGetItem(COOKIE_KEY);
   if (!raw) return null;
   // Backward compat: old format stored "accepted"/"declined"
   if (raw === "accepted") return { essential: true, analytics: true, marketing: true };
@@ -38,7 +39,7 @@ export const CookieBanner = () => {
   }, []);
 
   const saveConsent = (consent: CookieConsent) => {
-    localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+    safeSetItem(COOKIE_KEY, JSON.stringify(consent));
     setVisible(false);
     window.dispatchEvent(new Event("cookie-consent-changed"));
   };

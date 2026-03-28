@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -30,7 +31,7 @@ const Navbar = () => {
 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("artlypet-theme") as "light" | "dark") ||
+      return (safeGetItem("artlypet-theme") as "light" | "dark") ||
              (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     }
     return "light";
@@ -57,7 +58,7 @@ const Navbar = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("artlypet-theme", next);
+    safeSetItem("artlypet-theme", next);
     if (next === "dark") {
       document.documentElement.classList.add("dark");
     } else {

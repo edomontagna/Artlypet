@@ -78,7 +78,7 @@ const StylesGallery = () => {
                     {style.preview_url ? (
                       <img
                         src={style.preview_url}
-                        alt={style.name}
+                        alt={`Pet portrait in ${style.name} art style`}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (

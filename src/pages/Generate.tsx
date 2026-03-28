@@ -24,6 +24,7 @@ import { CreationTheater } from "@/components/CreationTheater";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { trackEvent } from "@/hooks/useAnalytics";
 import { compressImage } from "@/lib/imageCompression";
+import { safeSetItem } from "@/lib/storage";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -115,7 +116,7 @@ const Generate = () => {
       }, 800);
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       queryClient.invalidateQueries({ queryKey: ["generations"] });
-      localStorage.setItem("credits-updated", Date.now().toString());
+      safeSetItem("credits-updated", Date.now().toString());
     } else if (generationStatus?.status === "failed") {
       setGenerating(false);
       isGeneratingRef.current = false;
@@ -125,7 +126,7 @@ const Generate = () => {
       trackEvent("GenerationFailed", "generation_failed", { generation_id: generationId, generation_type: generationType, error: generationStatus.error_message });
       toast.error(getFriendlyErrorMessage(generationStatus.error_message));
       queryClient.invalidateQueries({ queryKey: ["credits"] });
-      localStorage.setItem("credits-updated", Date.now().toString());
+      safeSetItem("credits-updated", Date.now().toString());
     }
     return () => controller.abort();
   }, [generationStatus?.status, generationId, generating, queryClient]);
@@ -250,6 +251,9 @@ const Generate = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+        Skip to content
+      </a>
       {/* Header */}
       <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
         <div className="flex items-center gap-2">
@@ -279,7 +283,7 @@ const Generate = () => {
         </div>
       </header>
 
-      <div className="container px-4 lg:px-8 py-8 max-w-4xl">
+      <div id="main-content" className="container px-4 lg:px-8 py-8 max-w-4xl">
 
         {(creditsError || profileError) && (
           <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
@@ -672,7 +676,13 @@ const Generate = () => {
                       </button>
                     </div>
                   ) : !compressing ? (
-                    <label onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
+                    <label
+                      htmlFor="upload-pet-photo"
+                      aria-label="Upload pet photo"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.getElementById("upload-pet-photo")?.click(); } }}
+                      onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                       className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
                         isDragging ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                       }`}
@@ -680,7 +690,7 @@ const Generate = () => {
                       <Upload className="h-12 w-12 text-muted-foreground/30 mb-3" />
                       <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
                       <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                      <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFileChange} className="hidden" />
+                      <input id="upload-pet-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFileChange} className="hidden" />
                     </label>
                   ) : null}
                 </div>
@@ -700,7 +710,13 @@ const Generate = () => {
                         </button>
                       </div>
                     ) : (
-                      <label onDragOver={handleDragOver2} onDragLeave={handleDragLeave2} onDrop={handleDrop2}
+                      <label
+                        htmlFor="upload-second-photo"
+                        aria-label="Upload second photo"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.getElementById("upload-second-photo")?.click(); } }}
+                        onDragOver={handleDragOver2} onDragLeave={handleDragLeave2} onDrop={handleDrop2}
                         className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
                           isDragging2 ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
                         }`}
@@ -708,7 +724,7 @@ const Generate = () => {
                         <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
                         <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
                         <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                        <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile2Change} className="hidden" />
+                        <input id="upload-second-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile2Change} className="hidden" />
                       </label>
                     )}
                   </div>
@@ -758,7 +774,7 @@ const Generate = () => {
                       }`}
                     >
                       {style.preview_url ? (
-                        <img src={style.preview_url} alt={style.name} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                        <img src={style.preview_url} alt={`Pet portrait in ${style.name} art style`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
                       )}

@@ -232,7 +232,7 @@ const StyleDetail = () => {
                   {s.preview_url ? (
                     <img
                       src={s.preview_url}
-                      alt={s.name}
+                      alt={`Pet portrait in ${s.name} art style`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />

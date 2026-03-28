@@ -15,6 +15,20 @@ if (missingEnvVars.length > 0) {
   console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
 }
 
+// --- Rate limiting ---
+const rateLimitMap = new Map<string, number[]>();
+const MAX_REQUESTS = 5;
+const WINDOW_MS = 60000;
+
+const checkRateLimit = (userId: string): boolean => {
+  const now = Date.now();
+  const requests = rateLimitMap.get(userId)?.filter(t => now - t < WINDOW_MS) || [];
+  if (requests.length >= MAX_REQUESTS) return false;
+  requests.push(now);
+  rateLimitMap.set(userId, requests);
+  return true;
+};
+
 const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
 
 const getCorsHeaders = (req: Request) => {
@@ -46,6 +60,14 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Rate limit check
+    if (!checkRateLimit(user.id)) {
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" } },
+      );
+    }
 
     const { original_id, style_id, generation_type = "single", original_id_2 } = await req.json();
 

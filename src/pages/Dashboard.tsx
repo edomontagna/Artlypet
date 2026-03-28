@@ -16,11 +16,26 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { getServedImage, purchaseHdImage, deleteGeneration } from "@/services/generations";
+import { deleteAccount } from "@/services/account";
 import { getSignedUrl } from "@/services/storage";
 import { useTranslation } from "react-i18next";
 import { CREDIT_COST_SINGLE, CREDIT_COST_MIX, PREMIUM_PRICE } from "@/lib/constants";
 import { trackPurchase } from "@/hooks/useAnalytics";
 import { PortraitLightbox } from "@/components/PortraitLightbox";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
+
+/** Shape of a generation row with joined style data */
+interface GenerationWithStyle {
+  id: string;
+  status: string;
+  storage_path: string | null;
+  is_hd_unlocked: boolean;
+  created_at: string;
+  error_message?: string | null;
+  styles: { name: string } | null;
+  image_originals: { storage_path: string } | null;
+  [key: string]: unknown;
+}
 
 // Thumbnail component that loads signed URL from storage path
 const PortraitThumbnail = ({ storagePath, alt }: { storagePath: string; alt: string }) => {
@@ -77,19 +92,20 @@ const Dashboard = () => {
   const [editName, setEditName] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [creditModalOpen, setCreditModalOpen] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("artlypet_onboarded"));
+  const [showOnboarding, setShowOnboarding] = useState(() => !safeGetItem("artlypet_onboarded"));
   const [selectedGeneration, setSelectedGeneration] = useState<typeof generations extends (infer T)[] | undefined ? T | null : null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [historySearch, setHistorySearch] = useState("");
   const [historyFilter, setHistoryFilter] = useState<"all" | "completed" | "failed" | "favorites">("all");
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [favorites, setFavorites] = useState<string[]>(() => {
-    try { return JSON.parse(localStorage.getItem("artlypet_favorites") || "[]"); } catch { return []; }
+    try { return JSON.parse(safeGetItem("artlypet_favorites") || "[]"); } catch { return []; }
   });
 
   const toggleFavorite = (id: string) => {
     setFavorites(prev => {
       const next = prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id];
-      localStorage.setItem("artlypet_favorites", JSON.stringify(next));
+      safeSetItem("artlypet_favorites", JSON.stringify(next));
       return next;
     });
   };
@@ -113,7 +129,7 @@ const Dashboard = () => {
         });
       });
       trackPurchase(PREMIUM_PRICE, "premium");
-      localStorage.setItem("credits-updated", Date.now().toString());
+      safeSetItem("credits-updated", Date.now().toString());
     }
     if (params.get("payment") === "cancelled") {
       toast.error(t("dashboard.paymentCancelled", "Payment was cancelled. No charges were made."));
@@ -122,8 +138,8 @@ const Dashboard = () => {
 
   // Redirect first-time users with 0 generations to /generate
   useEffect(() => {
-    if (!generationsLoading && generations && generations.length === 0 && !localStorage.getItem("artlypet_seen_dashboard")) {
-      localStorage.setItem("artlypet_seen_dashboard", "true");
+    if (!generationsLoading && generations && generations.length === 0 && !safeGetItem("artlypet_seen_dashboard")) {
+      safeSetItem("artlypet_seen_dashboard", "true");
       navigate("/generate");
     }
   }, [generationsLoading, generations, navigate]);
@@ -153,14 +169,18 @@ const Dashboard = () => {
 
   const handleDeleteAccount = async () => {
     if (!confirm(t("dashboard.confirmDelete", "Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted."))) return;
-    await supabase.from("audit_log").insert({
-      user_id: user?.id,
-      event_type: "account_deleted" as const,
-      metadata: { requested_at: new Date().toISOString() },
-    });
-    await signOut();
-    toast.success(t("dashboard.deletionRequested", "Account deletion requested. Your data will be removed shortly."));
-    navigate("/");
+    setDeletingAccount(true);
+    try {
+      await deleteAccount();
+      await signOut();
+      toast.success(t("dashboard.accountDeleted", "Your account and all associated data have been permanently deleted."));
+      navigate("/");
+    } catch (err) {
+      console.error("Account deletion failed:", err);
+      toast.error(t("dashboard.deletionFailed", "Failed to delete account. Please try again or contact support."));
+    } finally {
+      setDeletingAccount(false);
+    }
   };
 
   const handleUnlockHd = async (generationId: string) => {
@@ -198,6 +218,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+        Skip to content
+      </a>
       {/* Left sidebar */}
       <aside className="hidden lg:flex w-56 bg-card border-r border-border flex-col">
         <div className="p-4 border-b border-border">
@@ -268,7 +291,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        <div className="flex-1 p-6 lg:p-10 overflow-auto">
+        <div id="main-content" className="flex-1 p-6 lg:p-10 overflow-auto">
           {hasError && (
             <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
               <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
@@ -395,7 +418,7 @@ const Dashboard = () => {
                         )}
                         {gen.status === "completed" && (
                           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
-                            <p className="text-xs font-medium text-white truncate">{(gen as any)?.styles?.name || "Portrait"}</p>
+                            <p className="text-xs font-medium text-white truncate">{(gen as GenerationWithStyle)?.styles?.name || "Portrait"}</p>
                           </div>
                         )}
                         {/* Failed generation — actionable text */}
@@ -540,7 +563,7 @@ const Dashboard = () => {
                     if (historyFilter === "favorites" && !favorites.includes(gen.id)) return false;
                     if (historyFilter !== "all" && historyFilter !== "favorites" && gen.status !== historyFilter) return false;
                     if (historySearch) {
-                      const styleName = ((gen as any)?.styles?.name || "").toLowerCase();
+                      const styleName = ((gen as GenerationWithStyle)?.styles?.name || "").toLowerCase();
                       if (!styleName.includes(historySearch.toLowerCase())) return false;
                     }
                     return true;
@@ -592,7 +615,7 @@ const Dashboard = () => {
                         )}
                       </div>
                       <div className="p-3">
-                        <p className="text-sm font-medium truncate">{(gen as Record<string, { name?: string }>).styles?.name || "Portrait"}</p>
+                        <p className="text-sm font-medium truncate">{(gen as GenerationWithStyle)?.styles?.name || "Portrait"}</p>
                         <div className="flex items-center justify-between mt-1">
                           <span className={`text-xs px-2 py-0.5 rounded-full ${
                             gen.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
@@ -731,8 +754,9 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     {t("dashboard.deleteWarning", "Permanently delete your account and all associated data. This action cannot be undone.")}
                   </p>
-                  <Button variant="destructive" size="sm" className="rounded-full" onClick={handleDeleteAccount}>
-                    {t("dashboard.deleteAccount", "Delete Account")}
+                  <Button variant="destructive" size="sm" className="rounded-full" onClick={handleDeleteAccount} disabled={deletingAccount}>
+                    {deletingAccount && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {deletingAccount ? t("dashboard.deletingAccount", "Deleting...") : t("dashboard.deleteAccount", "Delete Account")}
                   </Button>
                 </div>
               </div>

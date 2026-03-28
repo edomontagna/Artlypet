@@ -4,6 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
 
 export const ExitIntentPopup = () => {
   const { t } = useTranslation();
@@ -11,7 +12,7 @@ export const ExitIntentPopup = () => {
 
   useEffect(() => {
     // Don't show if already dismissed or user is logged in
-    if (localStorage.getItem("artlypet_exit_dismissed")) return;
+    if (safeGetItem("artlypet_exit_dismissed")) return;
 
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0) {
@@ -34,7 +35,7 @@ export const ExitIntentPopup = () => {
 
   const handleDismiss = () => {
     setShow(false);
-    localStorage.setItem("artlypet_exit_dismissed", "true");
+    safeSetItem("artlypet_exit_dismissed", "true");
   };
 
   return (

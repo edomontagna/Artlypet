@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="96" fill="#faf8f5"/>
+  <!-- Paw pad (large center) -->
+  <ellipse cx="256" cy="310" rx="64" ry="56" fill="#5a7a5a"/>
+  <!-- Paw toes -->
+  <ellipse cx="180" cy="230" rx="32" ry="38" fill="#5a7a5a"/>
+  <ellipse cx="256" cy="200" rx="32" ry="38" fill="#5a7a5a"/>
+  <ellipse cx="332" cy="230" rx="32" ry="38" fill="#5a7a5a"/>
+  <!-- Paintbrush handle -->
+  <rect x="350" y="100" width="16" height="140" rx="8" fill="#b8860b" transform="rotate(30, 358, 170)"/>
+  <!-- Paintbrush bristles -->
+  <ellipse cx="388" cy="108" rx="14" ry="24" fill="#5a7a5a" transform="rotate(30, 388, 108)"/>
+  <!-- Paint splatter accent -->
+  <circle cx="400" cy="80" r="10" fill="#b8860b" opacity="0.7"/>
+  <circle cx="420" cy="96" r="6" fill="#b8860b" opacity="0.5"/>
+</svg>
