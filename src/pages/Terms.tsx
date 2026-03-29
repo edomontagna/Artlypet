@@ -8,7 +8,7 @@ const Terms = () => (
       <h1 className="font-serif text-4xl font-bold text-foreground mb-8">Terms of Service</h1>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-        <p><strong>Last updated:</strong> February 2026</p>
+        <p><strong>Last updated:</strong> March 2026</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">1. Service Description</h2>
         <p>Artlypet provides AI-powered pet portrait generation. You upload a photo of your pet, choose an artistic style, and our AI creates a digital portrait. Optional physical prints are available for delivery within the EU.</p>

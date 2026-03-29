@@ -8,7 +8,7 @@ const Privacy = () => (
       <h1 className="font-serif text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-        <p><strong>Last updated:</strong> February 2026</p>
+        <p><strong>Last updated:</strong> March 2026</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">1. Data We Collect</h2>
         <p>When you use Artlypet, we collect: your email address and display name (provided during registration), pet photos you upload for portrait generation, payment information (processed securely by Stripe — we never store card details), and usage data such as pages visited and features used.</p>
