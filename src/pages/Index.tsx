@@ -9,10 +9,12 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import PrintShopSection from "@/components/landing/PrintShopSection";
 import FAQSection from "@/components/landing/FAQSection";
 import FooterSection from "@/components/landing/FooterSection";
+import { ActivityFeed } from "@/components/landing/ActivityFeed";
+import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
 
 const Index = () => {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pb-16 sm:pb-0">
       <SEOHead
         title="Artlypet — AI Pet Portraits | Transform Your Pet Into Art"
         description="Transform your pet's photo into stunning AI-generated art portraits. Choose from 12+ art styles including Renaissance, Pop Art, and Watercolor. Free to start."
@@ -32,6 +34,8 @@ const Index = () => {
       <PrintShopSection />
       <FAQSection />
       <FooterSection />
+      <ActivityFeed />
+      <MobileStickyBar />
     </main>
   );
 };

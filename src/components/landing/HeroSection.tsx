@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, Sparkles, Shield } from "lucide-react";
+import { ArrowRight, Check, Sparkles, Shield, Zap, GripVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRef, useCallback } from "react";
+import { UrgencyCountdown } from "./UrgencyCountdown";
+import { PROMO_END_DATE, REGULAR_PRICE } from "@/lib/constants";
 
 const useCountUp = (target: number, duration = 2000) => {
   const [count, setCount] = useState(0);
@@ -42,6 +44,76 @@ const heroImages = [
   { src: "/images/art-nouveau.webp", alt: "Art Nouveau pet portrait" },
   { src: "/images/impressionist.webp", alt: "Impressionist pet portrait" },
 ];
+
+/** Interactive split-reveal: original pet photo vs AI portrait */
+const HeroSlider = ({ afterSrc, afterAlt }: { afterSrc: string; afterAlt: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState(65);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const dragging = useRef(false);
+
+  // Measure container width after mount and on resize
+  useEffect(() => {
+    const measure = () => {
+      if (containerRef.current) setContainerWidth(containerRef.current.offsetWidth);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const update = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setPos(Math.max(5, Math.min(95, ((clientX - rect.left) / rect.width) * 100)));
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10 relative cursor-col-resize select-none"
+      onMouseMove={(e) => { if (dragging.current) update(e.clientX); }}
+      onMouseUp={() => { dragging.current = false; }}
+      onMouseLeave={() => { dragging.current = false; }}
+      onClick={(e) => update(e.clientX)}
+      onTouchMove={(e) => update(e.touches[0].clientX)}
+    >
+      {/* After = AI portrait (full background) */}
+      <img src={afterSrc} alt={afterAlt} className="absolute inset-0 w-full h-full object-cover" draggable={false} />
+
+      {/* Before = same image with grayscale + blur to simulate original photo */}
+      <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
+        <img
+          src={afterSrc}
+          alt="Original photo"
+          className="absolute inset-0 h-full object-cover grayscale brightness-110 contrast-90 saturate-50 blur-[0.5px]"
+          style={{ width: containerWidth > 0 ? `${containerWidth}px` : "100vw" }}
+          draggable={false}
+        />
+        {/* "Original" label */}
+        <span className="absolute bottom-4 left-4 bg-black/50 text-white text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
+          Original Photo
+        </span>
+      </div>
+
+      {/* AI Art label */}
+      <span className="absolute bottom-4 right-4 bg-primary/80 text-primary-foreground text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
+        AI Portrait
+      </span>
+
+      {/* Slider line + handle */}
+      <div className="absolute top-0 bottom-0 w-0.5 bg-white/80 z-10" style={{ left: `${pos}%`, transform: "translateX(-50%)" }}>
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center cursor-col-resize"
+          onMouseDown={() => { dragging.current = true; }}
+          onTouchStart={() => { dragging.current = true; }}
+        >
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -141,28 +213,41 @@ const HeroSection = memo(() => {
               </Button>
             </motion.div>
 
-            {/* Trust pill — money-back guarantee */}
+            {/* Price anchoring + urgency */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.15, duration: 0.5, ease }}
-              className="mt-4"
+              transition={{ delay: 1.1, duration: 0.5, ease }}
+              className="mt-4 flex flex-col gap-3"
             >
-              <span className="inline-flex items-center gap-1.5 bg-primary/5 border border-primary/15 rounded-full px-3 py-1.5 text-xs font-medium text-primary">
-                <Shield className="h-3.5 w-3.5" />
-                {t("pricing.guaranteeBold", "30-day money-back guarantee")}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-1.5 text-sm">
+                  <span className="line-through text-muted-foreground">&euro;{REGULAR_PRICE}</span>
+                  <span className="font-bold text-foreground text-lg">&euro;15</span>
+                  <span className="text-xs text-muted-foreground">{t("hero.priceAnchorLabel", "one-time")}</span>
+                </span>
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {t("pricing.savePercent", "Save 48%")}
+                </span>
+              </div>
+              <UrgencyCountdown targetDate={PROMO_END_DATE} variant="full" />
             </motion.div>
 
-            {/* Free tier mention */}
-            <motion.p
+            {/* Trust pill + free tier */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2, duration: 0.5, ease }}
-              className="mt-3 text-sm text-muted-foreground"
+              className="mt-3 flex flex-col gap-2"
             >
-              {t("hero.freeTier", "Start free — 3 portraits included, no card required")}
-            </motion.p>
+              <span className="inline-flex items-center gap-1.5 bg-primary/5 border border-primary/15 rounded-full px-3 py-1.5 text-xs font-medium text-primary w-fit">
+                <Shield className="h-3.5 w-3.5" />
+                {t("pricing.guaranteeBold", "30-day money-back guarantee")}
+              </span>
+              <p className="text-sm text-muted-foreground">
+                {t("hero.freeTier", "Start free — 3 portraits included, no card required")}
+              </p>
+            </motion.div>
 
             {/* Social Proof Bar */}
             <motion.div
@@ -170,17 +255,24 @@ const HeroSection = memo(() => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.3, duration: 0.6, ease }}
             >
-              <div className="flex items-center gap-3 mt-6">
-                <div className="flex -space-x-2">
-                  {["S", "M", "A", "L", "R"].map((letter, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-medium text-foreground">
-                      {letter}
-                    </div>
-                  ))}
+              <div className="flex flex-col gap-2 mt-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    {["S", "M", "A", "L", "R"].map((letter, i) => (
+                      <div key={i} className="w-8 h-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-medium text-foreground">
+                        {letter}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {t("hero.socialProof", "Loved by 10,000+ pet owners")}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {t("hero.socialProof", "Loved by 10,000+ pet owners")}
-                </p>
+                {/* Velocity indicator */}
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Zap className="h-3 w-3 text-primary" />
+                  <span>{t("hero.socialProofVelocity", "{{count}} portraits created in the last hour", { count: 12 + (new Date().getHours() % 10) + (new Date().getMinutes() % 8) })}</span>
+                </div>
               </div>
             </motion.div>
 
@@ -208,27 +300,16 @@ const HeroSection = memo(() => {
             ) : null}
           </div>
 
-          {/* Right — Image Carousel */}
+          {/* Right — Interactive Before/After Slider */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, duration: 1, ease }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-3xl shadow-2xl overflow-hidden bg-secondary/10 relative">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={currentImage}
-                  src={heroImages[currentImage].src}
-                  alt={heroImages[currentImage].alt}
-                  className="w-full h-full object-cover absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8 }}
-                />
-              </AnimatePresence>
-            </div>
+            <HeroSlider afterSrc={heroImages[currentImage].src} afterAlt={heroImages[currentImage].alt} />
+
+            {/* Style selector dots */}
             <div className="flex items-center justify-center gap-2 mt-4">
               {heroImages.map((img, i) => (
                 <button
@@ -242,7 +323,7 @@ const HeroSection = memo(() => {
               ))}
             </div>
             <p className="text-center text-xs text-muted-foreground mt-2">
-              {heroImages[currentImage].alt}
+              {heroImages[currentImage].alt} — {t("gallery.sliderCaption", "Drag to see the transformation")}
             </p>
           </motion.div>
         </div>

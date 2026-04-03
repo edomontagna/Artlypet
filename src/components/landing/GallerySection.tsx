@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -6,6 +6,7 @@ import { useStyles } from "@/hooks/useStyles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlurImage } from "@/components/BlurImage";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const fallbackStyles = [
   { id: "1", name: "Oil Painting", description: "Rich textures & golden tones", preview_url: "/images/oil-painting.jpg" },
@@ -118,14 +119,34 @@ const GallerySection = memo(() => {
                     {t("gallery.new", "New")}
                   </span>
                 )}
+                {/* Before & After badge on first 3 cards */}
+                {i < 3 && (
+                  <span className="absolute top-3 right-3 z-10 bg-white/90 dark:bg-card/90 text-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm">
+                    {t("gallery.transformationBadge", "Before & After")}
+                  </span>
+                )}
 
                 {/* Image */}
                 {item.preview_url ? (
-                  <BlurImage
-                    src={item.preview_url}
-                    alt={`${item.name} pet portrait`}
-                    className="absolute inset-0 w-full h-full"
-                  />
+                  <>
+                    <BlurImage
+                      src={item.preview_url}
+                      alt={`${item.name} pet portrait`}
+                      className="absolute inset-0 w-full h-full"
+                    />
+                    {/* Before/After hover effect on first 3 cards */}
+                    {i < 3 && (
+                      <div className="absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ clipPath: "inset(0 50% 0 0)" }}>
+                        <img
+                          src={item.preview_url}
+                          alt="Original"
+                          className="absolute inset-0 w-full h-full object-cover grayscale brightness-110 contrast-90 saturate-50"
+                          draggable={false}
+                        />
+                        <div className="absolute inset-y-0 left-1/2 w-px bg-white/80 z-10" />
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="absolute inset-0 bg-secondary/10" />
                 )}
@@ -151,6 +172,23 @@ const GallerySection = memo(() => {
             ))}
           </div>
         )}
+
+        {/* Dedicated Before/After Slider showcase */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.6, ease }}
+          className="max-w-xl mx-auto mt-16"
+        >
+          <BeforeAfterSlider
+            beforeUrl="/images/oil-painting.jpg"
+            afterUrl="/images/renaissance.webp"
+          />
+          <p className="text-center text-sm text-muted-foreground mt-3">
+            {t("gallery.sliderCaption", "Drag to see the transformation")}
+          </p>
+        </motion.div>
       </div>
     </section>
   );

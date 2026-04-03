@@ -26,7 +26,9 @@
     "noSub": "Kein Abonnement",
     "cancelAnytime": "Jederzeit kündbar",
     "freeCredits": "3 kostenlose Porträts",
-    "freeTier": "Starte kostenlos — 3 Porträts inklusive, keine Karte nötig"
+    "freeTier": "Starte kostenlos — 3 Porträts inklusive, keine Karte nötig",
+    "socialProofVelocity": "{{count}} Porträts in der letzten Stunde erstellt",
+    "priceAnchorLabel": "einmalig"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -63,7 +65,9 @@
     "style5Name": "Jugendstil",
     "style5Desc": "Fließende Linien & organische Formen",
     "style6Name": "Impressionismus",
-    "style6Desc": "Geflecktes Licht & sichtbare Pinselstriche"
+    "style6Desc": "Geflecktes Licht & sichtbare Pinselstriche",
+    "transformationBadge": "Vorher & Nachher",
+    "sliderCaption": "Ziehen um die Verwandlung zu sehen"
   },
   "pricing": {
     "title": "Einfache, Transparente Preise",
@@ -118,7 +122,12 @@
       "analytics": "Analyse-Dashboard"
     },
     "urgency": "Einführungsangebot — Premium für €15 (regulär €29)",
-    "vatIncluded": "Alle Preise verstehen sich inklusive MwSt., soweit zutreffend."
+    "vatIncluded": "Alle Preise verstehen sich inklusive MwSt., soweit zutreffend.",
+    "popularPercent": "Am Beliebtesten — von 73% der Kunden gewählt",
+    "regularPrice": "€29",
+    "savePercent": "48% sparen",
+    "scarcity": "{{count}} Personen haben heute upgegraded",
+    "priceAnchor": "€15 einmalig"
   },
   "printShop": {
     "badge": "Physische Drucke",
@@ -150,7 +159,9 @@
     "t3": "Der Aquarell-Stil ist absolut wunderschön. Ich habe einen Leinwanddruck bestellt und er sieht an meiner Wand aus wie im Museum.",
     "t4": "Der Ölgemälde-Stil ist unglaublich — er fängt die Persönlichkeit meiner Katze wirklich ein. Ich würde mir in Zukunft noch mehr Stiloptionen wünschen!",
     "t5": "Ich habe meiner Mutter ein Renaissance-Porträt meines Labradors geschenkt. Sie hat vor Freude geweint!",
-    "t6": "Der Jugendstil hat das Foto meiner Katze in ein wahres Kunstwerk verwandelt. Mehr Hintergrundoptionen wären toll, aber die Qualität ist ausgezeichnet."
+    "t6": "Der Jugendstil hat das Foto meiner Katze in ein wahres Kunstwerk verwandelt. Mehr Hintergrundoptionen wären toll, aber die Qualität ist ausgezeichnet.",
+    "verified": "Verifizierter Käufer",
+    "joinCount": "Schließe dich 10.000+ zufriedenen Kunden an"
   },
   "faq": {
     "label": "Hilfe",
@@ -305,7 +316,30 @@
     "filterFavorites": "Favoriten",
     "noResults": "Keine Porträts entsprechen deinen Filtern",
     "favorite": "Zu Favoriten hinzufügen",
-    "unfavorite": "Aus Favoriten entfernen"
+    "unfavorite": "Aus Favoriten entfernen",
+    "goodMorning": "Guten Morgen",
+    "goodAfternoon": "Guten Tag",
+    "goodEvening": "Guten Abend",
+    "createBeautiful": "Lass uns heute etwas Schönes schaffen.",
+    "createNewPortrait": "Neues Porträt Erstellen",
+    "streak": "Serie",
+    "days": "Tage",
+    "streakStart": "Heute starten!",
+    "shareTheLove": "Teile die Freude",
+    "inviteFriend": "Freund Einladen",
+    "emptyTitle2": "Deine Meisterwerk-Galerie wartet",
+    "emptyDesc2": "Lade dein erstes Tierfoto hoch und wir verwandeln es in atemberaubende Kunst — in nur 60 Sekunden",
+    "emptyStylesHint": "20+ Stile verfügbar",
+    "printTitle": "Deine Porträts auf Museumsleinwand",
+    "noFavorites": "Noch keine Favoriten — tippe auf das Herz bei einem Porträt",
+    "noFailed": "Keine fehlgeschlagenen Generierungen — großartig!",
+    "noSearchResults": "Keine Porträts für '{{search}}' gefunden",
+    "sortNewest": "Neueste",
+    "sortOldest": "Älteste",
+    "accountDeleted": "Dein Konto und alle zugehörigen Daten wurden dauerhaft gelöscht.",
+    "deletionFailed": "Kontolöschung fehlgeschlagen. Bitte versuche es erneut.",
+    "deletingAccount": "Wird gelöscht...",
+    "paymentCancelled": "Zahlung abgebrochen. Keine Belastung erfolgt."
   },
   "demo": {
     "banner": "Demo-Modus — Dies ist eine Vorschau mit Beispieldaten.",
@@ -344,7 +378,12 @@
     "createAnother": "Weiteres Porträt Erstellen",
     "generationStarted": "Generierung gestartet! Dies kann bis zu 60 Sekunden dauern.",
     "uploadCta": "Klicke zum Hochladen oder ziehe hierher",
-    "loadError": "Kontodaten konnten nicht geladen werden. Bitte aktualisiere die Seite."
+    "loadError": "Kontodaten konnten nicht geladen werden. Bitte aktualisiere die Seite.",
+    "celebrationTitle": "Dein Meisterwerk ist fertig!",
+    "watermarkTitle": "Kostenlose Vorschau mit Wasserzeichen",
+    "watermarkDesc": "Schalte HD frei für das vollqualitative Bild ohne Wasserzeichen — perfekt zum Drucken und Teilen.",
+    "shareIncentive": "Teilen und 50 Bonuskredite verdienen",
+    "premiumAlt": "Oder mit Premium sparen"
   },
   "business": {
     "title": "Artlypet für Unternehmen",
@@ -450,7 +489,9 @@
     "step3Desc": "Dein Porträt ist in unter 60 Sekunden fertig. Lade es in HD herunter, bestelle einen Leinwanddruck oder teile es mit Freunden!",
     "skip": "Überspringen",
     "next": "Weiter",
-    "start": "Jetzt Erstellen!"
+    "start": "Jetzt Erstellen!",
+    "step4Title": "Freunde einladen, Kredite verdienen",
+    "step4Desc": "Teile deinen Empfehlungslink mit Freunden. Wenn sie sich anmelden, erhaltet ihr beide 150 Bonuskredite!"
   },
   "video": {
     "label": "Sieh es in Aktion",
@@ -460,7 +501,11 @@
     "cta": "Kostenlos Ausprobieren"
   },
   "press": {
-    "title": "Geliebt von Tierfreunden in ganz Europa"
+    "title": "Geliebt von Tierfreunden in ganz Europa",
+    "featuredIn": "Bekannt aus",
+    "gdpr": "DSGVO-konform",
+    "ssl": "SSL-verschlüsselt",
+    "satisfaction": "100% Zufriedenheit"
   },
   "styleDetail": {
     "artStyle": "Kunststil",
@@ -637,5 +682,31 @@
     "title": "Entdecken Sie unsere Kunststile",
     "tryStyle": "Diesen Stil ausprobieren",
     "cta": "Kostenlos loslegen"
+  },
+  "settings": {
+    "preferences": "Einstellungen",
+    "theme": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System",
+    "language": "Sprache",
+    "creditHistory": "Kredit-Verlauf",
+    "noTransactions": "Noch keine Transaktionen",
+    "dataPrivacy": "Daten & Datenschutz"
+  },
+  "countdown": {
+    "launchEnds": "Einführungspreis endet in:",
+    "days": "Tage",
+    "hours": "Std",
+    "minutes": "Min",
+    "seconds": "Sek"
+  },
+  "activity": {
+    "justCreated": "{{name}} aus {{city}} hat gerade ein {{style}} Porträt erstellt",
+    "minutesAgo": "vor {{count}} Min"
+  },
+  "mobileCta": {
+    "title": "Verwandle Dein Haustier",
+    "subtitle": "Kostenlos starten"
   }
 }

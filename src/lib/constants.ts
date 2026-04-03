@@ -11,6 +11,10 @@ export const PRINT_PRICE_FREE = 79.90;
 export const PRINT_PRICE_PREMIUM = 59.90;
 export const BUSINESS_PRICE_MONTHLY = 200;
 
+// Promotion — set a real end date for your launch campaign
+export const REGULAR_PRICE = 29;
+export const PROMO_END_DATE = "2026-05-31T23:59:59.000Z";
+
 // Generation types
 export type GenerationType = "single" | "mix";
 export type PlanType = "free" | "premium" | "business";

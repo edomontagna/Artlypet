@@ -168,6 +168,38 @@
     box-shadow: 0 0 20px hsl(var(--primary) / 0.25), 0 4px 12px hsl(var(--primary) / 0.1);
   }
 
+  /* Card hover lift */
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--primary) / 0.08);
+  }
+
+  /* Portrait overlay actions */
+  .portrait-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .group:hover .portrait-actions {
+    opacity: 1;
+  }
+
+  /* Streak flame glow */
+  .streak-glow {
+    text-shadow: 0 0 8px hsl(var(--primary) / 0.4);
+  }
+
+  /* Hide scrollbar for pill rows */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   /* Noise texture overlay */
   .bg-noise::after {
     content: '';

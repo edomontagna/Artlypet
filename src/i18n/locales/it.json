@@ -26,7 +26,9 @@
     "noSub": "Nessun abbonamento",
     "cancelAnytime": "Cancella quando vuoi",
     "freeCredits": "3 ritratti gratuiti",
-    "freeTier": "Inizia gratis — 3 ritratti inclusi, nessuna carta richiesta"
+    "freeTier": "Inizia gratis — 3 ritratti inclusi, nessuna carta richiesta",
+    "socialProofVelocity": "{{count}} ritratti creati nell'ultima ora",
+    "priceAnchorLabel": "una tantum"
   },
   "howItWorks": {
     "title": "Come Funziona",
@@ -63,7 +65,9 @@
     "style5Name": "Art Nouveau",
     "style5Desc": "Linee fluide e forme organiche",
     "style6Name": "Impressionista",
-    "style6Desc": "Luce screziata e pennellate visibili"
+    "style6Desc": "Luce screziata e pennellate visibili",
+    "transformationBadge": "Prima & Dopo",
+    "sliderCaption": "Trascina per vedere la trasformazione"
   },
   "pricing": {
     "title": "Prezzi Semplici e Trasparenti",
@@ -118,7 +122,12 @@
       "analytics": "Dashboard di analisi"
     },
     "urgency": "Offerta Lancio — Premium a €15 (prezzo normale €29)",
-    "vatIncluded": "Tutti i prezzi includono l'IVA ove applicabile."
+    "vatIncluded": "Tutti i prezzi includono l'IVA ove applicabile.",
+    "popularPercent": "Più Popolare — scelto dal 73% dei clienti",
+    "regularPrice": "€29",
+    "savePercent": "Risparmi 48%",
+    "scarcity": "{{count}} persone hanno fatto l'upgrade oggi",
+    "priceAnchor": "€15 una tantum"
   },
   "printShop": {
     "badge": "Stampe Fisiche",
@@ -150,7 +159,9 @@
     "t3": "Lo stile acquerello è assolutamente meraviglioso. Ho ordinato una stampa su tela e sembra degna di un museo sulla mia parete.",
     "t4": "Lo stile a olio è incredibile — cattura davvero la personalità del mio gatto. Mi piacerebbe vedere ancora più opzioni di stile in futuro!",
     "t5": "Ho regalato un ritratto rinascimentale del mio Labrador a mia madre. Ha pianto di gioia!",
-    "t6": "Lo stile Art Nouveau ha trasformato la foto del mio gatto in una vera opera d'arte. Mi piacerebbe avere più opzioni di sfondo, ma la qualità è eccellente."
+    "t6": "Lo stile Art Nouveau ha trasformato la foto del mio gatto in una vera opera d'arte. Mi piacerebbe avere più opzioni di sfondo, ma la qualità è eccellente.",
+    "verified": "Acquisto Verificato",
+    "joinCount": "Unisciti a 10.000+ clienti soddisfatti che hanno trasformato i loro animali"
   },
   "faq": {
     "label": "Supporto",
@@ -305,7 +316,30 @@
     "filterFavorites": "Preferiti",
     "noResults": "Nessun ritratto corrisponde ai tuoi filtri",
     "favorite": "Aggiungi ai preferiti",
-    "unfavorite": "Rimuovi dai preferiti"
+    "unfavorite": "Rimuovi dai preferiti",
+    "goodMorning": "Buongiorno",
+    "goodAfternoon": "Buon pomeriggio",
+    "goodEvening": "Buonasera",
+    "createBeautiful": "Creiamo qualcosa di bello oggi.",
+    "createNewPortrait": "Crea Nuovo Ritratto",
+    "streak": "Serie",
+    "days": "giorni",
+    "streakStart": "Inizia oggi!",
+    "shareTheLove": "Condividi con gli amici",
+    "inviteFriend": "Invita un Amico",
+    "emptyTitle2": "La tua galleria di capolavori ti aspetta",
+    "emptyDesc2": "Carica la prima foto del tuo animale e la trasformeremo in un'opera d'arte — ci vogliono solo 60 secondi",
+    "emptyStylesHint": "20+ stili disponibili",
+    "printTitle": "I tuoi ritratti su tela di qualità museale",
+    "noFavorites": "Nessun preferito — tocca il cuore su un ritratto per salvarlo qui",
+    "noFailed": "Nessuna generazione fallita — ottima notizia!",
+    "noSearchResults": "Nessun ritratto corrisponde a '{{search}}'",
+    "sortNewest": "Più recenti",
+    "sortOldest": "Più vecchi",
+    "accountDeleted": "Il tuo account e tutti i dati associati sono stati eliminati definitivamente.",
+    "deletionFailed": "Eliminazione account fallita. Riprova o contatta il supporto.",
+    "deletingAccount": "Eliminazione...",
+    "paymentCancelled": "Pagamento annullato. Nessun addebito effettuato."
   },
   "demo": {
     "banner": "Modalità Demo — Questa è un'anteprima con dati di esempio.",
@@ -344,7 +378,12 @@
     "createAnother": "Crea un Altro Ritratto",
     "generationStarted": "Generazione avviata! Potrebbe richiedere fino a 60 secondi.",
     "uploadCta": "Clicca per caricare o trascina qui",
-    "loadError": "Impossibile caricare i dati del tuo account. Riprova aggiornando la pagina."
+    "loadError": "Impossibile caricare i dati del tuo account. Riprova aggiornando la pagina.",
+    "celebrationTitle": "Il tuo capolavoro è pronto!",
+    "watermarkTitle": "Anteprima gratuita con watermark",
+    "watermarkDesc": "Sblocca HD per ottenere l'immagine in qualità piena senza watermark — perfetta per stampa e condivisione.",
+    "shareIncentive": "Condividi e guadagna 50 crediti bonus",
+    "premiumAlt": "Oppure risparmia con Premium"
   },
   "business": {
     "title": "Artlypet per le Aziende",
@@ -450,7 +489,9 @@
     "step3Desc": "Il tuo ritratto è pronto in meno di 60 secondi. Scaricalo in HD, ordina una stampa su tela o condividilo con gli amici!",
     "skip": "Salta",
     "next": "Avanti",
-    "start": "Inizia a Creare!"
+    "start": "Inizia a Creare!",
+    "step4Title": "Invita Amici, Guadagna Crediti",
+    "step4Desc": "Condividi il tuo link referral con gli amici. Quando si iscrivono, entrambi ricevete 150 crediti bonus per creare ancora più ritratti!"
   },
   "video": {
     "label": "Guardalo in Azione",
@@ -460,7 +501,11 @@
     "cta": "Provalo Gratis"
   },
   "press": {
-    "title": "Scelto dagli amanti degli animali in tutta Europa"
+    "title": "Scelto dagli amanti degli animali in tutta Europa",
+    "featuredIn": "Come Visto Su",
+    "gdpr": "Conforme al GDPR",
+    "ssl": "Crittografia SSL",
+    "satisfaction": "Soddisfazione 100%"
   },
   "styleDetail": {
     "artStyle": "Stile Artistico",
@@ -637,5 +682,31 @@
     "title": "Scopri i Nostri Stili Artistici",
     "tryStyle": "Prova questo stile",
     "cta": "Inizia a Creare Gratis"
+  },
+  "settings": {
+    "preferences": "Preferenze",
+    "theme": "Tema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro",
+    "themeSystem": "Sistema",
+    "language": "Lingua",
+    "creditHistory": "Cronologia Crediti",
+    "noTransactions": "Nessuna transazione",
+    "dataPrivacy": "Dati e Privacy"
+  },
+  "countdown": {
+    "launchEnds": "Il prezzo lancio termina tra:",
+    "days": "Giorni",
+    "hours": "Ore",
+    "minutes": "Min",
+    "seconds": "Sec"
+  },
+  "activity": {
+    "justCreated": "{{name}} da {{city}} ha appena creato un ritratto {{style}}",
+    "minutesAgo": "{{count}} min fa"
+  },
+  "mobileCta": {
+    "title": "Trasforma il Tuo Animale",
+    "subtitle": "Inizia gratis"
   }
 }

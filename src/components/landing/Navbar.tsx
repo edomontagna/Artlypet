@@ -31,8 +31,12 @@ const Navbar = () => {
 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
-      return (safeGetItem("artlypet-theme") as "light" | "dark") ||
-             (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      const stored = safeGetItem("artlypet-theme");
+      // Respect "system" setting from dashboard Settings tab
+      if (stored === "system" || !stored) {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      return stored as "light" | "dark";
     }
     return "light";
   });
@@ -120,6 +124,12 @@ const Navbar = () => {
             className={navLinkClass("")}
           >
             {t("nav.pricing")}
+          </button>
+          <button
+            onClick={() => handleHashNavigation("faq")}
+            className={navLinkClass("")}
+          >
+            {t("nav.faq", "FAQ")}
           </button>
         </div>
 

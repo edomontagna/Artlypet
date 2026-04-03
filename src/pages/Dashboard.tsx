@@ -1,55 +1,27 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Download, AlertCircle, Lock, Eye, Image as ImageIcon, Copy, Printer, Heart, Gift, Loader2 } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
 import { useGenerations, useInfiniteGenerations } from "@/hooks/useGenerations";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { OnboardingModal } from "@/components/OnboardingModal";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { getServedImage, purchaseHdImage, deleteGeneration } from "@/services/generations";
+import { getServedImage, purchaseHdImage } from "@/services/generations";
 import { deleteAccount } from "@/services/account";
-import { getSignedUrl } from "@/services/storage";
 import { useTranslation } from "react-i18next";
-import { CREDIT_COST_SINGLE, CREDIT_COST_MIX, PREMIUM_PRICE } from "@/lib/constants";
+import { PREMIUM_PRICE } from "@/lib/constants";
 import { trackPurchase } from "@/hooks/useAnalytics";
 import { PortraitLightbox } from "@/components/PortraitLightbox";
 import { safeGetItem, safeSetItem } from "@/lib/storage";
-
-/** Shape of a generation row with joined style data */
-interface GenerationWithStyle {
-  id: string;
-  status: string;
-  storage_path: string | null;
-  is_hd_unlocked: boolean;
-  created_at: string;
-  error_message?: string | null;
-  styles: { name: string } | null;
-  image_originals: { storage_path: string } | null;
-  [key: string]: unknown;
-}
-
-// Thumbnail component that loads signed URL from storage path
-const PortraitThumbnail = ({ storagePath, alt }: { storagePath: string; alt: string }) => {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    getSignedUrl("generated-images", storagePath, 3600)
-      .then((u) => { if (!cancelled) setUrl(u); })
-      .catch(() => { if (!cancelled) setUrl(null); });
-    return () => { cancelled = true; };
-  }, [storagePath]);
-  if (!url) return <Skeleton className="w-full h-full" />;
-  return <img src={url} alt={alt} className="w-full h-full object-cover" loading="lazy" />;
-};
+import { DashboardTab } from "@/components/dashboard/DashboardTab";
+import { HistoryTab } from "@/components/dashboard/HistoryTab";
+import { SettingsTab } from "@/components/dashboard/SettingsTab";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -65,14 +37,12 @@ const Dashboard = () => {
   const setActiveTab = (tab: TabId) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      if (tab === "dashboard") {
-        next.delete("tab");
-      } else {
-        next.set("tab", tab);
-      }
+      if (tab === "dashboard") next.delete("tab");
+      else next.set("tab", tab);
       return next;
     }, { replace: true });
   };
+
   const { data: profile, isLoading: profileLoading, isError: profileError } = useProfile();
   const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
   const { data: generations, isLoading: generationsLoading, isError: generationsError } = useGenerations();
@@ -89,14 +59,10 @@ const Dashboard = () => {
   const hasError = profileError || creditsError || generationsError || infiniteError;
   const updateProfile = useUpdateProfile();
 
-  const [editName, setEditName] = useState("");
-  const [editingName, setEditingName] = useState(false);
   const [creditModalOpen, setCreditModalOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !safeGetItem("artlypet_onboarded"));
-  const [selectedGeneration, setSelectedGeneration] = useState<typeof generations extends (infer T)[] | undefined ? T | null : null>(null);
+  const [selectedGeneration, setSelectedGeneration] = useState<NonNullable<typeof generations>[number] | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [historySearch, setHistorySearch] = useState("");
-  const [historyFilter, setHistoryFilter] = useState<"all" | "completed" | "failed" | "favorites">("all");
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [favorites, setFavorites] = useState<string[]>(() => {
     try { return JSON.parse(safeGetItem("artlypet_favorites") || "[]"); } catch { return []; }
@@ -116,17 +82,14 @@ const Dashboard = () => {
   };
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
+  const displayName = profile?.display_name || user?.email?.split("@")[0] || "User";
 
+  // Payment success confetti
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("payment") === "success" || params.get("hd_unlock") === "success") {
       import("canvas-confetti").then((confetti) => {
-        confetti.default({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#d4956a", "#c17d52", "#e8b896"],
-        });
+        confetti.default({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ["#d4956a", "#c17d52", "#e8b896"] });
       });
       trackPurchase(PREMIUM_PRICE, "premium");
       safeSetItem("credits-updated", Date.now().toString());
@@ -136,35 +99,14 @@ const Dashboard = () => {
     }
   }, [t]);
 
-  // Redirect first-time users with 0 generations to /generate
-  useEffect(() => {
-    if (!generationsLoading && generations && generations.length === 0 && !safeGetItem("artlypet_seen_dashboard")) {
-      safeSetItem("artlypet_seen_dashboard", "true");
-      navigate("/generate");
-    }
-  }, [generationsLoading, generations, navigate]);
-
   // Auto-open upgrade modal from URL params
   useEffect(() => {
-    if (searchParams.get("upgrade") === "true") {
-      setCreditModalOpen(true);
-    }
+    if (searchParams.get("upgrade") === "true") setCreditModalOpen(true);
   }, [searchParams]);
 
   const handleLogout = async () => {
     await signOut();
     navigate("/");
-  };
-
-  const handleSaveName = async () => {
-    if (!editName.trim()) return;
-    const result = await updateProfile.mutateAsync({ display_name: editName.trim() });
-    if (result.error) {
-      toast.error(t("dashboard.nameUpdateFailed", "Failed to update name"));
-    } else {
-      toast.success(t("dashboard.nameUpdated", "Name updated"));
-      setEditingName(false);
-    }
   };
 
   const handleDeleteAccount = async () => {
@@ -192,7 +134,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleDownload = async (gen: { id: string; storage_path?: string | null; is_hd_unlocked?: boolean }) => {
+  const handleDownload = async (gen: { id: string; storage_path?: string | null }) => {
     if (!gen.storage_path) return;
     try {
       const data = await getServedImage(gen.id);
@@ -208,8 +150,6 @@ const Dashboard = () => {
     }
   };
 
-  const displayName = profile?.display_name || user?.email?.split("@")[0] || "User";
-
   const tabs = [
     { id: "dashboard" as const, label: t("dashboard.tabDashboard", "Dashboard"), icon: Upload },
     { id: "history" as const, label: t("dashboard.tabHistory", "History"), icon: History },
@@ -221,6 +161,7 @@ const Dashboard = () => {
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
         Skip to content
       </a>
+
       {/* Left sidebar */}
       <aside className="hidden lg:flex w-56 bg-card border-r border-border flex-col">
         <div className="p-4 border-b border-border">
@@ -232,9 +173,7 @@ const Dashboard = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left w-full ${
-                activeTab === tab.id
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                activeTab === tab.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
               aria-current={activeTab === tab.id ? "page" : undefined}
             >
@@ -294,474 +233,55 @@ const Dashboard = () => {
         <div id="main-content" className="flex-1 p-6 lg:p-10 overflow-auto">
           {hasError && (
             <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+              <Sparkles className="h-5 w-5 text-destructive flex-shrink-0" />
               <p className="text-sm text-destructive">{t("dashboard.loadError", "Something went wrong loading your data. Please try refreshing the page.")}</p>
             </div>
           )}
+
           <AnimatePresence mode="wait">
-          {activeTab === "dashboard" && (
-            <motion.div key="dashboard" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-4xl">
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
-                {t("dashboard.welcome", "Welcome")}, {displayName}
-              </h2>
-              <p className="text-muted-foreground mb-8">{t("dashboard.subtitle", "Create your next pet masterpiece")}</p>
-
-              {/* Stats row */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                {/* Credits */}
-                <div className="rounded-2xl bg-card border border-border p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">{t("dashboard.creditBalance", "Credit Balance")}</p>
-                  </div>
-                  <p className="font-serif text-3xl font-bold text-foreground">
-                    {creditsLoading ? <Skeleton className="h-8 w-14" /> : creditBalance ?? 0}
-                  </p>
-                </div>
-                {/* Portraits */}
-                <div className="rounded-2xl bg-card border border-border p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <ImageIcon className="h-4 w-4 text-primary" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">{t("dashboard.totalPortraits", "Portraits")}</p>
-                  </div>
-                  <p className="font-serif text-3xl font-bold text-foreground">
-                    {generationsLoading ? <Skeleton className="h-8 w-10" /> : generations?.filter(g => g.status === "completed").length ?? 0}
-                  </p>
-                </div>
-                {/* Plan */}
-                <div className="rounded-2xl bg-card border border-border p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Crown className="h-4 w-4 text-primary" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">{t("dashboard.plan", "Plan")}</p>
-                  </div>
-                  <p className="font-serif text-lg font-bold text-foreground">
-                    {isPremium ? "Premium" : t("dashboard.freePlan", "Free Plan")}
-                  </p>
-                </div>
-                {/* Quick action */}
-                <button
-                  onClick={() => isPremium ? navigate("/generate") : setCreditModalOpen(true)}
-                  className="rounded-2xl bg-primary text-primary-foreground p-5 text-left hover:bg-primary/90 transition-colors group shadow-sm"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                      {isPremium ? <ImageIcon className="h-4 w-4 text-primary-foreground" /> : <Crown className="h-4 w-4 text-primary-foreground" />}
-                    </div>
-                  </div>
-                  <p className="font-serif text-sm font-bold text-primary-foreground group-hover:underline">
-                    {isPremium ? t("dashboard.createPortrait", "Create Portrait") : t("dashboard.goPremium", "Go Premium — €15")}
-                  </p>
-                  <p className="text-[10px] text-primary-foreground/70 mt-0.5">
-                    {isPremium
-                      ? t("dashboard.creditCosts", "Single: {{single}} credits · Mix: {{mix}} credits", { single: CREDIT_COST_SINGLE, mix: CREDIT_COST_MIX })
-                      : t("dashboard.premiumPerks", "All HD · No watermarks · Discount prints")}
-                  </p>
-                </button>
-              </div>
-
-              {/* Recent generations */}
-              {generationsLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
-                </div>
-              ) : generations && generations.length > 0 ? (
-                <div>
-                  <h3 className="font-serif text-xl font-semibold text-foreground mb-4">{t("dashboard.recentPortraits", "Recent Portraits")}</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {generations.slice(0, 6).map((gen, i) => (
-                      <motion.div
-                        key={gen.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08, duration: 0.4 }}
-                        className="aspect-square rounded-2xl bg-card border border-border shadow-sm overflow-hidden relative group cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
-                        onClick={() => openLightbox(gen)}
-                      >
-                        {gen.storage_path ? (
-                          <PortraitThumbnail storagePath={gen.storage_path} alt="Generated portrait" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            {gen.status === "failed" ? (
-                              <AlertCircle className="h-8 w-8 text-destructive" />
-                            ) : (
-                              <Skeleton className="w-full h-full" />
-                            )}
-                          </div>
-                        )}
-                        {/* Favorite heart */}
-                        {gen.status === "completed" && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); toggleFavorite(gen.id); }}
-                            className="absolute top-2 left-2 z-10 h-7 w-7 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors"
-                            aria-label={favorites.includes(gen.id) ? t("dashboard.unfavorite", "Remove from favorites") : t("dashboard.favorite", "Add to favorites")}
-                          >
-                            <Heart className={`h-3.5 w-3.5 ${favorites.includes(gen.id) ? "fill-red-500 text-red-500" : "text-white"}`} />
-                          </button>
-                        )}
-                        {/* HD badge or lock */}
-                        {gen.status === "completed" && (
-                          <div className="absolute top-2 right-2">
-                            {isPremium || gen.is_hd_unlocked ? (
-                              <span className="text-[10px] font-bold bg-primary text-primary-foreground px-1.5 py-0.5 rounded">HD</span>
-                            ) : (
-                              <span className="text-[10px] font-medium bg-black/60 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                <Eye className="h-2.5 w-2.5" /> Preview
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        {gen.status === "completed" && (
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
-                            <p className="text-xs font-medium text-white truncate">{(gen as GenerationWithStyle)?.styles?.name || "Portrait"}</p>
-                          </div>
-                        )}
-                        {/* Failed generation — actionable text */}
-                        {gen.status === "failed" && (
-                          <div className="absolute bottom-0 inset-x-0 p-2 text-center">
-                            <p className="text-xs text-destructive font-medium">
-                              {t("dashboard.failedRefunded", "Failed — credits refunded")}
-                            </p>
-                            <Button size="sm" variant="link" className="text-xs h-auto p-0 text-primary" asChild>
-                              <Link to="/generate">{t("dashboard.retryGenerate", "Retry")}</Link>
-                            </Button>
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                  {generations.length > 6 && (
-                    <div className="text-center mt-6">
-                      <Button
-                        variant="outline"
-                        className="rounded-full"
-                        onClick={() => setActiveTab("history")}
-                      >
-                        {t("dashboard.viewAll", "View all portraits")}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("dashboard.emptyTitle", "Your gallery is waiting")}</h3>
-                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t("dashboard.emptyDesc", "Upload your first pet photo and watch the magic happen")}</p>
-                  <Button className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md" asChild>
-                    <Link to="/generate">{t("dashboard.emptyBtn", "Create Your First Portrait")}</Link>
-                  </Button>
-                  <div className="mt-4 flex items-center justify-center gap-4">
-                    <Link to="/styles" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                      {t("dashboard.browseStyles", "Browse Styles")}
-                    </Link>
-                    <span className="text-muted-foreground/30">·</span>
-                    <Link to="/how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                      {t("nav.howItWorks", "How It Works")}
-                    </Link>
-                  </div>
-                </div>
-              )}
-
-              {/* Referral — compact banner */}
-              {profile?.referral_code && (
-                <div className="rounded-xl bg-card border border-border p-4 mt-8 flex items-center justify-between flex-wrap gap-3">
-                  <div className="flex items-center gap-3">
-                    <Gift className="h-4 w-4 text-primary flex-shrink-0" />
-                    <p className="text-sm text-muted-foreground">
-                      {t("referral.desc", "Share your link. Both you and your friend get 150 bonus credits!")}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full gap-2"
-                    onClick={() => {
-                      const link = `${window.location.origin}/signup?ref=${encodeURIComponent(profile.referral_code)}`;
-                      navigator.clipboard.writeText(link);
-                      toast.success(t("referral.copied", "Referral link copied!"));
-                    }}
-                  >
-                    <Copy className="h-3.5 w-3.5" />
-                    {t("referral.copyLink", "Copy Link")}
-                  </Button>
-                </div>
-              )}
-
-              {/* Print cross-sell — show when user has portraits */}
-              {(generations?.filter(g => g.status === "completed").length ?? 0) > 0 && (
-                <div className="rounded-xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-border p-4 mt-4 flex items-center justify-between flex-wrap gap-3">
-                  <div className="flex items-center gap-3">
-                    <Printer className="h-4 w-4 text-primary flex-shrink-0" />
-                    <p className="text-sm text-muted-foreground">
-                      {t("dashboard.printCta", "Your portraits would look stunning on canvas")}
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-full gap-2" asChild>
-                    <Link to="/prints">
-                      {t("dashboard.printCtaBtn", "View Prints")}
-                    </Link>
-                  </Button>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {activeTab === "history" && (
-            <motion.div key="history" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-4xl">
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabHistory", "History")}</h2>
-              <p className="text-muted-foreground mb-8">{t("dashboard.historyDesc", "All your generated portraits")}</p>
-              {infiniteLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
-                </div>
-              ) : allGenerations.length > 0 ? (
-                <>
-                {/* Filter bar */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                  <div className="flex-1">
-                    <Input
-                      placeholder={t("dashboard.searchStyles", "Search by style...")}
-                      value={historySearch}
-                      onChange={(e) => setHistorySearch(e.target.value)}
-                      className="rounded-lg"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    {(["all", "completed", "failed"] as const).map((status) => (
-                      <Button
-                        key={status}
-                        variant={historyFilter === status ? "default" : "outline"}
-                        size="sm"
-                        className="rounded-full text-xs"
-                        onClick={() => setHistoryFilter(status)}
-                      >
-                        {status === "all" ? t("dashboard.filterAll", "All") :
-                         status === "completed" ? t("dashboard.filterCompleted", "Completed") :
-                         t("dashboard.filterFailed", "Failed")}
-                      </Button>
-                    ))}
-                    <Button
-                      variant={historyFilter === "favorites" ? "default" : "outline"}
-                      size="sm"
-                      className="rounded-full text-xs gap-1"
-                      onClick={() => setHistoryFilter(historyFilter === "favorites" ? "all" : "favorites")}
-                    >
-                      <Heart className="h-3 w-3" />
-                      {t("dashboard.filterFavorites", "Favorites")}
-                    </Button>
-                  </div>
-                </div>
-                {(() => {
-                  const filteredGenerations = allGenerations.filter((gen) => {
-                    if (historyFilter === "favorites" && !favorites.includes(gen.id)) return false;
-                    if (historyFilter !== "all" && historyFilter !== "favorites" && gen.status !== historyFilter) return false;
-                    if (historySearch) {
-                      const styleName = ((gen as GenerationWithStyle)?.styles?.name || "").toLowerCase();
-                      if (!styleName.includes(historySearch.toLowerCase())) return false;
-                    }
-                    return true;
-                  });
-                  return filteredGenerations.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {filteredGenerations.map((gen, i) => (
-                    <motion.div
-                      key={gen.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08, duration: 0.4 }}
-                      className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
-                      onClick={() => openLightbox(gen)}
-                    >
-                      <div className="aspect-square relative group">
-                        {gen.storage_path ? (
-                          <PortraitThumbnail storagePath={gen.storage_path} alt="Portrait" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-muted/50">
-                            {gen.status === "failed" ? (
-                              <AlertCircle className="h-6 w-6 text-destructive" />
-                            ) : (
-                              <Skeleton className="w-full h-full" />
-                            )}
-                          </div>
-                        )}
-                        {/* Favorite heart */}
-                        {gen.status === "completed" && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); toggleFavorite(gen.id); }}
-                            className="absolute top-2 left-2 z-10 h-7 w-7 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors"
-                            aria-label={favorites.includes(gen.id) ? t("dashboard.unfavorite", "Remove from favorites") : t("dashboard.favorite", "Add to favorites")}
-                          >
-                            <Heart className={`h-3.5 w-3.5 ${favorites.includes(gen.id) ? "fill-red-500 text-red-500" : "text-white"}`} />
-                          </button>
-                        )}
-                        {/* HD/Lock badge */}
-                        {gen.status === "completed" && (
-                          <div className="absolute top-2 right-2">
-                            {isPremium || gen.is_hd_unlocked ? (
-                              <span className="text-[10px] font-bold bg-primary text-primary-foreground px-1.5 py-0.5 rounded">HD</span>
-                            ) : (
-                              <span className="text-[10px] font-medium bg-black/60 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                <Eye className="h-2.5 w-2.5" /> Preview
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3">
-                        <p className="text-sm font-medium truncate">{(gen as GenerationWithStyle)?.styles?.name || "Portrait"}</p>
-                        <div className="flex items-center justify-between mt-1">
-                          <span className={`text-xs px-2 py-0.5 rounded-full ${
-                            gen.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
-                            gen.status === "failed" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" :
-                            "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                          }`}>
-                            {gen.status}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(gen.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        {gen.status === "failed" && (
-                          <div className="flex items-center justify-between mt-1.5">
-                            <span className="text-xs text-muted-foreground">{t("dashboard.failedRefunded", "Failed — credits refunded")}</span>
-                            <Button size="sm" variant="link" className="text-xs h-auto p-0 text-primary" asChild>
-                              <Link to="/generate">{t("dashboard.retryGenerate", "Retry")}</Link>
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                  ) : (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <p>{t("dashboard.noResults", "No portraits match your filters")}</p>
-                    </div>
-                  );
-                })()}
-                {/* Load More button */}
-                {hasNextPage && (
-                  <div className="text-center mt-8">
-                    <Button
-                      variant="outline"
-                      className="rounded-full gap-2"
-                      onClick={() => fetchNextPage()}
-                      disabled={isFetchingNextPage}
-                    >
-                      {isFetchingNextPage ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          {t("dashboard.loading", "Loading...")}
-                        </>
-                      ) : (
-                        t("dashboard.loadMore", "Load More")
-                      )}
-                    </Button>
-                  </div>
-                )}
-                </>
-              ) : (
-                <div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("dashboard.emptyTitle", "Your gallery is waiting")}</h3>
-                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t("dashboard.emptyDesc", "Upload your first pet photo and watch the magic happen")}</p>
-                  <Button className="shimmer-btn btn-press rounded-full h-14 px-10 text-base font-medium text-primary-foreground shadow-md" asChild>
-                    <Link to="/generate">{t("dashboard.emptyBtn", "Create Your First Portrait")}</Link>
-                  </Button>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {activeTab === "settings" && (
-            <motion.div key="settings" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="max-w-2xl">
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("dashboard.tabSettings", "Settings")}</h2>
-              <p className="text-muted-foreground mb-8">{t("dashboard.settingsDesc", "Manage your account")}</p>
-              <div className="space-y-6">
-                {/* Plan info */}
-                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 space-y-4">
-                  <h3 className="font-serif text-lg font-semibold">{t("dashboard.plan", "Plan")}</h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">
-                        {isPremium ? "Premium" : t("dashboard.freePlan", "Free Plan")}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {isPremium
-                          ? t("dashboard.premiumDesc", "Full HD downloads, no watermark, discounted prints")
-                          : t("dashboard.freeDesc", "Watermarked previews, HD unlock at €4.90/image")}
-                      </p>
-                    </div>
-                    {!isPremium && (
-                      <Button size="sm" className="rounded-full gap-2 shadow-sm" onClick={() => setCreditModalOpen(true)}>
-                        <Crown className="h-3.5 w-3.5" />
-                        {t("dashboard.upgrade", "Upgrade")}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Profile */}
-                <div className="rounded-2xl bg-card border border-border shadow-sm p-6 space-y-4">
-                  <h3 className="font-serif text-lg font-semibold">{t("dashboard.profile", "Profile")}</h3>
-                  <div className="space-y-2">
-                    <Label>Email</Label>
-                    <p className="text-sm text-muted-foreground">{user?.email}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{t("dashboard.displayName", "Display Name")}</Label>
-                    {editingName ? (
-                      <div className="flex gap-2">
-                        <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Your name" className="rounded-lg" />
-                        <Button size="sm" className="rounded-full" onClick={handleSaveName} disabled={updateProfile.isPending}>
-                          {t("dashboard.save", "Save")}
-                        </Button>
-                        <Button size="sm" variant="ghost" className="rounded-full" onClick={() => setEditingName(false)}>
-                          {t("dashboard.cancel", "Cancel")}
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm">{profileLoading ? <Skeleton className="h-4 w-24" /> : displayName}</p>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="rounded-full"
-                          onClick={() => {
-                            setEditName(profile?.display_name || "");
-                            setEditingName(true);
-                          }}
-                        >
-                          {t("dashboard.edit", "Edit")}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Danger zone */}
-                <div className="rounded-2xl border border-destructive/30 p-6 space-y-4">
-                  <h3 className="font-serif text-lg font-semibold text-destructive">{t("dashboard.dangerZone", "Danger Zone")}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t("dashboard.deleteWarning", "Permanently delete your account and all associated data. This action cannot be undone.")}
-                  </p>
-                  <Button variant="destructive" size="sm" className="rounded-full" onClick={handleDeleteAccount} disabled={deletingAccount}>
-                    {deletingAccount && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {deletingAccount ? t("dashboard.deletingAccount", "Deleting...") : t("dashboard.deleteAccount", "Delete Account")}
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+            {activeTab === "dashboard" && (
+              <DashboardTab
+                displayName={displayName}
+                profile={profile}
+                creditBalance={creditBalance}
+                creditsLoading={creditsLoading}
+                generations={generations}
+                generationsLoading={generationsLoading}
+                isPremium={isPremium}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                openLightbox={openLightbox}
+                setCreditModalOpen={setCreditModalOpen}
+                setActiveTab={setActiveTab}
+                navigate={navigate}
+              />
+            )}
+            {activeTab === "history" && (
+              <HistoryTab
+                allGenerations={allGenerations}
+                fetchNextPage={fetchNextPage}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                infiniteLoading={infiniteLoading}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                openLightbox={openLightbox}
+                isPremium={isPremium}
+              />
+            )}
+            {activeTab === "settings" && (
+              <SettingsTab
+                profile={profile}
+                profileLoading={profileLoading}
+                user={user}
+                isPremium={isPremium}
+                displayName={displayName}
+                updateProfile={updateProfile}
+                setCreditModalOpen={setCreditModalOpen}
+                onDeleteAccount={handleDeleteAccount}
+                deletingAccount={deletingAccount}
+              />
+            )}
           </AnimatePresence>
         </div>
 
@@ -792,7 +312,6 @@ const Dashboard = () => {
         onDownload={handleDownload}
         onOpenUpgrade={() => setCreditModalOpen(true)}
       />
-
       <CreditPurchaseModal open={creditModalOpen} onOpenChange={setCreditModalOpen} />
       <OnboardingModal open={showOnboarding} onOpenChange={setShowOnboarding} />
     </div>

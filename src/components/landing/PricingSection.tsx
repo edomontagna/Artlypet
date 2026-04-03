@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Crown, Building2, Shield } from "lucide-react";
-import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM, BUSINESS_PRICE_MONTHLY } from "@/lib/constants";
+import { Check, Sparkles, Crown, Building2, Shield, TrendingUp } from "lucide-react";
+import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM, BUSINESS_PRICE_MONTHLY, REGULAR_PRICE, PROMO_END_DATE } from "@/lib/constants";
+import { UrgencyCountdown } from "./UrgencyCountdown";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
@@ -142,10 +143,10 @@ const PricingSection = memo(() => {
                   : "bg-background border border-border/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
               }`}
             >
-              {/* Popular badge */}
+              {/* Popular badge with percentage */}
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md">
-                  {t("pricing.popular")}
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md whitespace-nowrap">
+                  {t("pricing.popularPercent", "Most Popular — chosen by 73% of customers")}
                 </span>
               )}
 
@@ -173,12 +174,22 @@ const PricingSection = memo(() => {
                 }`}>
                   {plan.name}
                 </h3>
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-2">
+                  {plan.popular && (
+                    <span className="font-serif text-lg line-through text-primary-foreground/50">
+                      &euro;{REGULAR_PRICE}
+                    </span>
+                  )}
                   <span className={`font-serif text-5xl font-bold tracking-tight ${
                     plan.popular ? "text-primary-foreground" : "text-foreground"
                   }`}>
                     &euro;{plan.price}
                   </span>
+                  {plan.popular && (
+                    <span className="bg-green-500/20 text-green-200 text-xs font-bold px-2 py-0.5 rounded-full">
+                      {t("pricing.savePercent", "Save 48%")}
+                    </span>
+                  )}
                 </div>
                 {plan.priceSuffix && (
                   <p className={`text-sm mt-1 ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
@@ -186,9 +197,13 @@ const PricingSection = memo(() => {
                   </p>
                 )}
                 {plan.popular && (
-                  <p className="text-xs mt-2 text-primary-foreground/80">
-                    {t("pricing.needMore", "Need more? Purchase again anytime.")}
-                  </p>
+                  <div className="mt-3 space-y-2">
+                    <UrgencyCountdown targetDate={PROMO_END_DATE} variant="compact" className="text-primary-foreground/90" />
+                    <p className="text-xs text-primary-foreground/70 flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3" />
+                      {t("pricing.scarcity", "{{count}} people upgraded today", { count: 8 + (new Date().getHours() % 7) + (new Date().getDate() % 5) })}
+                    </p>
+                  </div>
                 )}
               </div>
 

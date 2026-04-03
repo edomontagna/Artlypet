@@ -64,6 +64,7 @@ const Generate = () => {
   const [optimisticCreditDeduction, setOptimisticCreditDeduction] = useState(0);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const isGeneratingRef = useRef(false);
+  const confettiFired = useRef(false);
 
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const creditCost = getCreditCost(generationType);
@@ -296,18 +297,34 @@ const Generate = () => {
         {/*  RESULT — Celebration & Next Steps     */}
         {/* ═══════════════════════════════════════ */}
         {resultUrl && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-8"
+            onAnimationComplete={() => {
+              if (confettiFired.current) return;
+              confettiFired.current = true;
+              import("canvas-confetti").then((confetti) => {
+                confetti.default({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#d4956a", "#c17d52", "#e8b896", "#4a9d6e"] });
+              });
+            }}
+          >
 
-            {/* Success header */}
+            {/* Success header with celebration */}
             <div className="text-center">
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}>
+              <motion.div initial={{ scale: 0, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}>
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-primary" />
                 </div>
               </motion.div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
-                {t("generate.portraitReady", "Your Portrait is Ready!")}
-              </h2>
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2"
+              >
+                {t("generate.celebrationTitle", "Your masterpiece is ready!")}
+              </motion.h2>
               <p className="text-muted-foreground">
                 {t("generate.portraitReadyDesc", "Here's your masterpiece. Choose what to do next.")}
               </p>
@@ -341,25 +358,42 @@ const Generate = () => {
             )}
             </motion.div>
 
-            {/* Subtle print upsell banner */}
+            {/* Watermark explainer for free users */}
+            {resultMode === "watermarked" && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="max-w-xl mx-auto"
+              >
+                <div className="flex items-start gap-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 px-5 py-4">
+                  <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm text-amber-800 dark:text-amber-200 font-medium mb-1">
+                      {t("generate.watermarkTitle", "This is a free preview with watermark")}
+                    </p>
+                    <p className="text-xs text-amber-700 dark:text-amber-300/80">
+                      {t("generate.watermarkDesc", "Unlock HD to get the full-quality image without watermark — perfect for printing and sharing.")}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Share — promoted above upsell cards */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="max-w-xl mx-auto"
+              className="max-w-xl mx-auto text-center space-y-3"
             >
-              <Link to="/prints" className="block">
-                <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/40 px-5 py-3.5 hover:bg-muted/70 transition-colors">
-                  <Printer className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                  <p className="text-sm text-muted-foreground flex-1">
-                    {t("generate.printUpsell", "This would look amazing on canvas")}
-                  </p>
-                  <span className="text-xs font-medium text-foreground whitespace-nowrap">
-                    {t("generate.printUpsellPrice", "From €{{price}}", { price: isPremium ? PRINT_PRICE_PREMIUM.toFixed(2) : PRINT_PRICE_FREE.toFixed(2) })}
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                </div>
-              </Link>
+              <h3 className="font-serif text-lg font-semibold text-foreground">
+                {t("generate.shareHeading", "Share your masterpiece!")}
+              </h3>
+              <SharePanel imageUrl={resultUrl} generationId={generationId ?? undefined} />
+              <p className="text-xs text-muted-foreground">
+                {t("generate.shareIncentive", "Share and earn 50 bonus credits")}
+              </p>
             </motion.div>
 
             {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
@@ -397,32 +431,27 @@ const Generate = () => {
                 </motion.div>
               )}
 
-              {/* Card 2: Go Premium (FREE users only) */}
+              {/* Card 2: Go Premium — compact banner (secondary CTA) */}
               {!isPremium && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                  <Card className="rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                        <Crown className="h-6 w-6 text-secondary" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
-                          {t("generate.premiumTitle", "Go Premium — Save Big")}
-                        </h4>
-                        <p className="text-sm text-muted-foreground mb-1">
-                          {t("generate.premiumDesc", "1500 credits + ALL images in HD + discounted prints. No more watermarks, ever.")}
+                  <div className="rounded-xl bg-muted/50 p-4 flex items-center justify-between flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                      <Crown className="h-5 w-5 text-primary flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {t("generate.premiumAlt", "Or save with Premium")}
                         </p>
-                        <p className="text-xs text-primary font-medium mb-3">
+                        <p className="text-xs text-muted-foreground">
                           {t("generate.premiumSaving", "5 HD images would cost €24.50 — Premium is just €15!")}
                         </p>
-                        <Button variant="outline" size="lg" className="rounded-full gap-2 h-12 px-8 text-base border-primary/30 text-primary hover:bg-primary/5" onClick={() => setShowPurchaseModal(true)}>
-                            <Crown className="h-4 w-4" />
-                            {t("generate.premiumBtn", "Go Premium — €15")}
-                            <ArrowRight className="h-4 w-4" />
-                        </Button>
                       </div>
                     </div>
-                  </Card>
+                    <Button variant="ghost" size="sm" className="rounded-full gap-1.5 text-primary hover:bg-primary/5" onClick={() => setShowPurchaseModal(true)}>
+                      <Crown className="h-3.5 w-3.5" />
+                      {t("generate.premiumBtn", "Go Premium — €15")}
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </motion.div>
               )}
 
@@ -496,14 +525,6 @@ const Generate = () => {
                   </Button>
                 </div>
               )}
-            </div>
-
-            {/* Share */}
-            <div className="max-w-2xl mx-auto text-center space-y-3">
-              <h3 className="font-serif text-lg font-semibold text-foreground">
-                {t("generate.shareHeading", "Share your masterpiece!")}
-              </h3>
-              <SharePanel imageUrl={resultUrl} generationId={generationId ?? undefined} />
             </div>
 
             {/* Create another */}

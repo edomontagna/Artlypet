@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -133,7 +133,7 @@ const TestimonialsSection = memo(() => {
             </div>
             <span className="text-sm font-medium text-foreground">4.9/5</span>
             <span className="text-sm text-muted-foreground">
-              — {t("testimonials.count", "2,000+ happy pet owners")}
+              — {t("testimonials.joinCount", "Join 10,000+ happy customers who transformed their pets")}
             </span>
           </div>
         </div>
@@ -178,6 +178,14 @@ const TestimonialsSection = memo(() => {
                   <p className="font-serif text-xl italic text-foreground leading-relaxed mb-8">
                     &ldquo;{t(`testimonials.${item.key}`)}&rdquo;
                   </p>
+
+                  {/* Verified badge */}
+                  <div className="flex items-center gap-1 mb-4">
+                    <ShieldCheck className="h-3 w-3 text-green-600 dark:text-green-400" />
+                    <span className="text-[10px] font-medium text-green-600 dark:text-green-400">
+                      {t("testimonials.verified", "Verified Buyer")}
+                    </span>
+                  </div>
 
                   {/* Attribution */}
                   <div className="flex items-center gap-3">

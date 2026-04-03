@@ -26,7 +26,9 @@
     "noSub": "No subscription",
     "cancelAnytime": "Cancel anytime",
     "freeCredits": "3 free portraits",
-    "freeTier": "Start free — 3 portraits included, no card required"
+    "freeTier": "Start free — 3 portraits included, no card required",
+    "socialProofVelocity": "{{count}} portraits created in the last hour",
+    "priceAnchorLabel": "one-time"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -63,7 +65,9 @@
     "style5Name": "Art Nouveau",
     "style5Desc": "Flowing lines & organic forms",
     "style6Name": "Impressionist",
-    "style6Desc": "Dappled light & visible strokes"
+    "style6Desc": "Dappled light & visible strokes",
+    "transformationBadge": "Before & After",
+    "sliderCaption": "Drag to see the transformation"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
@@ -119,7 +123,19 @@
       "analytics": "Analytics dashboard"
     },
     "urgency": "Launch Special — Premium at €15 (regular €29)",
-    "vatIncluded": "All prices include VAT where applicable."
+    "vatIncluded": "All prices include VAT where applicable.",
+    "popularPercent": "Most Popular — chosen by 73% of customers",
+    "regularPrice": "€29",
+    "savePercent": "Save 48%",
+    "scarcity": "{{count}} people upgraded today",
+    "priceAnchor": "€15 one-time"
+  },
+  "countdown": {
+    "launchEnds": "Launch Price Ends In:",
+    "days": "Days",
+    "hours": "Hrs",
+    "minutes": "Min",
+    "seconds": "Sec"
   },
   "printShop": {
     "badge": "Physical Prints",
@@ -151,7 +167,9 @@
     "t3": "The watercolor style is absolutely gorgeous. I ordered a canvas print and it looks museum-worthy on my wall.",
     "t4": "The oil painting style is incredible — it really captures my cat's personality. I'd love to see even more style options in the future!",
     "t5": "I gifted a Renaissance portrait of my Labrador to my mother. She cried tears of joy!",
-    "t6": "The Art Nouveau style transformed my cat's photo into a true work of art. I'd love more background options, but the quality is excellent."
+    "t6": "The Art Nouveau style transformed my cat's photo into a true work of art. I'd love more background options, but the quality is excellent.",
+    "verified": "Verified Buyer",
+    "joinCount": "Join 10,000+ happy customers who transformed their pets"
   },
   "faq": {
     "label": "Support",
@@ -308,7 +326,41 @@
     "filterFavorites": "Favorites",
     "noResults": "No portraits match your filters",
     "favorite": "Add to favorites",
-    "unfavorite": "Remove from favorites"
+    "unfavorite": "Remove from favorites",
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "createBeautiful": "Let's create something beautiful today.",
+    "createNewPortrait": "Create New Portrait",
+    "streak": "Streak",
+    "days": "days",
+    "streakStart": "Start today!",
+    "shareTheLove": "Share the love",
+    "inviteFriend": "Invite a Friend",
+    "emptyTitle2": "Your masterpiece gallery awaits",
+    "emptyDesc2": "Upload your first pet photo and we'll transform it into stunning art — it only takes 60 seconds",
+    "emptyStylesHint": "20+ styles available",
+    "printTitle": "Your portraits on museum-quality canvas",
+    "noFavorites": "No favorites yet — tap the heart on any portrait to save it here",
+    "noFailed": "No failed generations — great news!",
+    "noSearchResults": "No portraits match '{{search}}'",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "accountDeleted": "Your account and all associated data have been permanently deleted.",
+    "deletionFailed": "Failed to delete account. Please try again or contact support.",
+    "deletingAccount": "Deleting...",
+    "paymentCancelled": "Payment was cancelled. No charges were made."
+  },
+  "settings": {
+    "preferences": "Preferences",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "creditHistory": "Credit History",
+    "noTransactions": "No transactions yet",
+    "dataPrivacy": "Data & Privacy"
   },
   "generate": {
     "title": "Create Portrait",
@@ -339,7 +391,12 @@
     "createAnother": "Create Another Portrait",
     "generationStarted": "Generation started! This may take up to 60 seconds.",
     "uploadCta": "Click to upload or drag & drop",
-    "loadError": "Could not load your account data. Please refresh and try again."
+    "loadError": "Could not load your account data. Please refresh and try again.",
+    "celebrationTitle": "Your masterpiece is ready!",
+    "watermarkTitle": "This is a free preview with watermark",
+    "watermarkDesc": "Unlock HD to get the full-quality image without watermark — perfect for printing and sharing.",
+    "shareIncentive": "Share and earn 50 bonus credits",
+    "premiumAlt": "Or save with Premium"
   },
   "business": {
     "title": "Artlypet for Business",
@@ -453,7 +510,9 @@
     "step3Desc": "Your portrait is ready in under 60 seconds. Download in HD, order a canvas print, or share with friends!",
     "skip": "Skip",
     "next": "Next",
-    "start": "Start Creating!"
+    "start": "Start Creating!",
+    "step4Title": "Invite Friends, Earn Credits",
+    "step4Desc": "Share your referral link with friends. When they sign up, you both get 150 bonus credits to create even more portraits!"
   },
   "video": {
     "label": "See It in Action",
@@ -467,7 +526,19 @@
     "statPortraits": "Portraits Created",
     "statRating": "Average Rating",
     "statUsers": "Happy Pet Owners",
-    "statCountries": "Countries"
+    "statCountries": "Countries",
+    "featuredIn": "As Featured In",
+    "gdpr": "GDPR Compliant",
+    "ssl": "SSL Encrypted",
+    "satisfaction": "100% Satisfaction"
+  },
+  "activity": {
+    "justCreated": "{{name}} from {{city}} just created a {{style}} portrait",
+    "minutesAgo": "{{count}} min ago"
+  },
+  "mobileCta": {
+    "title": "Transform Your Pet",
+    "subtitle": "Free to start"
   },
   "styleDetail": {
     "artStyle": "Art Style",

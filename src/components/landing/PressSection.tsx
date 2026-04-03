@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Users, Star, Globe, Image } from "lucide-react";
+import { Users, Star, Globe, Image, Shield, Lock, ThumbsUp } from "lucide-react";
 
 const PressSection = () => {
   const { t } = useTranslation();
@@ -60,6 +60,26 @@ const PressSection = () => {
               </motion.div>
             ))}
           </div>
+
+          {/* Trust badges */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-3 mt-8"
+          >
+            {[
+              { icon: Shield, label: t("press.gdpr", "GDPR Compliant") },
+              { icon: Lock, label: t("press.ssl", "SSL Encrypted") },
+              { icon: ThumbsUp, label: t("press.satisfaction", "100% Satisfaction") },
+            ].map(({ icon: Icon, label }) => (
+              <span key={label} className="inline-flex items-center gap-1.5 bg-background rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground border border-border">
+                <Icon className="h-3 w-3 text-primary" />
+                {label}
+              </span>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
     </section>

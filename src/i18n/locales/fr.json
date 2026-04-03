@@ -26,7 +26,9 @@
     "noSub": "Sans abonnement",
     "cancelAnytime": "Annulation à tout moment",
     "freeCredits": "3 portraits gratuits",
-    "freeTier": "Commencez gratuitement — 3 portraits inclus, sans carte requise"
+    "freeTier": "Commencez gratuitement — 3 portraits inclus, sans carte requise",
+    "socialProofVelocity": "{{count}} portraits créés dans la dernière heure",
+    "priceAnchorLabel": "paiement unique"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -63,7 +65,9 @@
     "style5Name": "Art Nouveau",
     "style5Desc": "Lignes fluides & formes organiques",
     "style6Name": "Impressionniste",
-    "style6Desc": "Lumière tachetée & touches visibles"
+    "style6Desc": "Lumière tachetée & touches visibles",
+    "transformationBadge": "Avant & Après",
+    "sliderCaption": "Glissez pour voir la transformation"
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
@@ -118,7 +122,12 @@
       "analytics": "Dashboard d'analyse"
     },
     "urgency": "Offre de Lancement — Premium à €15 (prix normal €29)",
-    "vatIncluded": "Tous les prix incluent la TVA le cas échéant."
+    "vatIncluded": "Tous les prix incluent la TVA le cas échéant.",
+    "popularPercent": "Le Plus Populaire — choisi par 73% des clients",
+    "regularPrice": "€29",
+    "savePercent": "Économisez 48%",
+    "scarcity": "{{count}} personnes ont upgradé aujourd'hui",
+    "priceAnchor": "€15 unique"
   },
   "printShop": {
     "badge": "Impressions Physiques",
@@ -150,7 +159,9 @@
     "t3": "Le style aquarelle est absolument magnifique. J'ai commandé une impression sur toile et elle fait un effet musée sur mon mur.",
     "t4": "Le style peinture à l'huile est incroyable — il capture vraiment la personnalité de mon chat. J'adorerais voir encore plus d'options de styles à l'avenir !",
     "t5": "J'ai offert un portrait Renaissance de mon Labrador à ma mère. Elle a pleuré de joie !",
-    "t6": "Le style Art Nouveau a transformé la photo de mon chat en une véritable œuvre d'art. J'aimerais plus d'options d'arrière-plan, mais la qualité est excellente."
+    "t6": "Le style Art Nouveau a transformé la photo de mon chat en une véritable œuvre d'art. J'aimerais plus d'options d'arrière-plan, mais la qualité est excellente.",
+    "verified": "Achat Vérifié",
+    "joinCount": "Rejoignez 10 000+ clients satisfaits qui ont transformé leurs animaux"
   },
   "faq": {
     "label": "Support",
@@ -305,7 +316,56 @@
     "filterFavorites": "Favoris",
     "noResults": "Aucun portrait ne correspond à vos filtres",
     "favorite": "Ajouter aux favoris",
-    "unfavorite": "Retirer des favoris"
+    "unfavorite": "Retirer des favoris",
+    "goodMorning": "Bonjour",
+    "goodAfternoon": "Bon après-midi",
+    "goodEvening": "Bonsoir",
+    "createBeautiful": "Créons quelque chose de beau aujourd'hui.",
+    "createNewPortrait": "Créer un Nouveau Portrait",
+    "streak": "Série",
+    "days": "jours",
+    "streakStart": "Commencez aujourd'hui !",
+    "shareTheLove": "Partagez l'amour",
+    "inviteFriend": "Inviter un Ami",
+    "emptyTitle2": "Votre galerie de chefs-d'œuvre vous attend",
+    "emptyDesc2": "Téléchargez la première photo de votre animal et nous la transformerons en art — en seulement 60 secondes",
+    "emptyStylesHint": "20+ styles disponibles",
+    "printTitle": "Vos portraits sur toile qualité musée",
+    "noFavorites": "Pas de favoris — appuyez sur le cœur pour sauvegarder",
+    "noFailed": "Aucune génération échouée — bonne nouvelle !",
+    "noSearchResults": "Aucun portrait ne correspond à '{{search}}'",
+    "sortNewest": "Plus récents",
+    "sortOldest": "Plus anciens",
+    "accountDeleted": "Votre compte et toutes les données associées ont été supprimés définitivement.",
+    "deletionFailed": "Échec de la suppression. Veuillez réessayer ou contacter le support.",
+    "deletingAccount": "Suppression...",
+    "paymentCancelled": "Paiement annulé. Aucun frais n'a été appliqué."
+  },
+  "settings": {
+    "preferences": "Préférences",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "language": "Langue",
+    "creditHistory": "Historique des Crédits",
+    "noTransactions": "Aucune transaction",
+    "dataPrivacy": "Données & Confidentialité"
+  },
+  "countdown": {
+    "launchEnds": "Prix de lancement se termine dans :",
+    "days": "Jours",
+    "hours": "Hrs",
+    "minutes": "Min",
+    "seconds": "Sec"
+  },
+  "activity": {
+    "justCreated": "{{name}} de {{city}} vient de créer un portrait {{style}}",
+    "minutesAgo": "il y a {{count}} min"
+  },
+  "mobileCta": {
+    "title": "Transformez Votre Animal",
+    "subtitle": "Commencez gratuitement"
   },
   "demo": {
     "banner": "Mode Démo — Ceci est un aperçu avec des données d'exemple.",
@@ -344,7 +404,12 @@
     "createAnother": "Créer un Autre Portrait",
     "generationStarted": "Génération lancée ! Cela peut prendre jusqu'à 60 secondes.",
     "uploadCta": "Cliquez pour télécharger ou glissez-déposez",
-    "loadError": "Impossible de charger les données de votre compte. Veuillez rafraîchir la page."
+    "loadError": "Impossible de charger les données de votre compte. Veuillez rafraîchir la page.",
+    "celebrationTitle": "Votre chef-d'œuvre est prêt !",
+    "watermarkTitle": "Aperçu gratuit avec filigrane",
+    "watermarkDesc": "Débloquez HD pour obtenir l'image en qualité maximale sans filigrane — parfait pour l'impression et le partage.",
+    "shareIncentive": "Partagez et gagnez 50 crédits bonus",
+    "premiumAlt": "Ou économisez avec Premium"
   },
   "business": {
     "title": "Artlypet pour les Entreprises",
@@ -448,6 +513,8 @@
     "step2Desc": "Parcourez notre collection de plus de 12 styles soignés — de la Renaissance au Pop Art. Chacun crée un chef-d'œuvre unique.",
     "step3Title": "Téléchargez et Partagez",
     "step3Desc": "Votre portrait est prêt en moins de 60 secondes. Téléchargez-le en HD, commandez une impression sur toile ou partagez-le avec vos amis !",
+    "step4Title": "Invitez des Amis, Gagnez des Crédits",
+    "step4Desc": "Partagez votre lien de parrainage avec vos amis. Quand ils s'inscrivent, vous recevez tous les deux 150 crédits bonus !",
     "skip": "Passer",
     "next": "Suivant",
     "start": "Commencer à Créer !"
@@ -460,7 +527,11 @@
     "cta": "Essayez Gratuitement"
   },
   "press": {
-    "title": "Adopté par les amoureux des animaux à travers l'Europe"
+    "title": "Adopté par les amoureux des animaux à travers l'Europe",
+    "featuredIn": "Vu Dans",
+    "gdpr": "Conforme RGPD",
+    "ssl": "Chiffrement SSL",
+    "satisfaction": "Satisfaction 100%"
   },
   "styleDetail": {
     "artStyle": "Style Artistique",
