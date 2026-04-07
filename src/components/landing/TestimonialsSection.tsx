@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const testimonialMeta = [
-  { name: "Sophie M.", location: "Berlin, DE", rating: 5, initials: "SM", key: "t1" },
-  { name: "Marco R.", location: "Milano, IT", rating: 5, initials: "MR", key: "t2" },
-  { name: "Claire D.", location: "Paris, FR", rating: 5, initials: "CD", key: "t3" },
-  { name: "David K.", location: "London, UK", rating: 4, initials: "DK", key: "t4" },
-  { name: "Chiara R.", location: "Roma, Italia", rating: 5, initials: "CR", key: "t5" },
-  { name: "Ana P.", location: "Barcelona, ES", rating: 4, initials: "AP", key: "t6" },
+  { name: "Sophie & Biscuit", location: "Berlin, DE", rating: 5, initials: "SB", key: "t1" },
+  { name: "Marco & Luna", location: "Milano, IT", rating: 5, initials: "ML", key: "t2" },
+  { name: "Claire & Milo", location: "Paris, FR", rating: 5, initials: "CM", key: "t3" },
+  { name: "David & Whiskers", location: "London, UK", rating: 5, initials: "DW", key: "t4" },
+  { name: "Chiara & Bella", location: "Roma, IT", rating: 5, initials: "CB", key: "t5" },
+  { name: "Ana & Coco", location: "Barcelona, ES", rating: 5, initials: "AC", key: "t6" },
 ];
 
 const useVisibleCount = () => {

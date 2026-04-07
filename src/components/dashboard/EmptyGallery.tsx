@@ -31,21 +31,24 @@ export const EmptyGallery = () => {
       <h3 className="font-serif text-2xl font-semibold text-foreground mb-3 relative z-10">
         {t("dashboard.emptyTitle2", "Your masterpiece gallery awaits")}
       </h3>
-      <p className="text-muted-foreground mb-8 max-w-md mx-auto px-4 relative z-10">
+      <p className="text-muted-foreground mb-2 max-w-md mx-auto px-4 relative z-10">
         {t("dashboard.emptyDesc2", "Upload your first pet photo and we'll transform it into stunning art — it only takes 60 seconds")}
+      </p>
+      <p className="text-sm font-medium text-primary mb-8 relative z-10">
+        {t("dashboard.emptyFreeCredits", "3 free portraits included in your account")}
       </p>
 
       {/* Style previews as social proof */}
       {previewStyles.length > 0 && (
         <div className="flex items-center justify-center gap-3 mb-8 relative z-10">
           {previewStyles.map((style) => (
-            <div key={style.id} className="w-16 h-16 rounded-xl overflow-hidden border-2 border-border/50 shadow-sm">
+            <Link key={style.id} to={`/generate?style=${style.id}`} className="w-16 h-16 rounded-xl overflow-hidden border-2 border-border/50 shadow-sm hover:border-primary/50 hover:scale-105 transition-all" title={style.name}>
               {style.preview_url ? (
                 <img src={style.preview_url} alt={style.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-primary/5" />
               )}
-            </div>
+            </Link>
           ))}
           <p className="text-xs text-muted-foreground ml-1">
             {t("dashboard.emptyStylesHint", "20+ styles available")}

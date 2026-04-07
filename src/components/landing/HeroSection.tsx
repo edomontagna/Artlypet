@@ -1,38 +1,11 @@
-import { useState, useEffect, memo, useCallback } from "react";
+import { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, Sparkles, Shield } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { usePortraitCount } from "@/hooks/usePortraitCount";
+import { ArrowRight, Sparkles, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const useCountUp = (target: number, duration = 2000) => {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-
-  useEffect(() => {
-    if (!started) return;
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [started, target, duration]);
-
-  return { count, start: useCallback(() => setStarted(true), []) };
-};
 
 const heroImages = [
   { src: "/images/renaissance.webp", alt: "Renaissance", style: "Renaissance" },
@@ -44,31 +17,10 @@ const heroImages = [
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const PortraitCounter = ({ count: targetCount, t }: { count: number; t: (key: string, defaultValue: string) => string }) => {
-  const { count: animatedCount, start: startCount } = useCountUp(targetCount, 2500);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1.6, duration: 0.6 }}
-      className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
-      onViewportEnter={() => startCount()}
-      viewport={{ once: true }}
-    >
-      <Sparkles className="h-4 w-4 text-primary" />
-      <span>
-        <strong className="text-foreground font-semibold">{animatedCount.toLocaleString()}+</strong>{" "}
-        {t("hero.portraitsCreated", "portraits created")}
-      </span>
-    </motion.div>
-  );
-};
 
 const HeroSection = memo(() => {
   const { t } = useTranslation();
   const { session } = useAuth();
-  const { data: portraitCount } = usePortraitCount();
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -175,28 +127,6 @@ const HeroSection = memo(() => {
               </div>
             </motion.div>
 
-            {/* Trust Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.6, ease }}
-            >
-              <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-foreground/70">
-                <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-primary" /> {t("hero.noSub", "No subscription")}</span>
-                <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-primary" /> {t("hero.cancelAnytime", "Cancel anytime")}</span>
-                <span className="flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-primary" /> {t("hero.freeCredits", "3 free portraits")}</span>
-              </div>
-            </motion.div>
-
-            {/* Portrait counter */}
-            {portraitCount == null ? (
-              <div className="mt-10 flex items-center gap-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-36 rounded" />
-              </div>
-            ) : portraitCount > 0 ? (
-              <PortraitCounter count={portraitCount} t={t} />
-            ) : null}
           </div>
 
           {/* Right — Portrait Slideshow */}
