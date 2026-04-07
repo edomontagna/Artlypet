@@ -9,6 +9,7 @@ interface CreationTheaterProps {
   styleName?: string;
   startTime: number;
   isComplete?: boolean;
+  petName?: string;
 }
 
 const STAGES = [
@@ -36,7 +37,7 @@ const getFunFacts = (t: (key: string, fallback: string) => string) => [
   t("creation.fact5", "Over 10,000 pet owners have transformed their pets into art."),
 ];
 
-export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete = false }: CreationTheaterProps) => {
+export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete = false, petName }: CreationTheaterProps) => {
   const { t } = useTranslation();
   const funFacts = getFunFacts(t);
   const [progress, setProgress] = useState(0);
@@ -124,9 +125,11 @@ export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete =
         {stageLabel}
       </h2>
 
-      {styleName && (
+      {(styleName || petName) && (
         <p className="text-sm text-muted-foreground mb-6 text-center">
-          {t("generate.theater.styleLabel", "Style: {{style}}", { style: styleName })}
+          {petName
+            ? t("generate.theater.petStyleLabel", "Creating {{pet}}'s {{style}} portrait", { pet: petName, style: styleName || "" })
+            : t("generate.theater.styleLabel", "Style: {{style}}", { style: styleName })}
         </p>
       )}
 

@@ -50,6 +50,8 @@ const Generate = () => {
   const [generationType, setGenerationType] = useState<GenerationType>("single");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedFile2, setUploadedFile2] = useState<File | null>(null);
+  const [petName, setPetName] = useState("");
+  const [customPrompt, setCustomPrompt] = useState("");
 
   // Generation state
   const [generating, setGenerating] = useState(false);
@@ -187,6 +189,15 @@ const Generate = () => {
     }
   };
 
+  const handleCancelGeneration = () => {
+    setGenerating(false);
+    isGeneratingRef.current = false;
+    setGenerationId(null);
+    setOptimisticCreditDeduction(0);
+    toast.info(t("generate.cancelled", "Generation cancelled. Your credits will be refunded if they were deducted."));
+    queryClient.invalidateQueries({ queryKey: ["credits"] });
+  };
+
   const canGenerate = uploadedFile && selectedStyleId && !creditsLoading && (creditBalance ?? 0) >= creditCost && (generationType === "single" || uploadedFile2);
   const selectedStyleName = styles?.find((s) => s.id === selectedStyleId)?.name;
 
@@ -260,7 +271,14 @@ const Generate = () => {
 
         {/* GENERATING */}
         {generating && !resultUrl && (
-          <CreationTheater previewUrl={previewUrl} styleName={selectedStyleName} startTime={generationStartTime} isComplete={generationComplete} />
+          <div>
+            <CreationTheater previewUrl={previewUrl} styleName={selectedStyleName} startTime={generationStartTime} isComplete={generationComplete} petName={petName || undefined} />
+            <div className="text-center mt-6">
+              <Button variant="ghost" size="sm" className="rounded-full text-muted-foreground hover:text-destructive" onClick={handleCancelGeneration}>
+                {t("generate.cancelGeneration", "Cancel generation")}
+              </Button>
+            </div>
+          </div>
         )}
 
         {/* RETRY */}
@@ -341,6 +359,24 @@ const Generate = () => {
               </div>
             </motion.div>
 
+            {/* Pet name (optional) */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}>
+              <div className="max-w-md">
+                <label htmlFor="pet-name" className="text-sm font-medium text-foreground mb-2 block">
+                  {t("generate.petNameLabel", "What's your pet's name?")} <span className="text-muted-foreground font-normal">({t("common.optional", "optional")})</span>
+                </label>
+                <input
+                  id="pet-name"
+                  type="text"
+                  value={petName}
+                  onChange={(e) => setPetName(e.target.value)}
+                  placeholder={t("generate.petNamePlaceholder", "e.g. Luna, Milo, Bella...")}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                  maxLength={30}
+                />
+              </div>
+            </motion.div>
+
             {/* Step 2: Upload */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
               <div className="flex items-center gap-3 mb-4">
@@ -365,6 +401,25 @@ const Generate = () => {
               </div>
               <p className="text-sm text-muted-foreground mb-4">{t("generate.step3Desc", "Select the artistic style for your portrait")}</p>
               <StyleSelector selectedStyleId={selectedStyleId} onSelectStyle={setSelectedStyleId} />
+
+              {/* Custom prompt (optional) */}
+              {selectedStyleId && (
+                <div className="mt-6">
+                  <label htmlFor="custom-prompt" className="text-sm font-medium text-foreground mb-2 block">
+                    {t("generate.customPromptLabel", "Add details")} <span className="text-muted-foreground font-normal">({t("common.optional", "optional")})</span>
+                  </label>
+                  <textarea
+                    id="custom-prompt"
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    placeholder={t("generate.customPromptPlaceholder", "e.g. Add a golden crown, use warm autumn colors, baroque style background...")}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+                    rows={2}
+                    maxLength={200}
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">{customPrompt.length}/200</p>
+                </div>
+              )}
             </motion.div>
 
             {/* Mix validation */}
