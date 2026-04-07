@@ -34,6 +34,7 @@ const PrintQuality = lazy(() => import("./pages/PrintQuality"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const SharePortrait = lazy(() => import("./pages/SharePortrait"));
+const Pricing = lazy(() => import("./pages/Pricing"));
 const Accessibility = lazy(() => import("./pages/Accessibility"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -84,6 +85,7 @@ const AnimatedRoutes = () => {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/accessibility" element={<Accessibility />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/business" element={<BusinessPlan />} />

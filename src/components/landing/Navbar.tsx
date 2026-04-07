@@ -92,7 +92,8 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center" aria-label="ArtlyPet home">
+        <Link to="/" className="flex items-center gap-2" aria-label="ArtlyPet home">
+          <img src="/icons/icon.svg" alt="" className="h-8 w-8 rounded-lg" aria-hidden="true" />
           <span className="font-serif text-2xl font-bold text-primary">
             ArtlyPet
           </span>
