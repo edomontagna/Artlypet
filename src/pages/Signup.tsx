@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { SEOHead } from "@/components/SEOHead";
 import { Loader2, Sparkles, Star, Shield, Lock } from "lucide-react";
 import { trackCompleteRegistration } from "@/hooks/useAnalytics";
 
@@ -121,6 +122,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead title="Create Account — Artlypet" description="Create your free Artlypet account and get 3 AI pet portraits free." canonical="/signup" />
       {/* Left — Form */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">

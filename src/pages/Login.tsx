@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { resendConfirmationEmail } from "@/services/auth";
 import { toast } from "sonner";
+import { SEOHead } from "@/components/SEOHead";
 import { Loader2, Star, Shield, Lock } from "lucide-react";
 
 const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
@@ -104,6 +105,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead title="Sign In — Artlypet" description="Sign in to your Artlypet account to create AI pet portraits." canonical="/login" />
       {/* Left — Form */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md rounded-2xl bg-card p-8 shadow-md border border-border/50">

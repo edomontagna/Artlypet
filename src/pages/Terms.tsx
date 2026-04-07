@@ -1,8 +1,10 @@
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const Terms = () => (
   <div className="min-h-screen bg-background">
+    <SEOHead title="Terms of Service — Artlypet" description="Terms of service for using the Artlypet AI pet portrait platform." canonical="/terms" />
     <Navbar />
     <main className="container max-w-3xl px-6 lg:px-8 py-16 lg:py-24">
       <h1 className="font-serif text-4xl font-bold text-foreground mb-8">Terms of Service</h1>

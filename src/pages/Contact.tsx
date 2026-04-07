@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Mail, MessageSquare } from "lucide-react";
+import { Mail, MessageSquare, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -201,7 +201,8 @@ const Contact = () => {
                     disabled={isSubmitting}
                     className="rounded-full h-12 w-full text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
-                    {t("contact.send", "Send Message")}
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isSubmitting ? t("contact.sending", "Sending...") : t("contact.send", "Send Message")}
                   </Button>
                   <p className="text-xs text-muted-foreground mt-2 text-center">
                     {t("contact.mailtoNote", "This will open your default email app to send the message.")}

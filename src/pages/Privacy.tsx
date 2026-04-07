@@ -1,8 +1,10 @@
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import { SEOHead } from "@/components/SEOHead";
 
 const Privacy = () => (
   <div className="min-h-screen bg-background">
+    <SEOHead title="Privacy Policy — Artlypet" description="How Artlypet collects, uses, and protects your personal data. GDPR compliant." canonical="/privacy" />
     <Navbar />
     <main className="container max-w-3xl px-6 lg:px-8 py-16 lg:py-24">
       <h1 className="font-serif text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
