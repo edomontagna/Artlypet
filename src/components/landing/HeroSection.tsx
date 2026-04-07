@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, Sparkles, Shield, Zap, GripVertical } from "lucide-react";
+import { ArrowRight, Check, Sparkles, Shield, GripVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortraitCount } from "@/hooks/usePortraitCount";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRef, useCallback } from "react";
-import { UrgencyCountdown } from "./UrgencyCountdown";
-import { PROMO_END_DATE, REGULAR_PRICE } from "@/lib/constants";
 
 const useCountUp = (target: number, duration = 2000) => {
   const [count, setCount] = useState(0);
@@ -214,26 +212,6 @@ const HeroSection = memo(() => {
               </Button>
             </motion.div>
 
-            {/* Price anchoring + urgency */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.5, ease }}
-              className="mt-4 flex flex-col gap-3"
-            >
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 text-sm">
-                  <span className="line-through text-muted-foreground">&euro;{REGULAR_PRICE}</span>
-                  <span className="font-bold text-foreground text-lg">&euro;15</span>
-                  <span className="text-xs text-muted-foreground">{t("hero.priceAnchorLabel", "one-time")}</span>
-                </span>
-                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                  {t("pricing.savePercent", "Save 48%")}
-                </span>
-              </div>
-              <UrgencyCountdown targetDate={PROMO_END_DATE} variant="full" />
-            </motion.div>
-
             {/* Trust pill + free tier */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -268,11 +246,6 @@ const HeroSection = memo(() => {
                   <p className="text-sm text-muted-foreground">
                     {t("hero.socialProof", "Loved by 10,000+ pet owners")}
                   </p>
-                </div>
-                {/* Velocity indicator */}
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Zap className="h-3 w-3 text-primary" />
-                  <span>{t("hero.socialProofVelocity", "{{count}} portraits created in the last hour", { count: 12 + (new Date().getHours() % 10) + (new Date().getMinutes() % 8) })}</span>
                 </div>
               </div>
             </motion.div>

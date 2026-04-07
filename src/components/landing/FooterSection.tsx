@@ -41,8 +41,8 @@ const FooterSection = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
-          {/* Column 1: Logo + Description */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-8">
+          {/* Column 1: Brand + Company */}
           <div className="space-y-4">
             <Link
               to="/"
@@ -56,6 +56,17 @@ const FooterSection = () => {
                 "Luxury AI pet portraits crafted with cutting-edge technology and artistic excellence."
               )}
             </p>
+            <nav className="flex flex-col gap-2">
+              <Link to="/about" className={linkClass}>
+                {t("nav.about", "About")}
+              </Link>
+              <Link to="/contact" className={linkClass}>
+                {t("nav.contact", "Contact")}
+              </Link>
+              <Link to="/blog" className={linkClass}>
+                {t("nav.blog", "Blog")}
+              </Link>
+            </nav>
             <LanguageSwitcher variant="outline" />
             <div className="flex items-center gap-3">
               {socialLinks.map(({ icon: Icon, href, label }) => (
@@ -88,31 +99,13 @@ const FooterSection = () => {
               <Link to="/prints" className={linkClass}>
                 {t("nav.prints", "Prints")}
               </Link>
-              <Link to="/signup" className={linkClass}>
-                {t("footer.createPortrait", "Create Portrait")}
+              <Link to="/how-it-works" className={linkClass}>
+                {t("nav.howItWorks", "How It Works")}
               </Link>
             </nav>
           </div>
 
-          {/* Column 3: Company */}
-          <div>
-            <h3 className="font-serif text-sm font-bold text-foreground mb-4">
-              {t("footer.company", "Company")}
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <Link to="/about" className={linkClass}>
-                {t("nav.about", "About")}
-              </Link>
-              <Link to="/contact" className={linkClass}>
-                {t("nav.contact", "Contact")}
-              </Link>
-              <Link to="/business" className={linkClass}>
-                {t("footer.business", "Business")}
-              </Link>
-            </nav>
-          </div>
-
-          {/* Column 4: Legal */}
+          {/* Column 3: Legal */}
           <div>
             <h3 className="font-serif text-sm font-bold text-foreground mb-4">
               {t("footer.legal", "Legal")}
@@ -123,9 +116,6 @@ const FooterSection = () => {
               </Link>
               <Link to="/terms" className={linkClass}>
                 {t("footer.terms")}
-              </Link>
-              <Link to="/terms" className={linkClass}>
-                {t("footer.refundPolicy", "Refund Policy")}
               </Link>
               <Link to="/accessibility" className={linkClass}>
                 {t("footer.accessibility", "Accessibility")}

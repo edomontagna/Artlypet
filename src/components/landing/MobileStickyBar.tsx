@@ -45,7 +45,6 @@ export const MobileStickyBar = () => {
         >
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs line-through text-muted-foreground">€29</span>
               <span className="text-sm font-bold text-foreground">€15</span>
               <span className="text-[10px] text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
             </div>

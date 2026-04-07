@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Crown, Building2, Shield, TrendingUp } from "lucide-react";
-import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM, BUSINESS_PRICE_MONTHLY, REGULAR_PRICE, PROMO_END_DATE } from "@/lib/constants";
-import { UrgencyCountdown } from "./UrgencyCountdown";
+import { Check, Sparkles, Crown, Shield } from "lucide-react";
+import { SIGNUP_CREDITS, PREMIUM_PRICE, PREMIUM_CREDITS, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM } from "@/lib/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
@@ -29,9 +28,7 @@ const PricingSection = memo(() => {
         t("pricing.features.allStyles", "Access to all art styles"),
         t("pricing.features.singleCost", "Single portrait: {{cost}} credits", { cost: CREDIT_COST_SINGLE }),
         t("pricing.features.mixCost", "Mix portrait: {{cost}} credits", { cost: CREDIT_COST_MIX }),
-        t("pricing.features.watermarked", "Watermarked low-res downloads"),
-        t("pricing.features.hdPerImage", "HD unlock: €4.90/image"),
-        t("pricing.features.printFree", "Canvas prints: €{{price}}", { price: PRINT_PRICE_FREE.toFixed(2) }),
+        t("pricing.features.printFree", "Canvas prints available"),
       ],
       cta: user
         ? (isPremium ? t("pricing.startCreating", "Start Creating") : t("pricing.getStartedFree", "Get Started Free"))
@@ -49,36 +46,14 @@ const PricingSection = memo(() => {
       features: [
         t("pricing.features.premiumCredits", "{{credits}} credits included", { credits: PREMIUM_CREDITS }),
         t("pricing.features.allStyles", "Access to all art styles"),
-        t("pricing.features.singleCost", "Single portrait: {{cost}} credits", { cost: CREDIT_COST_SINGLE }),
-        t("pricing.features.mixCost", "Mix portrait: {{cost}} credits", { cost: CREDIT_COST_MIX }),
         t("pricing.features.fullHd", "Full HD downloads, no watermark"),
-        t("pricing.features.discountedPrints", "Canvas prints: €{{price}}", { price: PRINT_PRICE_PREMIUM.toFixed(2) }),
+        t("pricing.features.discountedPrints", "Discounted canvas prints"),
         t("pricing.features.noExpiry", "Credits never expire"),
-        t("pricing.features.savingsMath", "Save vs. HD unlocks: 5 images = €24.50 → Premium only €15"),
       ],
       cta: user && isPremium ? t("pricing.startCreating", "Start Creating") : t("pricing.goPremium", "Go Premium"),
       ctaLink: user ? (isPremium ? "/generate" : "#") : "/signup",
       planKey: "premium",
       popular: true,
-    },
-    {
-      name: t("pricing.business", "Business"),
-      desc: t("pricing.businessDesc", "White-label for businesses"),
-      price: String(BUSINESS_PRICE_MONTHLY),
-      priceSuffix: "/ " + t("pricing.month", "month"),
-      icon: Building2,
-      features: [
-        t("pricing.features.whiteLabel", "White-label platform"),
-        t("pricing.features.customBranding", "Custom branding"),
-        t("pricing.features.unlimitedCredits", "Unlimited credits"),
-        t("pricing.features.apiAccess", "API access"),
-        t("pricing.features.dedicatedSupport", "Dedicated support"),
-        t("pricing.features.analytics", "Analytics dashboard"),
-      ],
-      cta: t("pricing.contactUs", "Contact Us"),
-      ctaLink: "/business",
-      planKey: "business",
-      popular: false,
     },
   ];
 
@@ -129,7 +104,7 @@ const PricingSection = memo(() => {
         </motion.div>
 
         {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 max-w-4xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -146,18 +121,10 @@ const PricingSection = memo(() => {
               {/* Popular badge with percentage */}
               {plan.popular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background text-primary rounded-full px-4 py-1 text-xs font-semibold shadow-md whitespace-nowrap">
-                  {t("pricing.popularPercent", "Most Popular — chosen by 73% of customers")}
+                  {t("pricing.popular", "Most Popular")}
                 </span>
               )}
 
-              {/* Best Value badge */}
-              {plan.popular && (
-                <div className="absolute -top-3 right-4 z-20">
-                  <div className="bg-foreground text-background text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
-                    {t("pricing.bestValue", "Best Value")}
-                  </div>
-                </div>
-              )}
 
               {/* Plan header */}
               <div className="mb-6">
@@ -175,35 +142,16 @@ const PricingSection = memo(() => {
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline gap-2">
-                  {plan.popular && (
-                    <span className="font-serif text-lg line-through text-primary-foreground/50">
-                      &euro;{REGULAR_PRICE}
-                    </span>
-                  )}
                   <span className={`font-serif text-5xl font-bold tracking-tight ${
                     plan.popular ? "text-primary-foreground" : "text-foreground"
                   }`}>
                     &euro;{plan.price}
                   </span>
-                  {plan.popular && (
-                    <span className="bg-green-500/20 text-green-200 text-xs font-bold px-2 py-0.5 rounded-full">
-                      {t("pricing.savePercent", "Save 48%")}
-                    </span>
-                  )}
                 </div>
                 {plan.priceSuffix && (
                   <p className={`text-sm mt-1 ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                     {plan.priceSuffix}
                   </p>
-                )}
-                {plan.popular && (
-                  <div className="mt-3 space-y-2">
-                    <UrgencyCountdown targetDate={PROMO_END_DATE} variant="compact" className="text-primary-foreground/90" />
-                    <p className="text-xs text-primary-foreground/70 flex items-center gap-1">
-                      <TrendingUp className="h-3 w-3" />
-                      {t("pricing.scarcity", "{{count}} people upgraded today", { count: 8 + (new Date().getHours() % 7) + (new Date().getDate() % 5) })}
-                    </p>
-                  </div>
                 )}
               </div>
 

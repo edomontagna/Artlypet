@@ -34,7 +34,6 @@ const useVisibleCount = () => {
 const TestimonialsSection = memo(() => {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const trackRef = useRef<HTMLDivElement>(null);
   const visibleCount = useVisibleCount();
@@ -89,12 +88,6 @@ const TestimonialsSection = memo(() => {
     }
   }, [isTransitioning]);
 
-  // Auto-scroll
-  useEffect(() => {
-    if (paused) return;
-    const interval = setInterval(next, 4000);
-    return () => clearInterval(interval);
-  }, [paused, next]);
 
   // Normalize current for dot indicator
   const normalizedCurrent = ((current % total) + total) % total;
@@ -141,8 +134,6 @@ const TestimonialsSection = memo(() => {
         {/* Carousel */}
         <div
           className="overflow-hidden max-w-5xl mx-auto"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
         >
           <div
             ref={trackRef}
