@@ -134,7 +134,12 @@ export const PortraitCard = ({
         {/* Style name overlay */}
         {gen.status === "completed" && (
           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
-            <p className="text-xs font-medium text-white truncate">{gen.styles?.name || "Portrait"}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-xs font-medium text-white truncate">{gen.styles?.name || "Portrait"}</p>
+              {gen.generation_type === "mix" && (
+                <span className="text-[9px] bg-white/20 text-white px-1 py-0.5 rounded">Mix</span>
+              )}
+            </div>
             <p className="text-[10px] text-white/70 mt-0.5">{getRelativeTime(gen.created_at)}</p>
           </div>
         )}

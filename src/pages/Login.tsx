@@ -14,7 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { resendConfirmationEmail } from "@/services/auth";
 import { toast } from "sonner";
 import { SEOHead } from "@/components/SEOHead";
-import { Loader2, Star, Shield, Lock } from "lucide-react";
+import { Loader2, Star, Shield, Lock, Eye, EyeOff } from "lucide-react";
 
 const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
   if (message.includes("Invalid login credentials")) {
@@ -42,6 +42,7 @@ const Login = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
   const [resending, setResending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading, signIn, signInWithGoogle } = useAuth();
@@ -195,13 +196,18 @@ const Login = () => {
                       </Link>
                     </div>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("auth.enterPassword", "Enter your password")}
-                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        autoComplete="current-password"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder={t("auth.enterPassword", "Enter your password")}
+                          className="rounded-lg font-sans border-border bg-background focus:ring-primary pr-10"
+                          autoComplete="current-password"
+                          {...field}
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label={showPassword ? "Hide password" : "Show password"}>
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

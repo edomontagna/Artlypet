@@ -66,6 +66,9 @@ const FooterSection = () => {
               <Link to="/blog" className={linkClass}>
                 {t("nav.blog", "Blog")}
               </Link>
+              <Link to="/business" className={linkClass}>
+                {t("footer.business", "For Businesses")}
+              </Link>
             </nav>
             <LanguageSwitcher variant="outline" />
             <div className="flex items-center gap-3">
@@ -101,6 +104,9 @@ const FooterSection = () => {
               </Link>
               <Link to="/how-it-works" className={linkClass}>
                 {t("nav.howItWorks", "How It Works")}
+              </Link>
+              <Link to="/demo" className={linkClass}>
+                {t("footer.demo", "Try Demo")}
               </Link>
             </nav>
           </div>

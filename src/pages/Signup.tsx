@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { SEOHead } from "@/components/SEOHead";
-import { Loader2, Sparkles, Star, Shield, Lock } from "lucide-react";
+import { Loader2, Sparkles, Star, Shield, Lock, Eye, EyeOff } from "lucide-react";
 import { trackCompleteRegistration } from "@/hooks/useAnalytics";
 
 const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
@@ -62,6 +62,7 @@ const Signup = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading, signUp, signInWithGoogle } = useAuth();
@@ -233,13 +234,18 @@ const Signup = () => {
                       {t("auth.passwordReq", "Minimum 10 characters")}
                     </p>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("auth.minChars", "Min 10 characters")}
-                        className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        autoComplete="new-password"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder={t("auth.minChars", "Min 10 characters")}
+                          className="rounded-lg font-sans border-border bg-background focus:ring-primary pr-10"
+                          autoComplete="new-password"
+                          {...field}
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label={showPassword ? "Hide password" : "Show password"}>
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                     {password && password.length > 0 && (
