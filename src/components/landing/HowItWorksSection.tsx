@@ -10,7 +10,7 @@ const steps = [
   { icon: Download, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc", time: "Instant" },
 ];
 
-const ease = [0.16, 1, 0.3, 1];
+const ease = [0.16, 1, 0.3, 1] as const;
 
 const HowItWorksSection = () => {
   const { t } = useTranslation();

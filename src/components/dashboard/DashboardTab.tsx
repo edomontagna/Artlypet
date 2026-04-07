@@ -13,7 +13,7 @@ import { QuickActions } from "./QuickActions";
 
 interface DashboardTabProps {
   displayName: string;
-  profile: { referral_code?: string; plan_type?: string; created_at?: string } | null | undefined;
+  profile: { referral_code?: string | null; plan_type?: string; created_at?: string; [key: string]: unknown } | null | undefined;
   creditBalance: number | null | undefined;
   creditsLoading: boolean;
   generations: Array<{
@@ -182,7 +182,7 @@ export const DashboardTab = ({
       {/* Quick Actions */}
       <QuickActions
         hasPortraits={hasPortraits}
-        referralCode={profile?.referral_code}
+        referralCode={profile?.referral_code ?? undefined}
       />
 
       {/* Referral Card - promoted */}

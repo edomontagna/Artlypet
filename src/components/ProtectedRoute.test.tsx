@@ -55,7 +55,7 @@ describe("ProtectedRoute", () => {
     mockAuth.user = null;
     mockAuth.loading = false;
 
-    let currentSearch = "";
+    const currentSearch = "";
     const CaptureLocation = () => {
       // Use a side-effect free way to capture location
       const loc = window.location;

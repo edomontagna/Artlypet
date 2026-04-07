@@ -22,7 +22,7 @@ interface SettingsTabProps {
   isPremium: boolean;
   displayName: string;
   updateProfile: {
-    mutateAsync: (data: { display_name: string }) => Promise<{ error?: unknown }>;
+    mutateAsync: (data: { display_name?: string; avatar_url?: string }) => Promise<unknown>;
     isPending: boolean;
   };
   setCreditModalOpen: (v: boolean) => void;
@@ -54,8 +54,8 @@ export const SettingsTab = ({
 
   const handleSaveName = async () => {
     if (!editName.trim()) return;
-    const result = await updateProfile.mutateAsync({ display_name: editName.trim() });
-    if (result.error) {
+    const result = await updateProfile.mutateAsync({ display_name: editName.trim() }) as { error?: unknown } | undefined;
+    if (result && typeof result === "object" && "error" in result && result.error) {
       toast.error(t("dashboard.nameUpdateFailed", "Failed to update name"));
     } else {
       toast.success(t("dashboard.nameUpdated", "Name updated"));
@@ -167,6 +167,21 @@ export const SettingsTab = ({
           {/* Preferences */}
           <div className="rounded-2xl bg-card border border-border shadow-sm p-6 space-y-4">
             <h3 className="font-serif text-lg font-semibold">{t("settings.preferences", "Preferences")}</h3>
+
+            {/* Reopen onboarding */}
+            <div className="space-y-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full gap-1.5 text-xs"
+                onClick={() => {
+                  localStorage.removeItem("artlypet_onboarded");
+                  window.location.reload();
+                }}
+              >
+                {t("settings.reopenOnboarding", "Show onboarding guide")}
+              </Button>
+            </div>
 
             {/* Theme */}
             <div className="space-y-2">

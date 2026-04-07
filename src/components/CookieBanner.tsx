@@ -31,8 +31,8 @@ export const CookieBanner = () => {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
-  const [analytics, setAnalytics] = useState(true);
-  const [marketing, setMarketing] = useState(true);
+  const [analytics, setAnalytics] = useState(false);
+  const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
     if (!getConsent()) setVisible(true);

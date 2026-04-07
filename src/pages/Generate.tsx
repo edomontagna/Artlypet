@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Upload, Sparkles, Image as ImageIcon, X, Download, Lock, Crown, Users, AlertCircle, Printer, ArrowRight, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Image as ImageIcon, Crown, Users, AlertCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -14,19 +14,17 @@ import { uploadOriginalImage } from "@/services/storage";
 import { requestGeneration, getServedImage, purchaseHdImage } from "@/services/generations";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX, PRINT_PRICE_FREE, PRINT_PRICE_PREMIUM } from "@/lib/constants";
+import { getCreditCost, CREDIT_COST_SINGLE, CREDIT_COST_MIX } from "@/lib/constants";
 import type { GenerationType } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
-import { SharePanel } from "@/components/SharePanel";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
-import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { CreationTheater } from "@/components/CreationTheater";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { UploadSection } from "@/components/generate/UploadSection";
+import { StyleSelector } from "@/components/generate/StyleSelector";
+import { ResultPanel } from "@/components/generate/ResultPanel";
+import { ConfirmDialog } from "@/components/generate/ConfirmDialog";
 import { trackEvent } from "@/hooks/useAnalytics";
-import { compressImage } from "@/lib/imageCompression";
 import { safeSetItem } from "@/lib/storage";
-
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 /** Map raw backend/Gemini error messages to user-friendly strings */
 const getFriendlyErrorMessage = (raw: string | undefined | null): string => {
@@ -42,18 +40,17 @@ const Generate = () => {
   const { user } = useAuth();
   const { data: creditBalance, isLoading: creditsLoading, isError: creditsError } = useCreditBalance();
   const { data: profile, isError: profileError } = useProfile();
-  const { data: styles, isLoading: stylesLoading, isError: stylesError, refetch: refetchStyles } = useStyles();
+  const { data: styles } = useStyles();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
 
+  // Core state
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [generationType, setGenerationType] = useState<GenerationType>("single");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadedFile2, setUploadedFile2] = useState<File | null>(null);
-  const [previewUrl2, setPreviewUrl2] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isDragging2, setIsDragging2] = useState(false);
+
+  // Generation state
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [generationId, setGenerationId] = useState<string | null>(null);
@@ -62,7 +59,13 @@ const Generate = () => {
   const [resultMode, setResultMode] = useState<"hd" | "watermarked" | null>(null);
   const [showRetry, setShowRetry] = useState(false);
   const [optimisticCreditDeduction, setOptimisticCreditDeduction] = useState(0);
+  const [generationComplete, setGenerationComplete] = useState(false);
+
+  // UI state
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const isGeneratingRef = useRef(false);
   const confettiFired = useRef(false);
 
@@ -73,10 +76,8 @@ const Generate = () => {
     : (creditBalance ?? 0);
 
   const { data: generationStatus } = useGenerationStatus(generationId, generating, generationStartTime);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [generationComplete, setGenerationComplete] = useState(false);
 
-  // Pre-select style from URL search param (e.g., /generate?style=abc123)
+  // Pre-select style from URL
   useEffect(() => {
     const styleParam = searchParams.get("style");
     if (styleParam && styles && styles.some((s) => s.id === styleParam)) {
@@ -84,22 +85,7 @@ const Generate = () => {
     }
   }, [searchParams, styles]);
 
-  useEffect(() => {
-    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
-  }, [previewUrl]);
-
-  useEffect(() => {
-    return () => { if (previewUrl2) URL.revokeObjectURL(previewUrl2); };
-  }, [previewUrl2]);
-
-  useEffect(() => {
-    if (generationType === "single") {
-      if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-      setUploadedFile2(null);
-      setPreviewUrl2(null);
-    }
-  }, [generationType]);
-
+  // Poll generation status
   useEffect(() => {
     if (!generationId || !generating) return;
     const controller = new AbortController();
@@ -108,7 +94,6 @@ const Generate = () => {
       isGeneratingRef.current = false;
       trackEvent("GenerationCompleted", "generation_completed", { generation_id: generationId, generation_type: generationType });
       setOptimisticCreditDeduction(0);
-      // Delay hiding the theater so progress bar can animate to 100%
       setTimeout(() => {
         setGenerating(false);
         getServedImage(generationId)
@@ -130,94 +115,36 @@ const Generate = () => {
       safeSetItem("credits-updated", Date.now().toString());
     }
     return () => controller.abort();
-  }, [generationStatus?.status, generationId, generating, queryClient]);
+  }, [generationStatus?.status, generationStatus?.error_message, generationId, generating, generationType, queryClient]);
 
-  // Polling timeout: stop after 120 seconds
+  // Polling timeout
   useEffect(() => {
     if (!generating || !generationStartTime) return;
     const timeoutMs = 120_000;
     const elapsed = Date.now() - generationStartTime;
     const remaining = timeoutMs - elapsed;
     if (remaining <= 0) {
-      setGenerating(false);
-      isGeneratingRef.current = false;
-      setGenerationId(null);
-      setShowRetry(true);
-      setOptimisticCreditDeduction(0);
+      setGenerating(false); isGeneratingRef.current = false; setGenerationId(null);
+      setShowRetry(true); setOptimisticCreditDeduction(0);
       toast.error(t("generate.timeoutError", "Generation timed out. Please try again. Your credits have been refunded."));
       queryClient.invalidateQueries({ queryKey: ["credits"] });
       return;
     }
     const timer = setTimeout(() => {
       if (!isGeneratingRef.current) return;
-      setGenerating(false);
-      isGeneratingRef.current = false;
-      setGenerationId(null);
-      setShowRetry(true);
-      setOptimisticCreditDeduction(0);
+      setGenerating(false); isGeneratingRef.current = false; setGenerationId(null);
+      setShowRetry(true); setOptimisticCreditDeduction(0);
       toast.error(t("generate.timeoutError", "Generation timed out. Please try again. Your credits have been refunded."));
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }, remaining);
     return () => clearTimeout(timer);
   }, [generating, generationStartTime, queryClient, t]);
 
-  const [compressing, setCompressing] = useState(false);
-
-  const handleFile = useCallback(async (file: File) => {
-    if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-
-    setCompressing(true);
-    try {
-      const compressed = await compressImage(file);
-      setUploadedFile(compressed);
-      setPreviewUrl(URL.createObjectURL(compressed));
-    } catch {
-      // Fallback to original file if compression fails
-      setUploadedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    } finally {
-      setCompressing(false);
-    }
-    setResultUrl(null); setResultMode(null); setGenerationId(null);
-  }, [previewUrl, t]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) handleFile(file); };
-  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
-  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
-  const handleDrop = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); const file = e.dataTransfer.files[0]; if (file) handleFile(file); };
-  const removeFile = () => { if (previewUrl) URL.revokeObjectURL(previewUrl); setUploadedFile(null); setPreviewUrl(null); setResultUrl(null); setResultMode(null); setGenerationId(null); };
-
-  const handleFile2 = useCallback(async (file: File) => {
-    if (!ALLOWED_TYPES.includes(file.type)) { toast.error(t("generate.errorNotImage", "Please upload an image file (JPG, PNG, WebP)")); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error(t("generate.errorTooLarge", "File size must be under 10MB")); return; }
-    if (previewUrl2) URL.revokeObjectURL(previewUrl2);
-
-    setCompressing(true);
-    try {
-      const compressed = await compressImage(file);
-      setUploadedFile2(compressed);
-      setPreviewUrl2(URL.createObjectURL(compressed));
-    } catch {
-      setUploadedFile2(file);
-      setPreviewUrl2(URL.createObjectURL(file));
-    } finally {
-      setCompressing(false);
-    }
-  }, [previewUrl2, t]);
-
-  const handleFile2Change = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) handleFile2(file); };
-  const handleDragOver2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(true); };
-  const handleDragLeave2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(false); };
-  const handleDrop2 = (e: React.DragEvent) => { e.preventDefault(); setIsDragging2(false); const file = e.dataTransfer.files[0]; if (file) handleFile2(file); };
-  const removeFile2 = () => { if (previewUrl2) URL.revokeObjectURL(previewUrl2); setUploadedFile2(null); setPreviewUrl2(null); };
-
-  const handleGenerate = async () => {
+  // Handlers
+  const handleGenerate = () => {
     if (!uploadedFile || !selectedStyleId || !user || (creditBalance ?? 0) < creditCost) return;
     if (generationType === "mix" && !uploadedFile2) return;
     if (isGeneratingRef.current) return;
-
     setShowConfirmDialog(true);
   };
 
@@ -228,33 +155,46 @@ const Generate = () => {
     if (isGeneratingRef.current) return;
 
     isGeneratingRef.current = true;
-    setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false); setGenerationComplete(false); setOptimisticCreditDeduction(creditCost);
+    setGenerating(true); setGenerationStartTime(Date.now()); setShowRetry(false);
+    setGenerationComplete(false); setOptimisticCreditDeduction(creditCost);
     try {
       setUploading(true);
       const original = await uploadOriginalImage(user.id, uploadedFile);
       let originalId2: string | undefined;
-      if (generationType === "mix" && uploadedFile2) { const original2 = await uploadOriginalImage(user.id, uploadedFile2); originalId2 = original2.id; }
+      if (generationType === "mix" && uploadedFile2) {
+        const original2 = await uploadOriginalImage(user.id, uploadedFile2);
+        originalId2 = original2.id;
+      }
       setUploading(false);
       const result = await requestGeneration(original.id, selectedStyleId, generationType, originalId2);
       setGenerationId(result.generation_id);
       trackEvent("GenerationStarted", "generation_started", { generation_type: generationType, style_id: selectedStyleId });
       toast.success(t("generate.generationStarted", "Generation started! This may take up to 60 seconds."));
-    } catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start generation"); setUploading(false); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0); }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to start generation");
+      setUploading(false); setGenerating(false); isGeneratingRef.current = false; setOptimisticCreditDeduction(0);
+    }
   };
 
   const handleUnlockHd = async () => {
     if (!generationId) return;
-    try { const { url } = await purchaseHdImage(generationId); if (url) window.location.href = url; }
-    catch (err) { toast.error(err instanceof Error ? err.message : "Failed to start HD unlock"); }
+    try {
+      const { url } = await purchaseHdImage(generationId);
+      if (url) window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to start HD unlock");
+    }
   };
 
   const canGenerate = uploadedFile && selectedStyleId && !creditsLoading && (creditBalance ?? 0) >= creditCost && (generationType === "single" || uploadedFile2);
+  const selectedStyleName = styles?.find((s) => s.id === selectedStyleId)?.name;
 
   return (
     <div className="min-h-screen bg-background">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
         Skip to content
       </a>
+
       {/* Header */}
       <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
         <div className="flex items-center gap-2">
@@ -293,285 +233,50 @@ const Generate = () => {
           </div>
         )}
 
-        {/* ═══════════════════════════════════════ */}
-        {/*  RESULT — Celebration & Next Steps     */}
-        {/* ═══════════════════════════════════════ */}
-        {resultUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-8"
-            onAnimationComplete={() => {
+        {/* RESULT */}
+        {resultUrl && resultMode && (
+          <ResultPanel
+            resultUrl={resultUrl}
+            resultMode={resultMode}
+            previewUrl={previewUrl}
+            isPremium={isPremium}
+            generationId={generationId}
+            selectedStyleName={selectedStyleName}
+            downloadFileName={`artlypet-${selectedStyleName?.toLowerCase().replace(/\s+/g, "-") || "portrait"}-HD.png`}
+            onUnlockHd={handleUnlockHd}
+            onTryDifferentStyle={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); setSelectedStyleId(null); }}
+            onCreateAnother={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); setUploadedFile(null); setUploadedFile2(null); setPreviewUrl(null); }}
+            onShowPurchaseModal={() => setShowPurchaseModal(true)}
+            onConfettiReady={() => {
               if (confettiFired.current) return;
               confettiFired.current = true;
               import("canvas-confetti").then((confetti) => {
                 confetti.default({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#d4956a", "#c17d52", "#e8b896", "#4a9d6e"] });
               });
             }}
-          >
-
-            {/* Success header with celebration */}
-            <div className="text-center">
-              <motion.div initial={{ scale: 0, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}>
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Star className="h-8 w-8 text-primary" />
-                </div>
-              </motion.div>
-              <motion.h2
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2"
-              >
-                {t("generate.celebrationTitle", "Your masterpiece is ready!")}
-              </motion.h2>
-              <p className="text-muted-foreground">
-                {t("generate.portraitReadyDesc", "Here's your masterpiece. Choose what to do next.")}
-              </p>
-            </div>
-
-            {/* Before / After — interactive drag slider */}
-            <motion.div
-              initial={{ opacity: 0, filter: "blur(20px)", scale: 0.95 }}
-              animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            >
-            {previewUrl ? (
-              <div className="max-w-xl mx-auto">
-                <BeforeAfterSlider beforeUrl={previewUrl} afterUrl={resultUrl} />
-              </div>
-            ) : (
-              <div className="max-w-xl mx-auto rounded-2xl overflow-hidden shadow-xl border-2 border-primary relative">
-                <img src={resultUrl} alt="Generated portrait" className="w-full" />
-                {resultMode === "watermarked" && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="rotate-[-30deg] opacity-25">
-                      {[0, 1, 2].map((i) => (
-                        <p key={i} className="text-white font-serif text-3xl font-bold tracking-widest mb-12 select-none" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
-                          Artlypet &nbsp; Artlypet
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            </motion.div>
-
-            {/* Watermark explainer for free users */}
-            {resultMode === "watermarked" && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="max-w-xl mx-auto"
-              >
-                <div className="flex items-start gap-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 px-5 py-4">
-                  <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm text-amber-800 dark:text-amber-200 font-medium mb-1">
-                      {t("generate.watermarkTitle", "This is a free preview with watermark")}
-                    </p>
-                    <p className="text-xs text-amber-700 dark:text-amber-300/80">
-                      {t("generate.watermarkDesc", "Unlock HD to get the full-quality image without watermark — perfect for printing and sharing.")}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Share — promoted above upsell cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="max-w-xl mx-auto text-center space-y-3"
-            >
-              <h3 className="font-serif text-lg font-semibold text-foreground">
-                {t("generate.shareHeading", "Share your masterpiece!")}
-              </h3>
-              <SharePanel imageUrl={resultUrl} generationId={generationId ?? undefined} />
-              <p className="text-xs text-muted-foreground">
-                {t("generate.shareIncentive", "Share and earn 50 bonus credits")}
-              </p>
-            </motion.div>
-
-            {/* ══ WHAT TO DO NEXT — Big, clear action cards ══ */}
-            <div className="space-y-4 max-w-2xl mx-auto">
-
-              <h3 className="font-serif text-xl font-bold text-foreground text-center">
-                {t("generate.whatNext", "What would you like to do?")}
-              </h3>
-
-              {/* Card 1: HD Unlock (FREE users only) */}
-              {resultMode === "watermarked" && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                  <Card className="rounded-2xl border-2 border-primary bg-primary/5 p-6 shadow-md">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                        <Download className="h-6 w-6 text-primary-foreground" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
-                          {t("generate.unlockHdTitle", "Download in Full HD")}
-                        </h4>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {t("generate.unlockHdDesc", "Remove the watermark and get your portrait in stunning 2K resolution, perfect for printing and sharing.")}
-                        </p>
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <Button onClick={handleUnlockHd} size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
-                            <Lock className="h-4 w-4" />
-                            {t("generate.unlockHdBtn", "Unlock HD — €4.90")}
-                          </Button>
-                          <span className="text-xs text-muted-foreground">{t("generate.oneTimePayment", "One-time payment")}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              )}
-
-              {/* Card 2: Go Premium — compact banner (secondary CTA) */}
-              {!isPremium && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                  <div className="rounded-xl bg-muted/50 p-4 flex items-center justify-between flex-wrap gap-3">
-                    <div className="flex items-center gap-3">
-                      <Crown className="h-5 w-5 text-primary flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {t("generate.premiumAlt", "Or save with Premium")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {t("generate.premiumSaving", "5 HD images would cost €24.50 — Premium is just €15!")}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="rounded-full gap-1.5 text-primary hover:bg-primary/5" onClick={() => setShowPurchaseModal(true)}>
-                      <Crown className="h-3.5 w-3.5" />
-                      {t("generate.premiumBtn", "Go Premium — €15")}
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Card 3: Canvas Print (ALWAYS visible) */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                <Card className="rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Printer className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-serif text-lg font-bold text-foreground mb-1">
-                        {t("generate.printTitle", "Print on Canvas")}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        {t("generate.printDesc2", "Museum-quality canvas print, shipped directly to your door. Perfect as a gift or wall decoration.")}
-                      </p>
-                      {resultMode === "watermarked" && (
-                        <p className="text-xs text-muted-foreground mb-2 italic">
-                          {t("generate.printRequiresHd", "Requires HD unlock or Premium plan")}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <Button variant="outline" asChild size="lg" className="rounded-full gap-2 h-12 px-8 text-base">
-                          <Link to="/prints">
-                            <Printer className="h-4 w-4" />
-                            {t("generate.printBtn", "Order Canvas — {{price}}", { price: isPremium ? `€${PRINT_PRICE_PREMIUM.toFixed(2)}` : `€${PRINT_PRICE_FREE.toFixed(2)}` })}
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-
-              {/* Card 4: Download (HD users) */}
-              {resultMode === "hd" && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-                  <Card className="rounded-2xl border-2 border-primary bg-primary/5 p-6 shadow-md">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                        <Download className="h-6 w-6 text-primary-foreground" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-serif text-lg font-bold text-foreground mb-1">
-                          {t("generate.downloadTitle", "Download Your Portrait")}
-                        </h4>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {t("generate.downloadDesc", "Full 2K HD resolution, no watermark. Ready to print or share.")}
-                        </p>
-                        <Button asChild size="lg" className="rounded-full gap-2 shadow-lg h-12 px-8 text-base">
-                          <a href={resultUrl} target="_blank" rel="noopener noreferrer" download={`artlypet-${styles?.find(s => s.id === selectedStyleId)?.name?.toLowerCase().replace(/\s+/g, "-") || "portrait"}-HD.png`}>
-                            <Download className="h-4 w-4" />
-                            {t("generate.downloadHd", "Download HD")}
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              )}
-
-              {/* Download preview for free users */}
-              {resultMode === "watermarked" && (
-                <div className="text-center">
-                  <Button variant="ghost" asChild className="rounded-full gap-2 text-muted-foreground text-sm">
-                    <a href={resultUrl} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-3 w-3" />
-                      {t("generate.downloadPreview", "View watermarked preview")}
-                    </a>
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Create another */}
-            <div className="flex items-center justify-center gap-3 pt-4 flex-wrap">
-              <Button variant="outline" className="rounded-full gap-2" onClick={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); setSelectedStyleId(null); }}>
-                <Star className="h-4 w-4" />
-                {t("generate.tryDifferentStyle", "Try Different Style")}
-              </Button>
-              <Button variant="outline" className="rounded-full gap-2" onClick={() => { setResultUrl(null); setResultMode(null); setGenerationId(null); removeFile(); }}>
-                <ImageIcon className="h-4 w-4" />
-                {t("generate.createAnother", "Create Another Portrait")}
-              </Button>
-            </div>
-          </motion.div>
+          />
         )}
 
-        {/* ═══════════════════════════════════════ */}
-        {/*  GENERATING — Creation Theater          */}
-        {/* ═══════════════════════════════════════ */}
+        {/* GENERATING */}
         {generating && !resultUrl && (
-          <CreationTheater previewUrl={previewUrl} styleName={styles?.find((s) => s.id === selectedStyleId)?.name} startTime={generationStartTime} isComplete={generationComplete} />
+          <CreationTheater previewUrl={previewUrl} styleName={selectedStyleName} startTime={generationStartTime} isComplete={generationComplete} />
         )}
 
-        {/* ═══════════════════════════════════════ */}
-        {/*  RETRY after failure                    */}
-        {/* ═══════════════════════════════════════ */}
+        {/* RETRY */}
         {showRetry && !generating && !resultUrl && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <AlertCircle className="h-16 w-16 text-destructive mx-auto mb-4" />
-            <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
-              {t("generate.generationFailed", "Generation Failed")}
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              {t("generate.failedDesc", "Something went wrong. Don't worry — your credits have been automatically refunded.")}
-            </p>
+            <h2 className="font-serif text-3xl font-bold text-foreground mb-2">{t("generate.generationFailed", "Generation Failed")}</h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("generate.failedDesc", "Something went wrong. Don't worry — your credits have been automatically refunded.")}</p>
             <Button size="lg" className="rounded-full px-10 h-14 text-base shadow-xl" onClick={() => setShowRetry(false)}>
               {t("generate.tryAgain", "Try Again")}
             </Button>
           </motion.div>
         )}
 
-        {/* ═══════════════════════════════════════ */}
-        {/*  CREATE FLOW — Steps 1-4                */}
-        {/* ═══════════════════════════════════════ */}
+        {/* CREATE FLOW */}
         {!generating && !resultUrl && !showRetry && (
           <div className="space-y-10">
-
             {/* Step Progress */}
             {!generationId && !resultUrl && (
               <div className="flex items-center justify-center gap-0 mb-10">
@@ -583,40 +288,28 @@ const Generate = () => {
                   <div key={step.num} className="flex items-center">
                     <div className="relative">
                       <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                        step.done
-                          ? "bg-primary text-primary-foreground shadow-glow"
-                          : "bg-muted text-muted-foreground"
-                      }`}>
-                        {step.num}
-                      </div>
+                        step.done ? "bg-primary text-primary-foreground shadow-glow" : "bg-muted text-muted-foreground"
+                      }`}>{step.num}</div>
                       <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-muted-foreground whitespace-nowrap">
                         {step.num === 1 ? t("generate.stepType", "Type") : step.num === 2 ? t("generate.stepUpload", "Upload") : t("generate.stepStyle", "Style")}
                       </span>
                     </div>
-                    {i < 2 && (
-                      <div className={`w-16 h-0.5 transition-all duration-500 ${
-                        step.done ? "bg-primary" : "bg-muted"
-                      }`} />
-                    )}
+                    {i < 2 && <div className={`w-16 h-0.5 transition-all duration-500 ${step.done ? "bg-primary" : "bg-muted"}`} />}
                   </div>
                 ))}
               </div>
             )}
 
-            {/* ── Step 1: Choose type ── */}
+            {/* Step 1: Choose type */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">1</div>
-                <h2 className="font-serif text-xl font-bold text-foreground">
-                  {t("generate.step2Title", "Choose generation type")}
-                </h2>
+                <h2 className="font-serif text-xl font-bold text-foreground">{t("generate.step2Title", "Choose generation type")}</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card
                   onClick={() => setGenerationType("single")}
-                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
-                    generationType === "single" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"
-                  }`}
+                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${generationType === "single" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"}`}
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className={`h-10 w-10 rounded-full flex items-center justify-center ${generationType === "single" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
@@ -631,9 +324,7 @@ const Generate = () => {
                 </Card>
                 <Card
                   onClick={() => setGenerationType("mix")}
-                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
-                    generationType === "mix" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"
-                  }`}
+                  className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${generationType === "mix" ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/30 hover:shadow-sm"}`}
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className={`h-10 w-10 rounded-full flex items-center justify-center ${generationType === "mix" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
@@ -649,172 +340,33 @@ const Generate = () => {
               </div>
             </motion.div>
 
-            {/* ── Step 2: Upload photos ── */}
+            {/* Step 2: Upload */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">2</div>
                 <h2 className="font-serif text-xl font-bold text-foreground">
-                  {generationType === "mix"
-                    ? t("generate.uploadBothTitle", "Upload both photos")
-                    : t("generate.step1Title", "Upload your photo")}
+                  {generationType === "mix" ? t("generate.uploadBothTitle", "Upload both photos") : t("generate.step1Title", "Upload your photo")}
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                {t("generate.uploadTip", "Use a clear, well-lit photo where the face is visible. The better the photo, the better the portrait!")}
-              </p>
-              <details className="mb-4 text-sm" open>
-                <summary className="text-primary cursor-pointer hover:underline font-medium">
-                  {t("generate.photoTipsToggle", "Photo tips for best results")}
-                </summary>
-                <ul className="mt-2 space-y-1 text-muted-foreground pl-4 list-disc">
-                  <li>{t("generate.tip1", "Natural daylight works best — avoid harsh flash")}</li>
-                  <li>{t("generate.tip2", "Face clearly visible, looking towards the camera")}</li>
-                  <li>{t("generate.tip3", "Simple background — avoid busy or cluttered scenes")}</li>
-                  <li>{t("generate.tip4", "High resolution photo — at least 500×500px")}</li>
-                </ul>
-              </details>
-
-              <div className={generationType === "mix" ? "grid grid-cols-1 sm:grid-cols-2 gap-6" : "max-w-md"}>
-                {/* Upload 1 */}
-                <div>
-                  {generationType === "mix" && (
-                    <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <span className="h-6 w-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center text-xs font-bold">A</span>
-                      {t("generate.petPhoto", "Your pet's photo")}
-                    </p>
-                  )}
-                  {compressing && !previewUrl && (
-                    <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 min-h-[160px] sm:min-h-[200px] p-4 sm:p-8">
-                      <Loader2 className="h-8 w-8 text-primary animate-spin mb-3" />
-                      <span className="text-sm font-medium text-foreground">{t("generate.optimizing", "Optimizing image...")}</span>
-                    </div>
-                  )}
-                  {previewUrl ? (
-                    <div className="relative">
-                      <img src={previewUrl} alt="Pet preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
-                      <button onClick={removeFile} aria-label={t("generate.removeImage", "Remove image")} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : !compressing ? (
-                    <label
-                      htmlFor="upload-pet-photo"
-                      aria-label="Upload pet photo"
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.getElementById("upload-pet-photo")?.click(); } }}
-                      onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
-                      className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
-                        isDragging ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
-                      }`}
-                    >
-                      <Upload className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                      <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                      <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                      <input id="upload-pet-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFileChange} className="hidden" />
-                    </label>
-                  ) : null}
-                </div>
-
-                {/* Upload 2 (mix only) */}
-                {generationType === "mix" && (
-                  <div>
-                    <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <span className="h-6 w-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center text-xs font-bold">B</span>
-                      {t("generate.personPhoto", "Your photo (person)")}
-                    </p>
-                    {previewUrl2 ? (
-                      <div className="relative">
-                        <img src={previewUrl2} alt="Person preview" className="w-full max-h-72 rounded-2xl object-contain shadow-md border border-border" />
-                        <button onClick={removeFile2} aria-label={t("generate.removeImage", "Remove image")} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 shadow-md">
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <label
-                        htmlFor="upload-second-photo"
-                        aria-label="Upload second photo"
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.getElementById("upload-second-photo")?.click(); } }}
-                        onDragOver={handleDragOver2} onDragLeave={handleDragLeave2} onDrop={handleDrop2}
-                        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed min-h-[160px] sm:min-h-[200px] p-4 sm:p-8 cursor-pointer transition-all ${
-                          isDragging2 ? "border-primary bg-primary/10 shadow-inner" : "border-border hover:border-primary/50 hover:bg-muted/30"
-                        }`}
-                      >
-                        <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                        <span className="text-sm font-medium text-foreground mb-1">{t("generate.uploadCta", "Click to upload or drag & drop")}</span>
-                        <span className="text-xs text-muted-foreground">{t("generate.fileFormats", "JPG, PNG, WebP — max 10MB")}</span>
-                        <input id="upload-second-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile2Change} className="hidden" />
-                      </label>
-                    )}
-                  </div>
-                )}
-              </div>
+              <UploadSection
+                generationType={generationType}
+                onFile1Change={setUploadedFile}
+                onFile2Change={setUploadedFile2}
+                onPreview1Change={setPreviewUrl}
+              />
             </motion.div>
 
-            {/* ── Step 3: Choose style ── */}
+            {/* Step 3: Choose style */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">3</div>
-                <h2 className="font-serif text-xl font-bold text-foreground">
-                  {t("generate.step3Title", "Choose your style")}
-                </h2>
+                <h2 className="font-serif text-xl font-bold text-foreground">{t("generate.step3Title", "Choose your style")}</h2>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                {t("generate.step3Desc", "Select the artistic style for your portrait")}
-              </p>
-              {stylesError ? (
-                <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-6 flex flex-col items-center gap-3 text-center">
-                  <AlertCircle className="h-8 w-8 text-destructive" />
-                  <p className="text-sm text-destructive font-medium">
-                    {t("generate.stylesLoadError", "Could not load styles. Please try again.")}
-                  </p>
-                  <Button variant="outline" size="sm" className="rounded-full gap-2" onClick={() => refetchStyles()}>
-                    <Loader2 className="h-3 w-3" />
-                    {t("generate.retryLoadStyles", "Retry")}
-                  </Button>
-                </div>
-              ) : stylesLoading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <Skeleton key={i} className="aspect-square rounded-2xl" />)}
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {styles?.map((style) => (
-                    <Card
-                      key={style.id}
-                      onClick={() => setSelectedStyleId(style.id)}
-                      tabIndex={0}
-                      role="button"
-                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedStyleId(style.id); } }}
-                      className={`relative aspect-square overflow-hidden cursor-pointer transition-all duration-200 rounded-2xl ${
-                        selectedStyleId === style.id
-                          ? "ring-3 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-lg"
-                          : "shadow-sm hover:shadow-md"
-                      }`}
-                    >
-                      {style.preview_url ? (
-                        <img src={style.preview_url} alt={`Pet portrait in ${style.name} art style`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-0 inset-x-0 p-3">
-                        <span className="font-serif text-sm font-bold text-white block">{style.name}</span>
-                      </div>
-                      {selectedStyleId === style.id && (
-                        <div className="absolute top-2 right-2 h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-                          <span className="text-xs font-bold">✓</span>
-                        </div>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              )}
+              <p className="text-sm text-muted-foreground mb-4">{t("generate.step3Desc", "Select the artistic style for your portrait")}</p>
+              <StyleSelector selectedStyleId={selectedStyleId} onSelectStyle={setSelectedStyleId} />
             </motion.div>
 
-            {/* Mix mode validation banner */}
+            {/* Mix validation */}
             {generationType === "mix" && uploadedFile && !uploadedFile2 && (
               <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-3 flex items-center gap-2 text-sm text-destructive">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
@@ -822,31 +374,24 @@ const Generate = () => {
               </div>
             )}
 
-            {/* ══ GENERATE BUTTON — BIG, IMPOSSIBLE TO MISS ══ */}
+            {/* Generate button */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
               <div className="bg-card border border-border rounded-2xl p-8 text-center shadow-md">
                 {creditsLoading ? (
                   <div className="flex items-center justify-center gap-3 py-4">
                     <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
-                      {t("generate.loadingCredits", "Loading your credit balance...")}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t("generate.loadingCredits", "Loading your credit balance...")}</p>
                   </div>
                 ) : (creditBalance ?? 0) < creditCost ? (
                   <div>
-                    <p className="text-muted-foreground mb-4 text-lg">
-                      {t("generate.needCredits", "You need at least {{cost}} credits", { cost: creditCost })}
-                    </p>
+                    <p className="text-muted-foreground mb-4 text-lg">{t("generate.needCredits", "You need at least {{cost}} credits", { cost: creditCost })}</p>
                     <Button size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl" onClick={() => setShowPurchaseModal(true)}>
-                        <Crown className="mr-2 h-5 w-5" />
-                        {t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
+                      <Crown className="mr-2 h-5 w-5" />{t("generate.goPremiumShort", "Go Premium — €15 (1500 credits)")}
                     </Button>
                   </div>
                 ) : (
                   <div>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {t("generate.readyToCreate", "Everything looks good! Click the button to create your portrait.")}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">{t("generate.readyToCreate", "Everything looks good! Click the button to create your portrait.")}</p>
                     <Button
                       size="lg"
                       onClick={handleGenerate}
@@ -854,15 +399,9 @@ const Generate = () => {
                       className={`rounded-full h-12 sm:h-14 lg:h-16 px-6 sm:px-8 lg:px-12 text-base sm:text-lg font-semibold shadow-2xl hover:shadow-xl transition-all disabled:opacity-40${canGenerate && !generating && !uploading ? " shimmer-btn" : ""}`}
                     >
                       {uploading ? (
-                        <>
-                          <span role="status" aria-label="Uploading"><Loader2 className="mr-3 h-6 w-6 animate-spin" /></span>
-                          {t("generate.uploading", "Uploading photos...")}
-                        </>
+                        <><span role="status" aria-label="Uploading"><Loader2 className="mr-3 h-6 w-6 animate-spin" /></span>{t("generate.uploading", "Uploading photos...")}</>
                       ) : (
-                        <>
-                          <Sparkles className="mr-3 h-6 w-6" />
-                          {t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}
-                        </>
+                        <><Sparkles className="mr-3 h-6 w-6" />{t("generate.generateBtn", "Create My Portrait — {{cost}} credits", { cost: creditCost })}</>
                       )}
                     </Button>
                     {uploading && (
@@ -870,26 +409,18 @@ const Generate = () => {
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
                           <div className="h-full w-1/3 rounded-full bg-primary animate-upload-progress" />
                         </div>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          {t("generate.uploadingHint", "Preparing your photo for the AI artist...")}
-                        </p>
+                        <p className="text-xs text-muted-foreground mt-2">{t("generate.uploadingHint", "Preparing your photo for the AI artist...")}</p>
                       </div>
                     )}
                     {!canGenerate && (
                       <p className="text-xs text-muted-foreground mt-3">
-                        {!uploadedFile
-                          ? t("generate.missingPhoto", "↑ Upload a photo first")
-                          : !selectedStyleId
-                          ? t("generate.missingStyle", "↑ Select a style first")
-                          : generationType === "mix" && !uploadedFile2
-                          ? t("generate.missingPhoto2", "↑ Upload both photos for Mix mode")
-                          : ""}
+                        {!uploadedFile ? t("generate.missingPhoto", "↑ Upload a photo first")
+                          : !selectedStyleId ? t("generate.missingStyle", "↑ Select a style first")
+                          : generationType === "mix" && !uploadedFile2 ? t("generate.missingPhoto2", "↑ Upload both photos for Mix mode") : ""}
                       </p>
                     )}
                     {!isPremium && canGenerate && (
-                      <p className="text-sm text-foreground/70 bg-muted rounded-lg p-2 mt-3">
-                        {t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}
-                      </p>
+                      <p className="text-sm text-foreground/70 bg-muted rounded-lg p-2 mt-3">{t("generate.freeNote", "Free plan: preview with watermark. Unlock HD for €4.90/image or go Premium.")}</p>
                     )}
                   </div>
                 )}
@@ -898,33 +429,15 @@ const Generate = () => {
           </div>
         )}
       </div>
-      <CreditPurchaseModal open={showPurchaseModal} onOpenChange={setShowPurchaseModal} />
 
-      {/* Confirmation Dialog — replaces window.confirm */}
-      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-serif">
-              {t("generate.confirmTitle", "Confirm Generation")}
-            </DialogTitle>
-            <DialogDescription>
-              {t("generate.confirmGeneration", "This will cost {{cost}} credits. You'll have {{remaining}} credits left. Continue?", {
-                cost: creditCost,
-                remaining: Math.max(0, (creditBalance ?? 0) - creditCost),
-              })}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-full" onClick={() => setShowConfirmDialog(false)}>
-              {t("common.cancel", "Cancel")}
-            </Button>
-            <Button className="rounded-full gap-2" onClick={handleConfirmGenerate}>
-              <Sparkles className="h-4 w-4" />
-              {t("generate.confirmBtn", "Create Portrait")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CreditPurchaseModal open={showPurchaseModal} onOpenChange={setShowPurchaseModal} />
+      <ConfirmDialog
+        open={showConfirmDialog}
+        onOpenChange={setShowConfirmDialog}
+        onConfirm={handleConfirmGenerate}
+        creditCost={creditCost}
+        creditsRemaining={(creditBalance ?? 0) - creditCost}
+      />
     </div>
   );
 };

@@ -26,7 +26,7 @@ export const useCreditBalance = () => {
     },
     enabled: !!user,
     staleTime: 5000,
-    refetchInterval: 30000, // Poll every 30s — credits only change after actions
+    refetchOnWindowFocus: true,
   });
 };
 

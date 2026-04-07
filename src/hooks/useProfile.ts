@@ -23,9 +23,11 @@ export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { display_name?: string; avatar_url?: string }) => {
+    mutationFn: async (data: { display_name?: string; avatar_url?: string }) => {
       if (!user) throw new Error("Not authenticated");
-      return profilesService.updateProfile(user.id, data);
+      const result = await profilesService.updateProfile(user.id, data);
+      if (result.error) throw result.error;
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });

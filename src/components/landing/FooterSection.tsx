@@ -127,6 +127,9 @@ const FooterSection = () => {
               <Link to="/terms" className={linkClass}>
                 {t("footer.refundPolicy", "Refund Policy")}
               </Link>
+              <Link to="/accessibility" className={linkClass}>
+                {t("footer.accessibility", "Accessibility")}
+              </Link>
             </nav>
           </div>
         </div>

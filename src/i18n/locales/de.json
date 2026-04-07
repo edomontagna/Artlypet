@@ -1,4 +1,5 @@
 {
+  "aiGenerated": "KI-generiert",
   "nav": {
     "home": "Startseite",
     "gallery": "Galerie",
@@ -28,7 +29,9 @@
     "freeCredits": "3 kostenlose Porträts",
     "freeTier": "Starte kostenlos — 3 Porträts inklusive, keine Karte nötig",
     "socialProofVelocity": "{{count}} Porträts in der letzten Stunde erstellt",
-    "priceAnchorLabel": "einmalig"
+    "priceAnchorLabel": "einmalig",
+    "originalPhoto": "Originalfoto",
+    "aiPortrait": "KI-Porträt"
   },
   "howItWorks": {
     "title": "So Funktioniert's",
@@ -193,6 +196,7 @@
     "legal": "Rechtliches",
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
+    "accessibility": "Barrierefreiheit",
     "createPortrait": "Porträt erstellen",
     "madeWith": "Mit Liebe für Tierliebhaber in der EU gemacht",
     "ctaTitle": "Bereit, dein Haustier zu verwandeln?",
@@ -256,7 +260,8 @@
   "error": {
     "title": "Etwas ist schiefgelaufen",
     "desc": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
-    "backHome": "Zurück zur Startseite"
+    "backHome": "Zurück zur Startseite",
+    "report": "Diesen Fehler melden"
   },
   "dashboard": {
     "tabDashboard": "Dashboard",
@@ -692,7 +697,8 @@
     "language": "Sprache",
     "creditHistory": "Kredit-Verlauf",
     "noTransactions": "Noch keine Transaktionen",
-    "dataPrivacy": "Daten & Datenschutz"
+    "dataPrivacy": "Daten & Datenschutz",
+    "reopenOnboarding": "Einführung erneut anzeigen"
   },
   "countdown": {
     "launchEnds": "Einführungspreis endet in:",

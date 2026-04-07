@@ -12,7 +12,7 @@ type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 const isSupportedLanguage = (lng: string): lng is SupportedLanguage =>
   SUPPORTED_LANGUAGES.includes(lng as SupportedLanguage);
 
-const localeLoaders: Record<Exclude<SupportedLanguage, "en">, () => Promise<{ default: Record<string, string> }>> = {
+const localeLoaders: Record<Exclude<SupportedLanguage, "en">, () => Promise<{ default: Record<string, unknown> }>> = {
   it: () => import("./locales/it.json"),
   de: () => import("./locales/de.json"),
   fr: () => import("./locales/fr.json"),
@@ -23,7 +23,8 @@ const loadLanguage = async (lng: string): Promise<void> => {
   if (lng === "en" || !isSupportedLanguage(lng)) return;
   if (i18n.hasResourceBundle(lng, "translation")) return;
 
-  const module = await localeLoaders[lng]();
+  const loader = localeLoaders[lng as Exclude<SupportedLanguage, "en">];
+  const module = await loader();
   i18n.addResourceBundle(lng, "translation", module.default, true, true);
 };
 
@@ -40,14 +41,15 @@ const baseLng = initialLng.split("-")[0];
 const resolvedLng = isSupportedLanguage(baseLng) ? baseLng : "en";
 
 // Pre-load the detected language (if not English) before init
-const initialResources: Record<string, { translation: Record<string, string> }> = {
+const initialResources: Record<string, { translation: Record<string, unknown> }> = {
   en: { translation: en },
 };
 
 const initI18n = async () => {
   // If the detected language is not English, load it before initializing
   if (resolvedLng !== "en") {
-    const module = await localeLoaders[resolvedLng]();
+    const loader = localeLoaders[resolvedLng as Exclude<SupportedLanguage, "en">];
+    const module = await loader();
     initialResources[resolvedLng] = { translation: module.default };
   }
 

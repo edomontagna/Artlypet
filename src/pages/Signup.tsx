@@ -190,7 +190,6 @@ const Signup = () => {
                         type="text"
                         placeholder={t("auth.yourName", "Your name")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        name="name"
                         autoComplete="name"
                         {...field}
                       />
@@ -212,7 +211,6 @@ const Signup = () => {
                         type="email"
                         placeholder="you@example.com"
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        name="email"
                         autoComplete="email"
                         {...field}
                       />
@@ -237,7 +235,6 @@ const Signup = () => {
                         type="password"
                         placeholder={t("auth.minChars", "Min 10 characters")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        name="password"
                         autoComplete="new-password"
                         {...field}
                       />

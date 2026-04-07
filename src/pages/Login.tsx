@@ -168,7 +168,6 @@ const Login = () => {
                         type="email"
                         placeholder="you@example.com"
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        name="email"
                         autoComplete="email"
                         {...field}
                       />
@@ -198,7 +197,6 @@ const Login = () => {
                         type="password"
                         placeholder={t("auth.enterPassword", "Enter your password")}
                         className="rounded-lg font-sans border-border bg-background focus:ring-primary"
-                        name="password"
                         autoComplete="current-password"
                         {...field}
                       />

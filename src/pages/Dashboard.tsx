@@ -76,8 +76,8 @@ const Dashboard = () => {
     });
   };
 
-  const openLightbox = (gen: NonNullable<typeof generations>[number]) => {
-    setSelectedGeneration(gen);
+  const openLightbox = (gen: { id: string; status: string; storage_path: string | null; is_hd_unlocked: boolean; created_at: string; styles: { name: string } | null; [key: string]: unknown }) => {
+    setSelectedGeneration(gen as NonNullable<typeof generations>[number]);
     setLightboxOpen(true);
   };
 

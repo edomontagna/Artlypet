@@ -24,15 +24,14 @@ const initGA = () => {
 const initPixel = () => {
     const pixelId = import.meta.env.VITE_META_PIXEL_ID;
     if (pixelId && !window.fbq) {
-      const f = window as Record<string, unknown>;
-      const n = (f.fbq = function fbq() {
-        // eslint-disable-next-line prefer-rest-params
-        (n as { callMethod?: (...a: unknown[]) => void; queue: unknown[] }).callMethod
-          ? (n as { callMethod: (...a: unknown[]) => void }).callMethod.apply(n, arguments as unknown as unknown[])
-          : (n as { queue: unknown[] }).queue.push(arguments);
-      }) as unknown as { push: typeof Array.prototype.push; loaded: boolean; version: string; queue: unknown[] };
+      const f = window as unknown as Record<string, unknown>;
+      // Meta Pixel snippet — follows their official SDK initialization pattern
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const n: any = (f.fbq = function fbq(...args: unknown[]) {
+        if (n.callMethod) { n.callMethod(...args); }
+        else { n.queue.push(args); }
+      });
       if (!f._fbq) f._fbq = n;
-      n.push = n.push;
       n.loaded = true;
       n.version = "2.0";
       n.queue = [];
@@ -42,8 +41,8 @@ const initPixel = () => {
       script.src = "https://connect.facebook.net/en_US/fbevents.js";
       document.head.appendChild(script);
 
-      window.fbq("init", pixelId);
-      window.fbq("track", "PageView");
+      (window.fbq as (...args: unknown[]) => void)("init", pixelId);
+      (window.fbq as (...args: unknown[]) => void)("track", "PageView");
     }
 };
 

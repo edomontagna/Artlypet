@@ -1,5 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
+const urlCache = new Map<string, { url: string; expires: number }>();
+
 export const uploadOriginalImage = async (
   userId: string,
   file: File,
@@ -43,9 +45,18 @@ export const getSignedUrl = async (
   path: string,
   expiresIn = 3600,
 ) => {
+  const cacheKey = `${bucket}/${path}`;
+  const cached = urlCache.get(cacheKey);
+  if (cached && Date.now() < cached.expires) return cached.url;
+
   const { data, error } = await supabase.storage
     .from(bucket)
     .createSignedUrl(path, expiresIn);
   if (error) throw error;
+
+  urlCache.set(cacheKey, {
+    url: data.signedUrl,
+    expires: Date.now() + (expiresIn - 60) * 1000,
+  });
   return data.signedUrl;
 };

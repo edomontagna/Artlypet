@@ -19,11 +19,26 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("ErrorBoundary caught:", error, info);
+    const errorReport = {
+      message: error.message,
+      stack: error.stack,
+      componentStack: info.componentStack,
+      timestamp: new Date().toISOString(),
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+    };
+    console.error("ErrorBoundary caught:", errorReport);
+    try {
+      sessionStorage.setItem("last-error-report", JSON.stringify(errorReport));
+    } catch { /* storage full */ }
   }
 
   render() {
     if (this.state.hasError) {
+      const errorMessage = this.state.error?.message ?? "Unknown error";
+      const mailtoBody = encodeURIComponent(
+        `Error: ${errorMessage}\nURL: ${window.location.href}\nTime: ${new Date().toISOString()}`
+      );
       return (
         <div className="min-h-screen flex items-center justify-center bg-background px-4">
           <div className="text-center max-w-md">
@@ -33,15 +48,22 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-muted-foreground mb-6">
               {i18n.t("error.desc", "An unexpected error occurred. Please try refreshing the page.")}
             </p>
-            <Button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.href = "/";
-              }}
-              className="rounded-full"
-            >
-              {i18n.t("error.backHome", "Back to Home")}
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  window.location.href = "/";
+                }}
+                className="rounded-full"
+              >
+                {i18n.t("error.backHome", "Back to Home")}
+              </Button>
+              <Button variant="outline" className="rounded-full" asChild>
+                <a href={`mailto:support@artlypet.com?subject=Bug Report&body=${mailtoBody}`}>
+                  {i18n.t("error.report", "Report this error")}
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       );

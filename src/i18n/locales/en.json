@@ -1,4 +1,5 @@
 {
+  "aiGenerated": "AI-Generated",
   "nav": {
     "home": "Home",
     "gallery": "Gallery",
@@ -28,7 +29,9 @@
     "freeCredits": "3 free portraits",
     "freeTier": "Start free — 3 portraits included, no card required",
     "socialProofVelocity": "{{count}} portraits created in the last hour",
-    "priceAnchorLabel": "one-time"
+    "priceAnchorLabel": "one-time",
+    "originalPhoto": "Original Photo",
+    "aiPortrait": "AI Portrait"
   },
   "howItWorks": {
     "title": "How It Works",
@@ -207,7 +210,23 @@
     "madeWith": "Made with love for pet lovers in the EU",
     "ctaTitle": "Ready to Transform Your Pet?",
     "ctaDesc": "Create stunning AI portraits of your pet in seconds. Free to start.",
-    "refundPolicy": "Refund Policy"
+    "refundPolicy": "Refund Policy",
+    "accessibility": "Accessibility"
+  },
+  "accessibility": {
+    "title": "Accessibility Statement",
+    "commitment": "Artlypet is committed to ensuring digital accessibility for people with disabilities.",
+    "standard": "We aim to conform to WCAG 2.1 Level AA standards.",
+    "measures": "Accessibility Measures",
+    "measuresDesc": "We take the following measures to ensure accessibility:",
+    "measure1": "Include accessibility as part of our development process",
+    "measure2": "Provide continuous training on accessibility for our staff",
+    "measure3": "Test with assistive technologies including screen readers",
+    "feedback": "Feedback",
+    "feedbackDesc": "We welcome your feedback on the accessibility of Artlypet. Please let us know if you encounter any barriers.",
+    "contactLink": "Contact us with accessibility feedback",
+    "assessment": "Assessment",
+    "assessmentDesc": "Artlypet performs regular self-assessments against WCAG 2.1 Level AA criteria."
   },
   "auth": {
     "welcomeBack": "Welcome Back",
@@ -266,7 +285,8 @@
   "error": {
     "title": "Something went wrong",
     "desc": "An unexpected error occurred. Please try again.",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "report": "Report this error"
   },
   "dashboard": {
     "tabDashboard": "Dashboard",
@@ -360,7 +380,8 @@
     "language": "Language",
     "creditHistory": "Credit History",
     "noTransactions": "No transactions yet",
-    "dataPrivacy": "Data & Privacy"
+    "dataPrivacy": "Data & Privacy",
+    "reopenOnboarding": "Show onboarding guide"
   },
   "generate": {
     "title": "Create Portrait",

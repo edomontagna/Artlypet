@@ -15,7 +15,7 @@ const SITE_URL = "https://artlypet.com";
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: "easeOut" },
+  transition: { duration: 0.5, ease: "easeOut" as const },
 };
 
 const SharePortrait = () => {
@@ -144,6 +144,9 @@ const SharePortrait = () => {
                     loading="eager"
                   />
                 )}
+                <span className="absolute bottom-3 left-3 text-[10px] font-medium bg-black/50 text-white/80 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                  {t("aiGenerated", "AI-Generated")}
+                </span>
               </div>
 
               {/* Decorative frame corners */}

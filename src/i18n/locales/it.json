@@ -1,4 +1,5 @@
 {
+  "aiGenerated": "Generato dall'IA",
   "nav": {
     "home": "Home",
     "gallery": "Galleria",
@@ -28,7 +29,9 @@
     "freeCredits": "3 ritratti gratuiti",
     "freeTier": "Inizia gratis — 3 ritratti inclusi, nessuna carta richiesta",
     "socialProofVelocity": "{{count}} ritratti creati nell'ultima ora",
-    "priceAnchorLabel": "una tantum"
+    "priceAnchorLabel": "una tantum",
+    "originalPhoto": "Foto Originale",
+    "aiPortrait": "Ritratto AI"
   },
   "howItWorks": {
     "title": "Come Funziona",
@@ -193,6 +196,7 @@
     "legal": "Legale",
     "privacy": "Privacy Policy",
     "terms": "Termini di Servizio",
+    "accessibility": "Accessibilità",
     "createPortrait": "Crea Ritratto",
     "madeWith": "Fatto con amore per gli amanti degli animali nell'UE",
     "ctaTitle": "Pronto a Trasformare il Tuo Animale?",
@@ -256,7 +260,8 @@
   "error": {
     "title": "Qualcosa è andato storto",
     "desc": "Si è verificato un errore imprevisto. Riprova.",
-    "backHome": "Torna alla Home"
+    "backHome": "Torna alla Home",
+    "report": "Segnala questo errore"
   },
   "dashboard": {
     "tabDashboard": "Dashboard",
@@ -692,7 +697,8 @@
     "language": "Lingua",
     "creditHistory": "Cronologia Crediti",
     "noTransactions": "Nessuna transazione",
-    "dataPrivacy": "Dati e Privacy"
+    "dataPrivacy": "Dati e Privacy",
+    "reopenOnboarding": "Mostra guida introduttiva"
   },
   "countdown": {
     "launchEnds": "Il prezzo lancio termina tra:",

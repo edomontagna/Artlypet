@@ -17,7 +17,7 @@ const fallbackStyles = [
   { id: "6", name: "Impressionist", description: "Dappled light & visible strokes", preview_url: "/images/impressionist.webp" },
 ];
 
-const ease = [0.16, 1, 0.3, 1];
+const ease = [0.16, 1, 0.3, 1] as const;
 
 let tiltRaf = 0;
 const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {

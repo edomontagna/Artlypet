@@ -112,6 +112,13 @@ export const PortraitCard = ({
           </div>
         )}
 
+        {/* AI-Generated disclosure (EU AI Act) */}
+        {gen.status === "completed" && (
+          <span className="absolute bottom-2 left-2 z-10 text-[9px] font-medium bg-black/50 text-white/80 px-1.5 py-0.5 rounded backdrop-blur-sm">
+            {t("aiGenerated", "AI-Generated")}
+          </span>
+        )}
+
         {/* Hover overlay with actions */}
         {gen.status === "completed" && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors portrait-actions flex items-center justify-center gap-2">

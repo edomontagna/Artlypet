@@ -1,4 +1,5 @@
 {
+  "aiGenerated": "Généré par l'IA",
   "nav": {
     "home": "Accueil",
     "gallery": "Galerie",
@@ -28,7 +29,9 @@
     "freeCredits": "3 portraits gratuits",
     "freeTier": "Commencez gratuitement — 3 portraits inclus, sans carte requise",
     "socialProofVelocity": "{{count}} portraits créés dans la dernière heure",
-    "priceAnchorLabel": "paiement unique"
+    "priceAnchorLabel": "paiement unique",
+    "originalPhoto": "Photo Originale",
+    "aiPortrait": "Portrait IA"
   },
   "howItWorks": {
     "title": "Comment Ça Marche",
@@ -193,6 +196,7 @@
     "legal": "Mentions Légales",
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions d'Utilisation",
+    "accessibility": "Accessibilité",
     "createPortrait": "Créer un portrait",
     "madeWith": "Fait avec amour pour les amoureux des animaux dans l'UE",
     "ctaTitle": "Prêt à transformer votre animal ?",
@@ -256,7 +260,8 @@
   "error": {
     "title": "Une erreur est survenue",
     "desc": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-    "backHome": "Retour à l'Accueil"
+    "backHome": "Retour à l'Accueil",
+    "report": "Signaler cette erreur"
   },
   "dashboard": {
     "tabDashboard": "Tableau de Bord",
@@ -350,7 +355,8 @@
     "language": "Langue",
     "creditHistory": "Historique des Crédits",
     "noTransactions": "Aucune transaction",
-    "dataPrivacy": "Données & Confidentialité"
+    "dataPrivacy": "Données & Confidentialité",
+    "reopenOnboarding": "Afficher le guide d'introduction"
   },
   "countdown": {
     "launchEnds": "Prix de lancement se termine dans :",

@@ -47,6 +47,7 @@ const heroImages = [
 
 /** Interactive split-reveal: original pet photo vs AI portrait */
 const HeroSlider = ({ afterSrc, afterAlt }: { afterSrc: string; afterAlt: string }) => {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(65);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -92,13 +93,13 @@ const HeroSlider = ({ afterSrc, afterAlt }: { afterSrc: string; afterAlt: string
         />
         {/* "Original" label */}
         <span className="absolute bottom-4 left-4 bg-black/50 text-white text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
-          Original Photo
+          {t("hero.originalPhoto", "Original Photo")}
         </span>
       </div>
 
       {/* AI Art label */}
       <span className="absolute bottom-4 right-4 bg-primary/80 text-primary-foreground text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
-        AI Portrait
+        {t("hero.aiPortrait", "AI Portrait")}
       </span>
 
       {/* Slider line + handle */}
@@ -115,16 +116,16 @@ const HeroSlider = ({ afterSrc, afterAlt }: { afterSrc: string; afterAlt: string
   );
 };
 
-const ease = [0.16, 1, 0.3, 1];
+const ease = [0.16, 1, 0.3, 1] as const;
 
-const PortraitCounter = ({ count: targetCount, ease: easeVal, t }: { count: number; ease: number[]; t: (key: string, fallback?: string) => string }) => {
+const PortraitCounter = ({ count: targetCount, ease: easeVal, t }: { count: number; ease: readonly number[]; t: (key: string, defaultValue: string) => string }) => {
   const { count: animatedCount, start: startCount } = useCountUp(targetCount, 2500);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.6, duration: 0.6, ease: easeVal }}
+      transition={{ delay: 1.6, duration: 0.6, ease: [easeVal[0], easeVal[1], easeVal[2], easeVal[3]] as [number, number, number, number] }}
       className="mt-10 flex items-center gap-2 text-sm text-muted-foreground"
       onViewportEnter={() => startCount()}
       viewport={{ once: true }}

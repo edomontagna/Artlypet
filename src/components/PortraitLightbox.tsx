@@ -170,6 +170,9 @@ export const PortraitLightbox = ({ generation, open, onOpenChange, isPremium, on
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isHd ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                   {isHd ? "HD" : t("lightbox.preview", "Preview")}
                 </span>
+                <span className="text-[10px] font-medium bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                  {t("aiGenerated", "AI-Generated")}
+                </span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <span>{format(new Date(generation.created_at), "d MMM yyyy")}</span>

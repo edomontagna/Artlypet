@@ -9,7 +9,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => ReturnType<typeof authService.signInWithPassword>;
-  signUp: (email: string, password: string, displayName: string) => ReturnType<typeof authService.signUpWithEmail>;
+  signUp: (email: string, password: string, displayName: string, referralCode?: string) => ReturnType<typeof authService.signUpWithEmail>;
   signInWithGoogle: () => ReturnType<typeof authService.signInWithGoogle>;
   signOut: () => ReturnType<typeof authService.signOut>;
   resetPassword: (email: string) => ReturnType<typeof authService.resetPassword>;

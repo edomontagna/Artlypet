@@ -79,7 +79,7 @@ export const SharePanel = ({ imageUrl, styleName, generationId }: SharePanelProp
   return (
     <div className="flex items-center justify-center gap-2 flex-wrap">
       {/* Native share (mobile-first) */}
-      {typeof navigator !== "undefined" && navigator.share && (
+      {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
         <Button
           variant="outline"
           className="rounded-full gap-2"

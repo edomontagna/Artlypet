@@ -16,24 +16,26 @@ if (missingEnvVars.length > 0) {
 }
 
 // --- Rate limiting ---
+// NOTE: In-memory rate limiter — resets on cold start, per-isolate only.
+// TODO: Replace with database-backed rate limiting for production scale.
 const rateLimitMap = new Map<string, number[]>();
 const MAX_REQUESTS = 5;
 const WINDOW_MS = 60000;
 
-const checkRateLimit = (userId: string): boolean => {
+const checkRateLimit = (userId: string): { allowed: boolean; remaining: number } => {
   const now = Date.now();
   const requests = rateLimitMap.get(userId)?.filter(t => now - t < WINDOW_MS) || [];
-  if (requests.length >= MAX_REQUESTS) return false;
+  if (requests.length >= MAX_REQUESTS) return { allowed: false, remaining: 0 };
   requests.push(now);
   rateLimitMap.set(userId, requests);
-  return true;
+  return { allowed: true, remaining: MAX_REQUESTS - requests.length };
 };
 
 const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
 
 const getCorsHeaders = (req: Request) => {
   const origin = req.headers.get("origin") || "";
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -62,10 +64,11 @@ serve(async (req) => {
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     // Rate limit check
-    if (!checkRateLimit(user.id)) {
+    const rateCheck = checkRateLimit(user.id);
+    if (!rateCheck.allowed) {
       return new Response(
         JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" } },
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": String(Math.ceil(WINDOW_MS / 1000)), "X-RateLimit-Limit": String(MAX_REQUESTS), "X-RateLimit-Remaining": "0" } },
       );
     }
 
@@ -324,13 +327,14 @@ serve(async (req) => {
       });
 
       return new Response(
-        JSON.stringify({ generation_id: generation.id, status: "failed", error: genErr.message }),
+        JSON.stringify({ generation_id: generation.id, status: "failed", error: "Portrait generation failed. Your credits have been refunded." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
   } catch (err) {
+    console.error("generate-portrait unhandled error:", err.message, err.stack || err);
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } },
     );
   }

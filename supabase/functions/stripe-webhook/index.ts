@@ -17,7 +17,10 @@ serve(async (req) => {
   }
 
   const signature = req.headers.get("stripe-signature");
-  if (!signature) return new Response("Missing signature", { status: 400 });
+  if (!signature) {
+    console.error("Stripe webhook: missing signature header");
+    return new Response("Missing signature", { status: 200 });
+  }
 
   const body = await req.text();
 
@@ -25,7 +28,8 @@ serve(async (req) => {
   try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
   } catch (err) {
-    return new Response(`Invalid signature: ${err.message}`, { status: 400 });
+    console.error("Stripe webhook: invalid signature:", err.message);
+    return new Response("Invalid signature", { status: 200 });
   }
 
   if (event.type === "checkout.session.completed") {

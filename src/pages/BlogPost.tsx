@@ -8,6 +8,7 @@ import { BlurImage } from "@/components/BlurImage";
 import { SEOHead } from "@/components/SEOHead";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
+import DOMPurify from "dompurify";
 import { blogPosts } from "@/data/blogPosts";
 
 const SITE_URL = "https://artlypet.com";
@@ -156,7 +157,7 @@ const BlogPost = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="prose prose-neutral dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: t(contentKey, "") }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(t(contentKey, "")) }}
         />
 
         {/* CTA */}
