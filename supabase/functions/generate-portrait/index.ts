@@ -222,29 +222,43 @@ serve(async (req) => {
         });
       }
 
-      // Call Gemini API — key in header, not URL
+      // Call Gemini API with retry on 503/429 (high demand / rate limit)
       const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
-      const geminiResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": geminiApiKey!,
-          },
-          body: JSON.stringify({
-            contents: [{
-              parts: contentParts,
-            }],
-            generationConfig: {
-              responseModalities: ["TEXT", "IMAGE"],
-            },
-          }),
-        },
-      );
+      const RETRY_DELAYS = [2000, 5000, 10000]; // 2s, 5s, 10s
+      let geminiResponse: Response | null = null;
 
-      if (!geminiResponse.ok) {
-        const errorText = await geminiResponse.text();
+      for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+        geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": geminiApiKey!,
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: contentParts,
+              }],
+              generationConfig: {
+                responseModalities: ["TEXT", "IMAGE"],
+              },
+            }),
+          },
+        );
+
+        if (geminiResponse.ok || (geminiResponse.status !== 503 && geminiResponse.status !== 429)) {
+          break; // Success or non-retryable error
+        }
+
+        if (attempt < RETRY_DELAYS.length) {
+          console.log(`Gemini API returned ${geminiResponse.status}, retrying in ${RETRY_DELAYS[attempt]}ms (attempt ${attempt + 1}/${RETRY_DELAYS.length})`);
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempt]));
+        }
+      }
+
+      if (!geminiResponse || !geminiResponse.ok) {
+        const errorText = geminiResponse ? await geminiResponse.text() : "No response";
         throw new Error(`Gemini API error: ${errorText}`);
       }
 

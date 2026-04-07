@@ -29,7 +29,8 @@ import { safeSetItem } from "@/lib/storage";
 /** Map raw backend/Gemini error messages to user-friendly strings */
 const getFriendlyErrorMessage = (raw: string | undefined | null): string => {
   if (!raw) return "Generation failed. Your credits have been refunded.";
-  if (raw.includes("Gemini API error")) return "AI service temporarily unavailable. Please try again.";
+  if (raw.includes("high demand") || raw.includes("UNAVAILABLE") || raw.includes("503")) return "Our AI artist is very busy right now! Your credits have been refunded — please try again in a minute.";
+  if (raw.includes("Gemini API error")) return "AI service temporarily unavailable. Your credits have been refunded — please try again.";
   if (raw.includes("No image in Gemini response")) return "The AI couldn't generate an image from this photo. Try a different photo or style.";
   if (raw.includes("Original image not found")) return "Your uploaded photo couldn't be found. Please re-upload.";
   return "Generation failed. Your credits have been refunded.";
