@@ -224,7 +224,7 @@ serve(async (req) => {
 
       // Call Gemini API with retry on 503/429 (high demand / rate limit)
       const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
-      const RETRY_DELAYS = [2000, 5000, 10000]; // 2s, 5s, 10s
+      const RETRY_DELAYS = [1000, 2000]; // 1s, 2s — keep total under Edge Function timeout
       let geminiResponse: Response | null = null;
 
       for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
