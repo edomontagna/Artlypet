@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -41,6 +41,7 @@ export const ExitIntentPopup = () => {
   return (
     <Dialog open={show} onOpenChange={(open) => { if (!open) handleDismiss(); }}>
       <DialogContent className="sm:max-w-md rounded-2xl text-center p-8">
+        <DialogTitle className="sr-only">Special offer</DialogTitle>
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Sparkles className="h-8 w-8 text-primary" />
         </div>
