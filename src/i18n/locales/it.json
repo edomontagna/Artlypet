@@ -709,7 +709,27 @@
   },
   "activity": {
     "justCreated": "{{name}} da {{city}} ha appena creato un ritratto {{style}}",
-    "minutesAgo": "{{count}} min fa"
+    "minutesAgo": "{{count}} min fa",
+    "city": {
+      "berlin": "Berlino",
+      "rome": "Roma",
+      "paris": "Parigi",
+      "munich": "Monaco",
+      "milan": "Milano",
+      "london": "Londra",
+      "madrid": "Madrid",
+      "lyon": "Lione",
+      "vienna": "Vienna",
+      "florence": "Firenze"
+    },
+    "style": {
+      "oilPainting": "Pittura a Olio",
+      "renaissance": "Rinascimento",
+      "watercolor": "Acquerello",
+      "artNouveau": "Art Nouveau",
+      "popArt": "Pop Art",
+      "impressionist": "Impressionista"
+    }
   },
   "mobileCta": {
     "title": "Trasforma il Tuo Animale",

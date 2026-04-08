@@ -84,9 +84,9 @@ const BlogPost = () => {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container px-6 lg:px-8 py-24 text-center">
-          <h1 className="font-serif text-4xl font-bold text-foreground mb-4">Article Not Found</h1>
+          <h1 className="font-serif text-4xl font-bold text-foreground mb-4">{t("blog.notFound", "Article Not Found")}</h1>
           <Button asChild className="rounded-full">
-            <Link to="/blog">Back to Blog</Link>
+            <Link to="/blog">{t("blog.backToList", "Back to Blog")}</Link>
           </Button>
         </div>
         <FooterSection />

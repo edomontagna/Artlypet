@@ -45,6 +45,7 @@ const getCorsHeaders = (req: Request) => {
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   if (missingEnvVars.length > 0) {
     return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -222,46 +223,66 @@ serve(async (req) => {
         });
       }
 
-      // Call Gemini API with retry on 503/429 (high demand / rate limit)
+      // Call Gemini API with retry + fallback model
       const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
       const RETRY_DELAYS = [1000, 2000]; // 1s, 2s — keep total under Edge Function timeout
+
+      // Primary model + fallback: if primary is down, try fallback before failing
+      const GEMINI_MODELS = [
+        "gemini-3.1-flash-image-preview",
+        "gemini-2.5-flash-preview-04-17",
+      ];
+
+      const requestBody = JSON.stringify({
+        contents: [{ parts: contentParts }],
+        generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+      });
+
       let geminiResponse: Response | null = null;
+      let usedModel = GEMINI_MODELS[0];
 
-      for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
-        geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-goog-api-key": geminiApiKey!,
-            },
-            body: JSON.stringify({
-              contents: [{
-                parts: contentParts,
-              }],
-              generationConfig: {
-                responseModalities: ["TEXT", "IMAGE"],
+      for (const model of GEMINI_MODELS) {
+        usedModel = model;
+        geminiResponse = null;
+
+        for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+          geminiResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "x-goog-api-key": geminiApiKey!,
               },
-            }),
-          },
-        );
+              body: requestBody,
+            },
+          );
 
-        if (geminiResponse.ok || (geminiResponse.status !== 503 && geminiResponse.status !== 429)) {
-          break; // Success or non-retryable error
+          if (geminiResponse.ok || (geminiResponse.status !== 503 && geminiResponse.status !== 429)) {
+            break; // Success or non-retryable error
+          }
+
+          if (attempt < RETRY_DELAYS.length) {
+            console.log(`Gemini ${model} returned ${geminiResponse.status}, retrying in ${RETRY_DELAYS[attempt]}ms (attempt ${attempt + 1}/${RETRY_DELAYS.length})`);
+            await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempt]));
+          }
         }
 
-        if (attempt < RETRY_DELAYS.length) {
-          console.log(`Gemini API returned ${geminiResponse.status}, retrying in ${RETRY_DELAYS[attempt]}ms (attempt ${attempt + 1}/${RETRY_DELAYS.length})`);
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempt]));
+        if (geminiResponse?.ok) break; // Model succeeded, stop trying others
+
+        // Log fallback attempt
+        if (model === GEMINI_MODELS[0]) {
+          const errorStatus = geminiResponse?.status ?? "no response";
+          console.log(`Primary model ${model} failed (${errorStatus}), falling back to ${GEMINI_MODELS[1]}`);
         }
       }
 
       if (!geminiResponse || !geminiResponse.ok) {
         const errorText = geminiResponse ? await geminiResponse.text() : "No response";
-        throw new Error(`Gemini API error: ${errorText}`);
+        throw new Error(`Gemini API error (all models failed): ${errorText}`);
       }
 
+      console.log(`Generation succeeded with model: ${usedModel}`);
       const geminiData = await geminiResponse.json();
 
       // Extract generated image from response
@@ -277,7 +298,7 @@ serve(async (req) => {
         }
       }
 
-      if (!generatedImageData) throw new Error("No image in Gemini response");
+      if (!generatedImageData) throw new Error(`No image in Gemini response (model: ${usedModel})`);
 
       // Upload to storage
       const storagePath = `${user.id}/${generation.id}.png`;
@@ -300,11 +321,11 @@ serve(async (req) => {
         })
         .eq("id", generation.id);
 
-      // Audit
+      // Audit — include model used for monitoring fallback frequency
       await supabase.from("audit_log").insert({
         user_id: user.id,
         event_type: "generation_completed",
-        metadata: { generation_id: generation.id },
+        metadata: { generation_id: generation.id, model: usedModel },
       });
 
       return new Response(

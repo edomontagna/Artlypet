@@ -3,17 +3,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+// City/style keys are translated below via t() so the feed adapts to user locale
 const ACTIVITIES = [
-  { name: "Sophie", city: "Berlin", style: "Oil Painting" },
-  { name: "Marco", city: "Roma", style: "Renaissance" },
-  { name: "Claire", city: "Paris", style: "Watercolor" },
-  { name: "Anna", city: "Munich", style: "Art Nouveau" },
-  { name: "Luca", city: "Milano", style: "Pop Art" },
-  { name: "Emma", city: "London", style: "Impressionist" },
-  { name: "Pablo", city: "Madrid", style: "Oil Painting" },
-  { name: "Marie", city: "Lyon", style: "Watercolor" },
-  { name: "Thomas", city: "Vienna", style: "Renaissance" },
-  { name: "Giulia", city: "Firenze", style: "Art Nouveau" },
+  { name: "Sophie", cityKey: "activity.city.berlin", style: "activity.style.oilPainting" },
+  { name: "Marco", cityKey: "activity.city.rome", style: "activity.style.renaissance" },
+  { name: "Claire", cityKey: "activity.city.paris", style: "activity.style.watercolor" },
+  { name: "Anna", cityKey: "activity.city.munich", style: "activity.style.artNouveau" },
+  { name: "Luca", cityKey: "activity.city.milan", style: "activity.style.popArt" },
+  { name: "Emma", cityKey: "activity.city.london", style: "activity.style.impressionist" },
+  { name: "Pablo", cityKey: "activity.city.madrid", style: "activity.style.oilPainting" },
+  { name: "Marie", cityKey: "activity.city.lyon", style: "activity.style.watercolor" },
+  { name: "Thomas", cityKey: "activity.city.vienna", style: "activity.style.renaissance" },
+  { name: "Giulia", cityKey: "activity.city.florence", style: "activity.style.artNouveau" },
 ];
 
 export const ActivityFeed = () => {
@@ -71,8 +72,8 @@ export const ActivityFeed = () => {
             <p className="text-xs font-medium text-foreground truncate">
               {t("activity.justCreated", "{{name}} from {{city}} just created a {{style}} portrait", {
                 name: activity.name,
-                city: activity.city,
-                style: activity.style,
+                city: t(activity.cityKey, activity.cityKey.split(".").pop()),
+                style: t(activity.style, activity.style.split(".").pop()),
               })}
             </p>
             <p className="text-[10px] text-muted-foreground">

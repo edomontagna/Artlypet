@@ -16,20 +16,29 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 
+  if (req.method !== "POST") {
+    return new Response("Method not allowed", { status: 405 });
+  }
+
   const signature = req.headers.get("stripe-signature");
   if (!signature) {
     console.error("Stripe webhook: missing signature header");
-    return new Response("Missing signature", { status: 200 });
+    return new Response("Missing signature", { status: 401 });
   }
 
-  const body = await req.text();
+  let body: string;
+  try {
+    body = await req.text();
+  } catch {
+    return new Response("Bad request body", { status: 400 });
+  }
 
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
   } catch (err) {
     console.error("Stripe webhook: invalid signature:", err.message);
-    return new Response("Invalid signature", { status: 200 });
+    return new Response("Invalid signature", { status: 401 });
   }
 
   if (event.type === "checkout.session.completed") {

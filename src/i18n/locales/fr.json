@@ -714,5 +714,29 @@
     "title": "Découvrez nos styles artistiques",
     "tryStyle": "Essayer ce style",
     "cta": "Commencer à créer gratuitement"
+  },
+  "activity": {
+    "justCreated": "{{name}} de {{city}} vient de créer un portrait {{style}}",
+    "minutesAgo": "il y a {{count}} min",
+    "city": {
+      "berlin": "Berlin",
+      "rome": "Rome",
+      "paris": "Paris",
+      "munich": "Munich",
+      "milan": "Milan",
+      "london": "Londres",
+      "madrid": "Madrid",
+      "lyon": "Lyon",
+      "vienna": "Vienne",
+      "florence": "Florence"
+    },
+    "style": {
+      "oilPainting": "Peinture à l'huile",
+      "renaissance": "Renaissance",
+      "watercolor": "Aquarelle",
+      "artNouveau": "Art Nouveau",
+      "popArt": "Pop Art",
+      "impressionist": "Impressionnisme"
+    }
   }
 }

@@ -16,7 +16,7 @@ const HowItWorksSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 lg:py-32 bg-muted/30">
+    <section className="py-16 lg:py-24 bg-muted/30">
       <div className="container px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 lg:mb-20">

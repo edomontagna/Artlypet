@@ -26,14 +26,15 @@ import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
 
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  subject: z.enum(["general", "support", "business", "press"]),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
+const createContactSchema = (t: (key: string, fallback: string) => string) =>
+  z.object({
+    name: z.string().min(2, t("validation.nameMinChars", "Name must be at least 2 characters")),
+    email: z.string().email(t("validation.invalidEmail", "Please enter a valid email")),
+    subject: z.enum(["general", "support", "business", "press"]),
+    message: z.string().min(10, t("validation.messageMinChars", "Message must be at least 10 characters")),
+  });
 
-type ContactForm = z.infer<typeof contactSchema>;
+type ContactForm = z.infer<ReturnType<typeof createContactSchema>>;
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -44,6 +45,8 @@ const fadeInUp = {
 
 const Contact = () => {
   const { t } = useTranslation();
+
+  const contactSchema = createContactSchema(t);
 
   const {
     register,

@@ -31,9 +31,9 @@ const PricingSection = memo(() => {
         t("pricing.features.printFree", "Canvas prints available"),
       ],
       cta: user
-        ? (isPremium ? t("pricing.startCreating", "Start Creating") : t("pricing.getStartedFree", "Get Started Free"))
+        ? t("pricing.startCreating", "Start Creating")
         : t("pricing.getStartedFree", "Get Started Free"),
-      ctaLink: user ? (isPremium ? "/generate" : "#") : "/signup",
+      ctaLink: user ? "/generate" : "/signup",
       planKey: "free",
       popular: false,
     },

@@ -44,6 +44,10 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    if (req.method !== "POST" && req.method !== "DELETE") {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const userId = user.id;
 
     // Service role client for privileged operations
@@ -123,17 +127,7 @@ serve(async (req) => {
       if (storageErr) console.error("Error deleting pet-originals files:", storageErr.message);
     }
 
-    // 9. Delete auth user
-    const { error: deleteUserErr } = await supabase.auth.admin.deleteUser(userId);
-    if (deleteUserErr) {
-      console.error("Error deleting auth user:", deleteUserErr.message);
-      return new Response(
-        JSON.stringify({ error: "Failed to delete auth user" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
-    // 10. Log to audit_log (after user deletion, using service role)
+    // 9. Log to audit_log before auth deletion
     const { error: auditErr } = await supabase
       .from("audit_log")
       .insert({
@@ -149,6 +143,16 @@ serve(async (req) => {
         },
       });
     if (auditErr) console.error("Error writing audit log:", auditErr.message);
+
+    // 10. Delete auth user last — data is already cleaned up so partial failure is safe
+    const { error: deleteUserErr } = await supabase.auth.admin.deleteUser(userId);
+    if (deleteUserErr) {
+      console.error("Error deleting auth user:", deleteUserErr.message);
+      return new Response(
+        JSON.stringify({ error: "Failed to delete auth user. Data has been removed but please contact support." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     return new Response(
       JSON.stringify({ success: true }),

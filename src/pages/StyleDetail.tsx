@@ -152,7 +152,7 @@ const StyleDetail = () => {
             </p>
             {meta && (
               <div className="flex flex-wrap gap-2 mb-8">
-                {t(meta.tagsKey, "Classic, Elegant, Timeless").split(",").map((tag, i) => (
+                {t(meta.tagsKey, "Classic, Elegant, Timeless").split(",").filter(tag => tag.trim()).map((tag, i) => (
                   <span key={i} className="bg-muted text-muted-foreground rounded-full px-3 py-1 text-xs font-medium">
                     {tag.trim()}
                   </span>

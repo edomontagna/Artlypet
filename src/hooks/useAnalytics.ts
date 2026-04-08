@@ -53,11 +53,24 @@ const initAnalytics = () => {
   if (consent.marketing) initPixel();
 };
 
+// PII keys that must never be sent to analytics
+const PII_KEYS = new Set(["user_id", "email", "name", "phone", "address", "password", "token"]);
+
+const sanitizeParams = (params?: Record<string, unknown>): Record<string, unknown> | undefined => {
+  if (!params) return params;
+  const clean: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(params)) {
+    if (!PII_KEYS.has(k)) clean[k] = v;
+  }
+  return clean;
+};
+
 // Conversion event utilities — call these from components after user actions
 export const trackEvent = (fbEvent: string, gaEvent: string, params?: Record<string, unknown>) => {
   if (!fbEvent || !gaEvent) return;
-  if (window.fbq) window.fbq("track", fbEvent, params);
-  if (window.gtag) window.gtag("event", gaEvent, params);
+  const safe = sanitizeParams(params);
+  if (window.fbq) window.fbq("track", fbEvent, safe);
+  if (window.gtag) window.gtag("event", gaEvent, safe);
 };
 
 export const trackCompleteRegistration = (method?: string) => {

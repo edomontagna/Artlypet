@@ -18,8 +18,13 @@ serve(async (req) => {
   }
 
   // Authenticate via shared secret (cron or manual trigger)
-  const cleanupSecret = req.headers.get("x-cleanup-secret");
-  if (cleanupSecret !== Deno.env.get("CLEANUP_SECRET")) {
+  // Use timing-safe comparison to prevent timing attacks
+  const cleanupSecret = req.headers.get("x-cleanup-secret") || "";
+  const expectedSecret = Deno.env.get("CLEANUP_SECRET") || "";
+  const encoder = new TextEncoder();
+  const a = encoder.encode(cleanupSecret);
+  const b = encoder.encode(expectedSecret);
+  if (a.byteLength !== b.byteLength || !crypto.subtle.timingSafeEqual(a, b)) {
     return new Response(
       JSON.stringify({ error: "Unauthorized" }),
       { status: 401, headers: { "Content-Type": "application/json" } },

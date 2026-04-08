@@ -32,6 +32,13 @@
     --input: 0 0% 90%;
     --ring: 148 32% 36%;
 
+    --gold: 42 78% 60%;
+    --gold-foreground: 220 40% 13%;
+    --navy: 220 40% 13%;
+    --navy-foreground: 0 0% 100%;
+    --cream: 40 33% 95%;
+    --cream-foreground: 40 4% 16%;
+
     --radius: 0.75rem;
 
     --sidebar-background: 40 4% 16%;
@@ -68,6 +75,13 @@
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
+
+    --gold: 48 80% 65%;
+    --gold-foreground: 0 0% 10%;
+    --navy: 220 30% 20%;
+    --navy-foreground: 36 20% 94%;
+    --cream: 40 6% 16%;
+    --cream-foreground: 36 20% 94%;
 
     --border: 40 4% 16%;
     --input: 40 4% 16%;

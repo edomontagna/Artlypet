@@ -103,8 +103,8 @@ const Generate = () => {
           .then((data) => { if (!controller.signal.aborted) { setResultUrl(data.url); setResultMode(data.mode); } })
           .catch(() => { if (!controller.signal.aborted) toast.error("Failed to load result"); });
       }, 800);
-      queryClient.invalidateQueries({ queryKey: ["credits"] });
-      queryClient.invalidateQueries({ queryKey: ["generations"] });
+      void queryClient.invalidateQueries({ queryKey: ["credits"] });
+      void queryClient.invalidateQueries({ queryKey: ["generations"] });
       safeSetItem("credits-updated", Date.now().toString());
     } else if (generationStatus?.status === "failed") {
       setGenerating(false);
@@ -114,7 +114,7 @@ const Generate = () => {
       setOptimisticCreditDeduction(0);
       trackEvent("GenerationFailed", "generation_failed", { generation_id: generationId, generation_type: generationType, error: generationStatus.error_message });
       toast.error(getFriendlyErrorMessage(generationStatus.error_message));
-      queryClient.invalidateQueries({ queryKey: ["credits"] });
+      void queryClient.invalidateQueries({ queryKey: ["credits"] });
       safeSetItem("credits-updated", Date.now().toString());
     }
     return () => controller.abort();

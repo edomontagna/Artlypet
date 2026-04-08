@@ -19,18 +19,19 @@ const fallbackStyles = [
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-let tiltRaf = 0;
+const tiltRafMap = new WeakMap<HTMLDivElement, number>();
 const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
   const target = e.currentTarget;
   const clientX = e.clientX;
   const clientY = e.clientY;
-  cancelAnimationFrame(tiltRaf);
-  tiltRaf = requestAnimationFrame(() => {
+  const prev = tiltRafMap.get(target);
+  if (prev) cancelAnimationFrame(prev);
+  tiltRafMap.set(target, requestAnimationFrame(() => {
     const rect = target.getBoundingClientRect();
     const x = (clientX - rect.left) / rect.width - 0.5;
     const y = (clientY - rect.top) / rect.height - 0.5;
     target.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
-  });
+  }));
 };
 const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
   e.currentTarget.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';

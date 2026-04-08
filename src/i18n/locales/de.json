@@ -708,8 +708,28 @@
     "seconds": "Sek"
   },
   "activity": {
-    "justCreated": "{{name}} aus {{city}} hat gerade ein {{style}} Porträt erstellt",
-    "minutesAgo": "vor {{count}} Min"
+    "justCreated": "{{name}} aus {{city}} hat gerade ein {{style}}-Porträt erstellt",
+    "minutesAgo": "vor {{count}} Min",
+    "city": {
+      "berlin": "Berlin",
+      "rome": "Rom",
+      "paris": "Paris",
+      "munich": "München",
+      "milan": "Mailand",
+      "london": "London",
+      "madrid": "Madrid",
+      "lyon": "Lyon",
+      "vienna": "Wien",
+      "florence": "Florenz"
+    },
+    "style": {
+      "oilPainting": "Ölgemälde",
+      "renaissance": "Renaissance",
+      "watercolor": "Aquarell",
+      "artNouveau": "Jugendstil",
+      "popArt": "Pop Art",
+      "impressionist": "Impressionismus"
+    }
   },
   "mobileCta": {
     "title": "Verwandle Dein Haustier",

@@ -35,8 +35,11 @@ export const uploadOriginalImage = async (
   return record;
 };
 
+const MAX_URL_CACHE_SIZE = 200;
+
 export const getImageUrl = (bucket: string, path: string) => {
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  if (!data) throw new Error("Failed to get public URL");
   return data.publicUrl;
 };
 
@@ -53,6 +56,12 @@ export const getSignedUrl = async (
     .from(bucket)
     .createSignedUrl(path, expiresIn);
   if (error) throw error;
+
+  // Evict oldest entries when cache grows too large
+  if (urlCache.size >= MAX_URL_CACHE_SIZE) {
+    const firstKey = urlCache.keys().next().value;
+    if (firstKey) urlCache.delete(firstKey);
+  }
 
   urlCache.set(cacheKey, {
     url: data.signedUrl,

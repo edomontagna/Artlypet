@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { SEOHead } from "@/components/SEOHead";
 import { Loader2, Sparkles, Star, Shield, Lock, Eye, EyeOff } from "lucide-react";
 import { trackCompleteRegistration } from "@/hooks/useAnalytics";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
 
 const mapAuthError = (message: string, t: (key: string, fallback: string) => string): string => {
   if (message.includes("Invalid login credentials")) {
@@ -30,16 +31,17 @@ const mapAuthError = (message: string, t: (key: string, fallback: string) => str
   return t("auth.errors.generic", "Something went wrong. Please try again later.");
 };
 
-const schema = z.object({
-  displayName: z.string().min(2, i18n.t("validation.nameMinChars", "Name must be at least 2 characters")).max(50).trim(),
-  email: z.string().email(i18n.t("validation.invalidEmail", "Please enter a valid email address")),
-  password: z.string().min(10, i18n.t("validation.passwordMinChars", "Password must be at least 10 characters")),
-  termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: i18n.t("validation.termsRequired", "You must accept the Terms of Service and Privacy Policy") }),
-  }),
-});
+const createSchema = (t: (key: string, fallback: string) => string) =>
+  z.object({
+    displayName: z.string().min(2, t("validation.nameMinChars", "Name must be at least 2 characters")).max(50).trim(),
+    email: z.string().email(t("validation.invalidEmail", "Please enter a valid email address")),
+    password: z.string().min(10, t("validation.passwordMinChars", "Password must be at least 10 characters")),
+    termsAccepted: z.literal(true, {
+      errorMap: () => ({ message: t("validation.termsRequired", "You must accept the Terms of Service and Privacy Policy") }),
+    }),
+  });
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<ReturnType<typeof createSchema>>;
 
 const getPasswordStrength = (password: string) => {
   let score = 0;
@@ -80,10 +82,12 @@ const Signup = () => {
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref && /^[A-Za-z0-9_-]{4,32}$/.test(ref)) {
-      localStorage.setItem("artlypet_ref", ref);
+      safeSetItem("artlypet_ref", ref);
     }
-    if (ref || localStorage.getItem("artlypet_ref")) setHasReferral(true);
+    if (ref || safeGetItem("artlypet_ref")) setHasReferral(true);
   }, [searchParams]);
+
+  const schema = createSchema(t);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -95,14 +99,14 @@ const Signup = () => {
 
   const onSubmit = async (values: FormData) => {
     setLoading(true);
-    const refCode = localStorage.getItem("artlypet_ref") || undefined;
+    const refCode = safeGetItem("artlypet_ref") || undefined;
     const { error } = await signUp(values.email, values.password, values.displayName, refCode);
     if (error) {
       toast.error(mapAuthError(error.message, t));
     } else {
       // Preserve redirect URL for post-email-confirmation login
       const redirect = searchParams.get("redirect");
-      if (redirect) localStorage.setItem("artlypet_redirect", redirect);
+      if (redirect) safeSetItem("artlypet_redirect", redirect);
       toast.success(t("auth.checkEmailConfirmation", "Check your email for a confirmation link to complete your registration."));
       trackCompleteRegistration("email");
       navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login");

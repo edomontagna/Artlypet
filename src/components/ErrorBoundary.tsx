@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
       url: window.location.href,
       userAgent: navigator.userAgent,
     };
-    console.error("ErrorBoundary caught:", errorReport);
+    if (import.meta.env.DEV) console.error("ErrorBoundary caught:", errorReport);
     try {
       sessionStorage.setItem("last-error-report", JSON.stringify(errorReport));
     } catch { /* storage full */ }

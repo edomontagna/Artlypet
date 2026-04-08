@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sparkles } from "lucide-react";
+import { PREMIUM_PRICE } from "@/lib/constants";
 
 export const MobileStickyBar = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ export const MobileStickyBar = () => {
         >
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-bold text-foreground">€15</span>
+              <span className="text-sm font-bold text-foreground">&euro;{PREMIUM_PRICE}</span>
               <span className="text-[10px] text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
             </div>
             <p className="text-[10px] text-muted-foreground">{t("mobileCta.subtitle", "Free to start")}</p>

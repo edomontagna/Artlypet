@@ -709,7 +709,27 @@
   },
   "activity": {
     "justCreated": "{{name}} de {{city}} acaba de crear un retrato {{style}}",
-    "minutesAgo": "hace {{count}} min"
+    "minutesAgo": "hace {{count}} min",
+    "city": {
+      "berlin": "Berlín",
+      "rome": "Roma",
+      "paris": "París",
+      "munich": "Múnich",
+      "milan": "Milán",
+      "london": "Londres",
+      "madrid": "Madrid",
+      "lyon": "Lyon",
+      "vienna": "Viena",
+      "florence": "Florencia"
+    },
+    "style": {
+      "oilPainting": "Pintura al Óleo",
+      "renaissance": "Renacimiento",
+      "watercolor": "Acuarela",
+      "artNouveau": "Art Nouveau",
+      "popArt": "Pop Art",
+      "impressionist": "Impresionismo"
+    }
   },
   "mobileCta": {
     "title": "Transforma Tu Mascota",

@@ -1,13 +1,28 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
-import { Play, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { BlurImage } from "@/components/BlurImage";
+
+const DEMO_IMAGES = [
+  { before: "/images/oil-painting.jpg", styleKey: "Oil Painting" },
+  { before: "/images/watercolor.webp", styleKey: "Watercolor" },
+  { before: "/images/renaissance.webp", styleKey: "Renaissance" },
+  { before: "/images/pop-art.webp", styleKey: "Pop Art" },
+];
 
 const VideoSection = () => {
   const { t } = useTranslation();
-  const [playing, setPlaying] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % DEMO_IMAGES.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section className="py-16 lg:py-24 bg-background">
@@ -39,37 +54,54 @@ const VideoSection = () => {
           transition={{ delay: 0.2 }}
           className="max-w-3xl mx-auto"
         >
-          {playing ? (
-            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
-              <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                className="w-full h-full"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                title="Artlypet Demo"
-              />
-            </div>
-          ) : (
-            <div
-              className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/10 relative cursor-pointer group"
-              onClick={() => setPlaying(true)}
-            >
-              {/* Decorative content */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Play className="h-8 w-8 ml-1" />
+          {/* Before/After showcase slideshow */}
+          <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                className="absolute inset-0"
+              >
+                <BlurImage
+                  src={DEMO_IMAGES[activeIndex].before}
+                  alt={`${DEMO_IMAGES[activeIndex].styleKey} pet portrait`}
+                  className="absolute inset-0 w-full h-full"
+                />
+                {/* Overlay with style name */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+                  <div>
+                    <span className="text-white/70 text-xs font-medium uppercase tracking-wider">
+                      {t("video.styleLabel", "Art Style")}
+                    </span>
+                    <p className="font-serif text-2xl font-bold text-white">
+                      {DEMO_IMAGES[activeIndex].styleKey}
+                    </p>
                   </div>
-                  <p className="font-serif text-xl font-semibold text-foreground">
-                    {t("video.watchDemo", "Watch the Transformation")}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t("video.duration", "30 seconds")}
-                  </p>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full">
+                    {t("video.aiGenerated", "AI-Generated")}
+                  </span>
                 </div>
-              </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Progress dots */}
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {DEMO_IMAGES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === activeIndex ? "w-8 bg-white" : "w-3 bg-white/40"
+                  }`}
+                  aria-label={`${t("video.showStyle", "Show style")} ${i + 1}`}
+                />
+              ))}
             </div>
-          )}
+          </div>
         </motion.div>
 
         <motion.div
@@ -83,6 +115,7 @@ const VideoSection = () => {
             <Link to="/signup">
               <Sparkles className="mr-2 h-4 w-4" />
               {t("video.cta", "Try It Free")}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </motion.div>

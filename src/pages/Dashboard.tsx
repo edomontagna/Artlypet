@@ -35,6 +35,8 @@ const Dashboard = () => {
   const activeTab: TabId = VALID_TABS.includes(tabParam as TabId) ? (tabParam as TabId) : "dashboard";
 
   const setActiveTab = (tab: TabId) => {
+    setSelectedGeneration(null);
+    setLightboxOpen(false);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       if (tab === "dashboard") next.delete("tab");
@@ -90,7 +92,7 @@ const Dashboard = () => {
     if (params.get("payment") === "success" || params.get("hd_unlock") === "success") {
       import("canvas-confetti").then((confetti) => {
         confetti.default({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ["#d4956a", "#c17d52", "#e8b896"] });
-      });
+      }).catch(() => { /* confetti is decorative, safe to ignore */ });
       trackPurchase(PREMIUM_PRICE, "premium");
       safeSetItem("credits-updated", Date.now().toString());
     }
@@ -232,7 +234,7 @@ const Dashboard = () => {
 
         <div id="main-content" className="flex-1 p-6 lg:p-10 overflow-auto">
           {hasError && (
-            <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
+            <div role="alert" className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
               <Sparkles className="h-5 w-5 text-destructive flex-shrink-0" />
               <p className="text-sm text-destructive">{t("dashboard.loadError", "Something went wrong loading your data. Please try refreshing the page.")}</p>
             </div>
