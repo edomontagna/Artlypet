@@ -16,6 +16,27 @@ if (missingEnvVars.length > 0) {
   console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
 }
 
+// --- Rate limiting (database-backed) ---
+const checkRateLimit = async (
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  endpoint: string,
+  maxRequests = 5,
+  windowSeconds = 60,
+): Promise<{ allowed: boolean }> => {
+  const { data, error } = await supabase.rpc("check_rate_limit", {
+    p_user_id: userId,
+    p_endpoint: endpoint,
+    p_max_requests: maxRequests,
+    p_window_seconds: windowSeconds,
+  });
+  if (error) {
+    console.error("Rate limit check failed:", error);
+    return { allowed: true };
+  }
+  return { allowed: data as boolean };
+};
+
 const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
 
 const getCorsHeaders = (req: Request) => {
@@ -57,6 +78,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Rate limit check
+    const rateCheck = await checkRateLimit(serviceSupabase, user.id, "create-print-order");
+    if (!rateCheck.allowed) {
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" } },
+      );
+    }
+
     // Verify image belongs to user, is completed, and check HD status
     const { data: image, error: imageError } = await serviceSupabase
       .from("generated_images")
@@ -86,6 +116,28 @@ serve(async (req) => {
 
     const priceCents = isPremium ? PRINT_PRICE_PREMIUM : PRINT_PRICE_FREE;
     const priceLabel = isPremium ? "€59.90" : "€79.90";
+
+    // Check for existing pending order to prevent duplicates
+    const { data: existingOrder } = await serviceSupabase
+      .from("print_orders")
+      .select("id, stripe_session_id")
+      .eq("user_id", user.id)
+      .eq("generated_image_id", generated_image_id)
+      .eq("status", "pending")
+      .single();
+
+    if (existingOrder) {
+      // Return existing session URL instead of creating a new one
+      const existingSession = await stripe.checkout.sessions.retrieve(existingOrder.stripe_session_id);
+      if (existingSession.url && existingSession.status === "open") {
+        return new Response(
+          JSON.stringify({ url: existingSession.url }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      // Session expired — clean up old order and create new one
+      await serviceSupabase.from("print_orders").delete().eq("id", existingOrder.id);
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
