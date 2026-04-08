@@ -55,7 +55,7 @@ const VideoSection = () => {
           className="max-w-3xl mx-auto"
         >
           {/* Before/After showcase slideshow */}
-          <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted relative">
+          <div className="aspect-[4/3] md:aspect-[3/2] rounded-2xl overflow-hidden shadow-2xl bg-muted relative">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}

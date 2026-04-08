@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,19 +11,8 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
   const { t } = useTranslation();
   const [position, setPosition] = useState(50);
   const [showHint, setShowHint] = useState(true);
-  const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      setContainerWidth(entry.contentRect.width);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   const hideHint = useCallback(() => setShowHint(false), []);
 
@@ -89,19 +78,14 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
           draggable={false}
         />
 
-        {/* Before image (clipped) */}
-        <div
-          className="absolute inset-0 overflow-hidden"
-          style={{ width: `${position}%` }}
-        >
-          <img
-            src={beforeUrl}
-            alt="Before — Original photo"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ width: containerWidth ? `${containerWidth}px` : "100%" }}
-            draggable={false}
-          />
-        </div>
+        {/* Before image (clipped via clip-path) */}
+        <img
+          src={beforeUrl}
+          alt="Before — Original photo"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+          draggable={false}
+        />
 
         {/* Slider line */}
         <div
