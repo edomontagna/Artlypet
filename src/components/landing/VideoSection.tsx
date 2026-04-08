@@ -4,30 +4,30 @@ import { Sparkles, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { BlurImage } from "@/components/BlurImage";
 
-const DEMO_IMAGES = [
-  { before: "/images/oil-painting.jpg", styleKey: "Oil Painting" },
-  { before: "/images/watercolor.webp", styleKey: "Watercolor" },
-  { before: "/images/renaissance.webp", styleKey: "Renaissance" },
-  { before: "/images/pop-art.webp", styleKey: "Pop Art" },
+const STYLES = [
+  { image: "/images/renaissance.webp", nameKey: "Renaissance" },
+  { image: "/images/oil-painting.jpg", nameKey: "Oil Painting" },
+  { image: "/images/watercolor.webp", nameKey: "Watercolor" },
+  { image: "/images/pop-art.webp", nameKey: "Pop Art" },
+  { image: "/images/art-nouveau.webp", nameKey: "Art Nouveau" },
 ];
 
 const VideoSection = () => {
   const { t } = useTranslation();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % DEMO_IMAGES.length);
+      setActive((prev) => (prev + 1) % STYLES.length);
     }, 3500);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section className="py-16 lg:py-24 bg-background overflow-hidden">
       <div className="container px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -47,62 +47,78 @@ const VideoSection = () => {
           </motion.h2>
         </div>
 
+        {/* Portrait card carousel */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="max-w-3xl mx-auto"
+          className="flex justify-center items-end gap-3 md:gap-5 max-w-4xl mx-auto"
         >
-          {/* Before/After showcase slideshow */}
-          <div className="aspect-[4/3] md:aspect-[3/2] rounded-2xl overflow-hidden shadow-2xl bg-muted relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute inset-0 overflow-hidden"
+          {STYLES.map((style, i) => {
+            const isActive = i === active;
+            return (
+              <button
+                key={style.nameKey}
+                onClick={() => setActive(i)}
+                className={`relative flex-shrink-0 rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  isActive
+                    ? "w-48 md:w-64 lg:w-72 aspect-[3/4] z-10 shadow-2xl ring-2 ring-primary/30"
+                    : "w-20 md:w-28 lg:w-36 aspect-[3/4] opacity-60 hover:opacity-80 grayscale-[30%]"
+                }`}
+                aria-label={`${t("video.showStyle", "Show style")} ${style.nameKey}`}
               >
-                <BlurImage
-                  src={DEMO_IMAGES[activeIndex].before}
-                  alt={`${DEMO_IMAGES[activeIndex].styleKey} pet portrait`}
-                  className="absolute inset-0 w-full h-full"
+                <img
+                  src={style.image}
+                  alt={`${style.nameKey} pet portrait`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                  draggable={false}
                 />
-                {/* Overlay with style name */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-                  <div>
-                    <span className="text-white/70 text-xs font-medium uppercase tracking-wider">
-                      {t("video.styleLabel", "Art Style")}
-                    </span>
-                    <p className="font-serif text-2xl font-bold text-white">
-                      {DEMO_IMAGES[activeIndex].styleKey}
-                    </p>
-                  </div>
-                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full">
-                    {t("video.aiGenerated", "AI-Generated")}
-                  </span>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Progress dots */}
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {DEMO_IMAGES.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveIndex(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === activeIndex ? "w-8 bg-white" : "w-3 bg-white/40"
-                  }`}
-                  aria-label={`${t("video.showStyle", "Show style")} ${i + 1}`}
-                />
-              ))}
-            </div>
-          </div>
+                {/* Gradient + label only on active */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                    >
+                      <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                        <div>
+                          <span className="text-white/70 text-[10px] font-medium uppercase tracking-wider">
+                            {t("video.styleLabel", "Art Style")}
+                          </span>
+                          <p className="font-serif text-lg md:text-xl font-bold text-white leading-tight">
+                            {style.nameKey}
+                          </p>
+                        </div>
+                        <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full hidden md:inline-block">
+                          {t("video.aiGenerated", "AI-Generated")}
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            );
+          })}
         </motion.div>
+
+        {/* Dots */}
+        <div className="flex justify-center gap-1.5 mt-6">
+          {STYLES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === active ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
+              }`}
+              aria-label={`Style ${i + 1}`}
+            />
+          ))}
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
