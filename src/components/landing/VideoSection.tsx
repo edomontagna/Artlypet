@@ -59,11 +59,11 @@ const VideoSection = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute inset-0"
+                className="absolute inset-0 overflow-hidden"
               >
                 <BlurImage
                   src={DEMO_IMAGES[activeIndex].before}
