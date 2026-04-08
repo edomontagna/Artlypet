@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Image as ImageIcon } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Sparkles, Image as ImageIcon, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -235,7 +235,7 @@ const Dashboard = () => {
         <div id="main-content" className="flex-1 p-6 lg:p-10 overflow-auto">
           {hasError && (
             <div role="alert" className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
-              <Sparkles className="h-5 w-5 text-destructive flex-shrink-0" />
+              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
               <p className="text-sm text-destructive">{t("dashboard.loadError", "Something went wrong loading your data. Please try refreshing the page.")}</p>
             </div>
           )}

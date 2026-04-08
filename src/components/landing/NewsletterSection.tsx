@@ -69,6 +69,8 @@ const NewsletterSection = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("newsletter.placeholder", "Enter your email")}
               className="h-12 rounded-full px-5 flex-1"
+              aria-label={t("newsletter.placeholder", "Enter your email")}
+              autoComplete="email"
               required
               disabled={loading}
             />
