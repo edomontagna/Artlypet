@@ -760,5 +760,44 @@
       "popArt": "Pop Art",
       "impressionist": "Impressionist"
     }
+  },
+  "newsletter": {
+    "title": "Stay in the Loop",
+    "subtitle": "Get exclusive tips, new styles, and special offers. Plus 100 bonus credits on your first purchase.",
+    "placeholder": "Enter your email",
+    "cta": "Subscribe",
+    "consent": "No spam. Unsubscribe anytime.",
+    "success": "You're in! Check your inbox for a welcome surprise.",
+    "error": "Something went wrong. Please try again.",
+    "alreadySubscribed": "You're already subscribed!"
+  },
+  "exitIntent": {
+    "title": "Wait! Get 3 Free Portraits",
+    "subtitle": "Enter your email and we'll give you 3 free AI pet portraits. No credit card needed.",
+    "placeholder": "Your email address",
+    "cta": "Get My Free Portraits",
+    "noThanks": "No thanks, I'll pass"
+  },
+  "promo": {
+    "banner": "Launch offer: €{{price}} instead of €{{regular}} — ends in",
+    "days": "d",
+    "hours": "h",
+    "minutes": "m",
+    "cta": "Claim Now",
+    "expired": "Offer expired"
+  },
+  "lowCredits": {
+    "title": "Running low!",
+    "message": "Only {{credits}} credits left. Go Premium for 1500 credits + HD downloads.",
+    "cta": "Go Premium — €15"
+  },
+  "communityGallery": {
+    "title": "Community Gallery",
+    "subtitle": "Stunning pet portraits created by our community. Your pet could be next!",
+    "filterAll": "All Styles",
+    "empty": "No portraits yet. Be the first to create one!",
+    "ctaTitle": "Create Your Own Masterpiece",
+    "ctaDesc": "Transform your pet into art in seconds. Free to start, no credit card needed.",
+    "ctaButton": "Start Creating — It's Free"
   }
 }

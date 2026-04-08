@@ -734,5 +734,44 @@
   "mobileCta": {
     "title": "Trasforma il Tuo Animale",
     "subtitle": "Inizia gratis"
+  },
+  "newsletter": {
+    "title": "Resta Aggiornato",
+    "subtitle": "Ricevi consigli esclusivi, nuovi stili e offerte speciali. Più 100 crediti bonus sul primo acquisto.",
+    "placeholder": "Inserisci la tua email",
+    "cta": "Iscriviti",
+    "consent": "Niente spam. Cancellati quando vuoi.",
+    "success": "Fatto! Controlla la tua casella per una sorpresa di benvenuto.",
+    "error": "Qualcosa è andato storto. Riprova.",
+    "alreadySubscribed": "Sei già iscritto!"
+  },
+  "exitIntent": {
+    "title": "Aspetta! 3 Ritratti Gratis",
+    "subtitle": "Inserisci la tua email e ti regaliamo 3 ritratti AI del tuo animale. Nessuna carta di credito.",
+    "placeholder": "Il tuo indirizzo email",
+    "cta": "Ottieni i Miei Ritratti Gratis",
+    "noThanks": "No grazie"
+  },
+  "promo": {
+    "banner": "Offerta lancio: €{{price}} invece di €{{regular}} — termina tra",
+    "days": "g",
+    "hours": "h",
+    "minutes": "m",
+    "cta": "Approfitta Ora",
+    "expired": "Offerta scaduta"
+  },
+  "lowCredits": {
+    "title": "Crediti in esaurimento!",
+    "message": "Solo {{credits}} crediti rimasti. Passa a Premium per 1500 crediti + download HD.",
+    "cta": "Vai Premium — €15"
+  },
+  "communityGallery": {
+    "title": "Galleria della Community",
+    "subtitle": "Splendidi ritratti creati dalla nostra community. Il prossimo potrebbe essere il tuo!",
+    "filterAll": "Tutti gli Stili",
+    "empty": "Nessun ritratto ancora. Sii il primo a crearne uno!",
+    "ctaTitle": "Crea il Tuo Capolavoro",
+    "ctaDesc": "Trasforma il tuo animale in arte in pochi secondi. Gratis, senza carta di credito.",
+    "ctaButton": "Inizia a Creare — È Gratis"
   }
 }

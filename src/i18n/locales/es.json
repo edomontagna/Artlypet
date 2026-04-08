@@ -734,5 +734,44 @@
   "mobileCta": {
     "title": "Transforma Tu Mascota",
     "subtitle": "Empieza gratis"
+  },
+  "newsletter": {
+    "title": "Mantente Informado",
+    "subtitle": "Recibe consejos exclusivos, nuevos estilos y ofertas especiales. Más 100 créditos de regalo en tu primera compra.",
+    "placeholder": "Tu correo electrónico",
+    "cta": "Suscribirse",
+    "consent": "Sin spam. Cancela cuando quieras.",
+    "success": "¡Listo! Revisa tu bandeja de entrada para una sorpresa de bienvenida.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "alreadySubscribed": "¡Ya estás suscrito!"
+  },
+  "exitIntent": {
+    "title": "¡Espera! 3 Retratos Gratis",
+    "subtitle": "Ingresa tu email y te regalamos 3 retratos IA de tu mascota. Sin tarjeta de crédito.",
+    "placeholder": "Tu correo electrónico",
+    "cta": "Obtener mis retratos gratis",
+    "noThanks": "No gracias"
+  },
+  "promo": {
+    "banner": "Oferta de lanzamiento: €{{price}} en vez de €{{regular}} — termina en",
+    "days": "d",
+    "hours": "h",
+    "minutes": "min",
+    "cta": "Aprovecha ahora",
+    "expired": "Oferta expirada"
+  },
+  "lowCredits": {
+    "title": "¡Pocos créditos!",
+    "message": "Solo {{credits}} créditos restantes. Hazte Premium por 1500 créditos + descargas HD.",
+    "cta": "Premium — €15"
+  },
+  "communityGallery": {
+    "title": "Galería de la Comunidad",
+    "subtitle": "Impresionantes retratos de mascotas creados por nuestra comunidad. ¡El tuyo podría ser el siguiente!",
+    "filterAll": "Todos los estilos",
+    "empty": "Aún no hay retratos. ¡Sé el primero!",
+    "ctaTitle": "Crea tu propia obra maestra",
+    "ctaDesc": "Transforma tu mascota en arte en segundos. Gratis, sin tarjeta de crédito.",
+    "ctaButton": "Empezar a crear — Es gratis"
   }
 }

@@ -738,5 +738,44 @@
       "popArt": "Pop Art",
       "impressionist": "Impressionnisme"
     }
+  },
+  "newsletter": {
+    "title": "Restez Informé",
+    "subtitle": "Recevez des conseils exclusifs, de nouveaux styles et des offres spéciales. Plus 100 crédits bonus sur votre premier achat.",
+    "placeholder": "Votre adresse email",
+    "cta": "S'abonner",
+    "consent": "Pas de spam. Désabonnez-vous à tout moment.",
+    "success": "C'est fait ! Vérifiez votre boîte mail pour une surprise de bienvenue.",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "alreadySubscribed": "Vous êtes déjà abonné !"
+  },
+  "exitIntent": {
+    "title": "Attendez ! 3 Portraits Gratuits",
+    "subtitle": "Entrez votre email et recevez 3 portraits IA gratuits de votre animal. Sans carte bancaire.",
+    "placeholder": "Votre adresse email",
+    "cta": "Obtenir mes portraits gratuits",
+    "noThanks": "Non merci"
+  },
+  "promo": {
+    "banner": "Offre de lancement : {{price}}€ au lieu de {{regular}}€ — se termine dans",
+    "days": "j",
+    "hours": "h",
+    "minutes": "min",
+    "cta": "En profiter",
+    "expired": "Offre expirée"
+  },
+  "lowCredits": {
+    "title": "Crédits bientôt épuisés !",
+    "message": "Plus que {{credits}} crédits. Passez Premium pour 1500 crédits + téléchargements HD.",
+    "cta": "Premium — 15€"
+  },
+  "communityGallery": {
+    "title": "Galerie Communautaire",
+    "subtitle": "De superbes portraits d'animaux créés par notre communauté. Le vôtre pourrait être le prochain !",
+    "filterAll": "Tous les styles",
+    "empty": "Pas encore de portraits. Soyez le premier !",
+    "ctaTitle": "Créez votre propre chef-d'œuvre",
+    "ctaDesc": "Transformez votre animal en œuvre d'art en quelques secondes. Gratuit, sans carte bancaire.",
+    "ctaButton": "Commencer — C'est gratuit"
   }
 }

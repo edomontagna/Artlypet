@@ -36,6 +36,7 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const SharePortrait = lazy(() => import("./pages/SharePortrait"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Accessibility = lazy(() => import("./pages/Accessibility"));
+const CommunityGallery = lazy(() => import("./pages/CommunityGallery"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -98,6 +99,7 @@ const AnimatedRoutes = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/share/:generationId" element={<SharePortrait />} />
+          <Route path="/gallery" element={<CommunityGallery />} />
           <Route
             path="/dashboard"
             element={

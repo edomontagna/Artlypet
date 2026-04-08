@@ -105,6 +105,9 @@ const FooterSection = () => {
               <Link to="/how-it-works" className={linkClass}>
                 {t("nav.howItWorks", "How It Works")}
               </Link>
+              <Link to="/gallery" className={linkClass}>
+                {t("nav.gallery", "Gallery")}
+              </Link>
               <Link to="/demo" className={linkClass}>
                 {t("footer.demo", "Try Demo")}
               </Link>

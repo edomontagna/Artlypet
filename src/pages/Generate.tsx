@@ -23,6 +23,7 @@ import { UploadSection } from "@/components/generate/UploadSection";
 import { StyleSelector } from "@/components/generate/StyleSelector";
 import { ResultPanel } from "@/components/generate/ResultPanel";
 import { ConfirmDialog } from "@/components/generate/ConfirmDialog";
+import { LowCreditsNudge } from "@/components/LowCreditsNudge";
 import { trackEvent } from "@/hooks/useAnalytics";
 import { safeSetItem } from "@/lib/storage";
 
@@ -428,6 +429,15 @@ const Generate = () => {
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
                 {t("generate.mixBothRequired", "Both photos are required for Mix mode. Upload photo B to continue.")}
               </div>
+            )}
+
+            {/* Low credits warning */}
+            {!creditsLoading && (
+              <LowCreditsNudge
+                creditBalance={creditBalance ?? 0}
+                creditCost={creditCost}
+                onUpgrade={() => setShowPurchaseModal(true)}
+              />
             )}
 
             {/* Generate button */}

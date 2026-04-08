@@ -734,5 +734,44 @@
   "mobileCta": {
     "title": "Verwandle Dein Haustier",
     "subtitle": "Kostenlos starten"
+  },
+  "newsletter": {
+    "title": "Bleib auf dem Laufenden",
+    "subtitle": "Erhalte exklusive Tipps, neue Stile und Sonderangebote. Plus 100 Bonus-Credits beim ersten Kauf.",
+    "placeholder": "Deine E-Mail-Adresse",
+    "cta": "Abonnieren",
+    "consent": "Kein Spam. Jederzeit abbestellbar.",
+    "success": "Du bist dabei! Schau in deinen Posteingang für eine Willkommensüberraschung.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "alreadySubscribed": "Du bist bereits angemeldet!"
+  },
+  "exitIntent": {
+    "title": "Warte! 3 Gratis-Porträts",
+    "subtitle": "Gib deine E-Mail ein und erhalte 3 kostenlose KI-Porträts deines Haustiers. Keine Kreditkarte nötig.",
+    "placeholder": "Deine E-Mail-Adresse",
+    "cta": "Meine Gratis-Porträts holen",
+    "noThanks": "Nein danke"
+  },
+  "promo": {
+    "banner": "Launch-Angebot: €{{price}} statt €{{regular}} — endet in",
+    "days": "T",
+    "hours": "Std",
+    "minutes": "Min",
+    "cta": "Jetzt sichern",
+    "expired": "Angebot abgelaufen"
+  },
+  "lowCredits": {
+    "title": "Wenig Credits!",
+    "message": "Nur noch {{credits}} Credits übrig. Werde Premium für 1500 Credits + HD-Downloads.",
+    "cta": "Premium — €15"
+  },
+  "communityGallery": {
+    "title": "Community-Galerie",
+    "subtitle": "Beeindruckende Haustierporträts unserer Community. Deins könnte das nächste sein!",
+    "filterAll": "Alle Stile",
+    "empty": "Noch keine Porträts. Sei der Erste!",
+    "ctaTitle": "Erstelle dein eigenes Meisterwerk",
+    "ctaDesc": "Verwandle dein Haustier in Kunst — in Sekunden. Kostenlos starten, keine Kreditkarte nötig.",
+    "ctaButton": "Jetzt erstellen — Kostenlos"
   }
 }
