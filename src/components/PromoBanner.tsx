@@ -22,16 +22,13 @@ export const PromoBanner = () => {
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(PROMO_END_DATE));
 
   useEffect(() => {
-    if (!timeLeft) return;
     const timer = setInterval(() => {
       const remaining = getTimeLeft(PROMO_END_DATE);
-      if (!remaining) {
-        clearInterval(timer);
-      }
       setTimeLeft(remaining);
+      if (!remaining) clearInterval(timer);
     }, 60000);
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, []);
 
   const handleDismiss = () => {
     setDismissed(true);

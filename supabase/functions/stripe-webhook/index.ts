@@ -123,20 +123,29 @@ serve(async (req) => {
       return new Response("Invalid credits amount", { status: 400 });
     }
 
-    // Idempotency: check if this session was already processed
-    const { data: existingTx } = await supabase
-      .from("credit_transactions")
-      .select("id")
-      .eq("stripe_session_id", session.id)
-      .single();
+    // Idempotency: insert transaction record FIRST to prevent race conditions.
+    // The UNIQUE constraint on idempotency_key ensures only one webhook succeeds.
+    const { error: txError } = await supabase.from("credit_transactions").insert({
+      user_id: userId,
+      type: "purchase",
+      amount: credits,
+      balance_after: 0, // updated below after add_credits
+      stripe_session_id: session.id,
+      idempotency_key: `stripe-${session.id}`,
+      description: `Purchased ${credits} credits (${packageId})`,
+    });
 
-    if (existingTx) {
-      return new Response(JSON.stringify({ received: true, note: "already processed" }), {
-        headers: { "Content-Type": "application/json" },
-      });
+    if (txError) {
+      // Unique constraint violation = already processed
+      if (txError.code === "23505") {
+        return new Response(JSON.stringify({ received: true, note: "already processed" }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return new Response("Failed to record transaction", { status: 500 });
     }
 
-    // Atomic credit addition — prevents race conditions
+    // Atomic credit addition — safe because transaction record guarantees single execution
     const { data: newBalance, error: addError } = await supabase.rpc("add_credits", {
       p_user_id: userId,
       p_amount: credits,
@@ -144,19 +153,15 @@ serve(async (req) => {
     });
 
     if (addError || newBalance === -1) {
+      // Rollback the transaction record
+      await supabase.from("credit_transactions").delete().eq("stripe_session_id", session.id);
       return new Response("Failed to add credits", { status: 500 });
     }
 
-    // Insert transaction record
-    await supabase.from("credit_transactions").insert({
-      user_id: userId,
-      type: "purchase",
-      amount: credits,
-      balance_after: newBalance,
-      stripe_session_id: session.id,
-      idempotency_key: `stripe-${session.id}`,
-      description: `Purchased ${credits} credits (${packageId})`,
-    });
+    // Update transaction with actual balance
+    await supabase.from("credit_transactions")
+      .update({ balance_after: newBalance })
+      .eq("stripe_session_id", session.id);
 
     // Audit log
     const eventType = planUpgrade === "premium" ? "premium_purchased" : "credit_purchase";
