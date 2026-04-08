@@ -15,20 +15,25 @@ if (missingEnvVars.length > 0) {
   console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
 }
 
-// --- Rate limiting ---
-// NOTE: In-memory rate limiter — resets on cold start, per-isolate only.
-// TODO: Replace with database-backed rate limiting for production scale.
-const rateLimitMap = new Map<string, number[]>();
-const MAX_REQUESTS = 5;
-const WINDOW_MS = 60000;
-
-const checkRateLimit = (userId: string): { allowed: boolean; remaining: number } => {
-  const now = Date.now();
-  const requests = rateLimitMap.get(userId)?.filter(t => now - t < WINDOW_MS) || [];
-  if (requests.length >= MAX_REQUESTS) return { allowed: false, remaining: 0 };
-  requests.push(now);
-  rateLimitMap.set(userId, requests);
-  return { allowed: true, remaining: MAX_REQUESTS - requests.length };
+// --- Rate limiting (database-backed) ---
+const checkRateLimit = async (
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  endpoint: string,
+  maxRequests = 5,
+  windowSeconds = 60,
+): Promise<{ allowed: boolean }> => {
+  const { data, error } = await supabase.rpc("check_rate_limit", {
+    p_user_id: userId,
+    p_endpoint: endpoint,
+    p_max_requests: maxRequests,
+    p_window_seconds: windowSeconds,
+  });
+  if (error) {
+    console.error("Rate limit check failed:", error);
+    return { allowed: true }; // fail open to avoid blocking legitimate users
+  }
+  return { allowed: data as boolean };
 };
 
 const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGIN") || "http://localhost:8080").split(",").map(o => o.trim()).filter(Boolean);
@@ -64,15 +69,6 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    // Rate limit check
-    const rateCheck = checkRateLimit(user.id);
-    if (!rateCheck.allowed) {
-      return new Response(
-        JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": String(Math.ceil(WINDOW_MS / 1000)), "X-RateLimit-Limit": String(MAX_REQUESTS), "X-RateLimit-Remaining": "0" } },
-      );
-    }
-
     const { original_id, style_id, generation_type = "single", original_id_2 } = await req.json();
 
     // Validate UUID format on all IDs
@@ -89,6 +85,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    // Rate limit check (database-backed, works across all isolates)
+    const rateCheck = await checkRateLimit(supabase, user.id, "generate-portrait");
+    if (!rateCheck.allowed) {
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" } },
+      );
+    }
 
     // Atomic credit deduction — prevents race conditions
     const { data: newBalance, error: deductError } = await supabase.rpc("deduct_credits", {
