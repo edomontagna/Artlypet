@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,8 +11,19 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
   const { t } = useTranslation();
   const [position, setPosition] = useState(50);
   const [showHint, setShowHint] = useState(true);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const hideHint = useCallback(() => setShowHint(false), []);
 
@@ -60,7 +71,7 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
         aria-valuenow={Math.round(position)}
         aria-valuemin={0}
         aria-valuemax={100}
-        className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-xl cursor-col-resize select-none border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+        className="relative w-full aspect-[3/4] md:aspect-[4/5] rounded-2xl overflow-hidden shadow-xl cursor-col-resize select-none border border-border focus:outline-none focus:ring-2 focus:ring-primary"
         onMouseEnter={hideHint}
         onTouchStart={hideHint}
         onMouseMove={handleMouseMove}
@@ -87,7 +98,7 @@ export const BeforeAfterSlider = ({ beforeUrl, afterUrl }: BeforeAfterSliderProp
             src={beforeUrl}
             alt="Before — Original photo"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : "100%" }}
+            style={{ width: containerWidth ? `${containerWidth}px` : "100%" }}
             draggable={false}
           />
         </div>

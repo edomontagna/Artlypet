@@ -180,7 +180,7 @@ const GallerySection = memo(() => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.6, ease }}
-          className="max-w-xl mx-auto mt-16"
+          className="max-w-sm md:max-w-md mx-auto mt-16"
         >
           <BeforeAfterSlider
             beforeUrl="/images/oil-painting.jpg"
