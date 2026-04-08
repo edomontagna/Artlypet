@@ -164,7 +164,34 @@ serve(async (req) => {
       });
     if (auditErr) console.error("Error writing audit log:", auditErr.message);
 
-    console.log("Cleanup completed:", stats);
+    // Step 7: Clean expired audit log entries (GDPR data retention)
+    let auditLogsDeleted = 0;
+    const { data: expiredAuditResult, error: auditCleanErr } = await supabase
+      .from("audit_log")
+      .delete()
+      .lt("expires_at", new Date().toISOString())
+      .select("id");
+    if (auditCleanErr) {
+      console.error("Error cleaning expired audit logs:", auditCleanErr.message);
+    } else {
+      auditLogsDeleted = expiredAuditResult?.length || 0;
+    }
+
+    // Step 8: Clean old rate_limits entries (older than 5 minutes)
+    let rateLimitsDeleted = 0;
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { data: rateLimitResult, error: rateLimitCleanErr } = await supabase
+      .from("rate_limits")
+      .delete()
+      .lt("created_at", fiveMinAgo)
+      .select("id");
+    if (rateLimitCleanErr) {
+      console.error("Error cleaning rate_limits:", rateLimitCleanErr.message);
+    } else {
+      rateLimitsDeleted = rateLimitResult?.length || 0;
+    }
+
+    console.log("Cleanup completed:", { ...stats, audit_logs_deleted: auditLogsDeleted, rate_limits_deleted: rateLimitsDeleted });
 
     return new Response(
       JSON.stringify({
@@ -173,6 +200,8 @@ serve(async (req) => {
           originals: originalsDeleted,
           generated: generatedDeleted,
           files: filesDeleted,
+          audit_logs: auditLogsDeleted,
+          rate_limits: rateLimitsDeleted,
         },
       }),
       { headers: { "Content-Type": "application/json" } },

@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Crown, Loader2, Sun, Moon, Monitor, Globe, Shield, FileText, CreditCard } from "lucide-react";
+import { Crown, Loader2, Sun, Moon, Monitor, Globe, Shield, FileText, CreditCard, Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreditTransactions } from "@/hooks/useCredits";
+import { exportUserData } from "@/services/account";
 
 interface SettingsTabProps {
   profile: {
@@ -51,6 +52,19 @@ export const SettingsTab = ({
   });
 
   const { data: transactions } = useCreditTransactions();
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportData = async () => {
+    setExporting(true);
+    try {
+      await exportUserData();
+      toast.success(t("settings.exportSuccess", "Data exported successfully"));
+    } catch {
+      toast.error(t("settings.exportError", "Failed to export data. Please try again."));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const handleSaveName = async () => {
     if (!editName.trim()) return;
@@ -265,7 +279,17 @@ export const SettingsTab = ({
               <Shield className="h-4 w-4 text-primary" />
               {t("settings.dataPrivacy", "Data & Privacy")}
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full gap-1.5 text-xs w-full justify-start"
+                onClick={handleExportData}
+                disabled={exporting}
+              >
+                {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                {exporting ? t("settings.exporting", "Exporting...") : t("settings.exportData", "Export My Data")}
+              </Button>
               <Link to="/privacy" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                 <FileText className="h-3.5 w-3.5" />
                 {t("footer.privacy", "Privacy Policy")}
