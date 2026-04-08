@@ -12,7 +12,6 @@ import FAQSection from "@/components/landing/FAQSection";
 import NewsletterSection from "@/components/landing/NewsletterSection";
 import FooterSection from "@/components/landing/FooterSection";
 import { PromoBanner } from "@/components/PromoBanner";
-import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { ActivityFeed } from "@/components/landing/ActivityFeed";
 import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
 
@@ -43,7 +42,6 @@ const Index = () => {
       <FooterSection />
       <ActivityFeed />
       <MobileStickyBar />
-      <ExitIntentPopup />
     </main>
   );
 };
