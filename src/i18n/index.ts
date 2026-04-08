@@ -76,7 +76,7 @@ const initI18n = async () => {
   });
 };
 
-// Execute initialization
-initI18n();
+// Execute initialization and export the ready promise
+export const i18nReady = initI18n();
 
 export default i18n;
