@@ -66,41 +66,45 @@
   }
 
   .dark {
-    /* Off-black, never pure #000 */
-    --background: 220 18% 7%;
-    --foreground: 40 24% 94%;
+    /*
+      "Galleria notturna" — Goiko-inspired premium dark. Warm near-black, never pure #000,
+      with a subtle warm tint that makes gold accents glow and portraits feel illuminated.
+    */
+    --background: 30 8% 5%;            /* warm near-black, slight brown-grey undertone */
+    --foreground: 40 28% 96%;          /* warm white, not sterile */
 
-    --card: 220 16% 11%;
-    --card-foreground: 40 24% 94%;
+    --card: 30 8% 9%;                  /* surface — barely lifted from bg */
+    --card-foreground: 40 28% 96%;
 
-    --popover: 220 16% 11%;
-    --popover-foreground: 40 24% 94%;
+    --popover: 30 9% 11%;
+    --popover-foreground: 40 28% 96%;
 
-    --primary: 42 80% 62%;
-    --primary-foreground: 220 40% 9%;
+    /* Gold — saturated and bright, the brand's voice in the dark */
+    --primary: 42 85% 62%;
+    --primary-foreground: 30 15% 6%;
 
     --secondary: 148 18% 56%;
-    --secondary-foreground: 220 40% 9%;
+    --secondary-foreground: 30 15% 6%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 40 12% 70%;
+    --muted: 30 6% 13%;
+    --muted-foreground: 40 14% 68%;
 
-    --accent: 220 14% 16%;
-    --accent-foreground: 40 24% 94%;
+    --accent: 30 8% 14%;
+    --accent-foreground: 40 28% 96%;
 
-    --destructive: 358 65% 56%;
+    --destructive: 358 70% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --gold: 42 80% 62%;
-    --gold-foreground: 220 40% 9%;
-    --navy: 220 40% 16%;
-    --navy-foreground: 40 24% 94%;
-    --cream: 220 14% 14%;
-    --cream-foreground: 40 24% 94%;
+    --gold: 42 85% 62%;
+    --gold-foreground: 30 15% 6%;
+    --navy: 220 18% 12%;
+    --navy-foreground: 40 28% 96%;
+    --cream: 30 8% 9%;
+    --cream-foreground: 40 28% 96%;
 
-    --border: 220 14% 18%;
-    --input: 220 14% 18%;
-    --ring: 42 80% 62%;
+    --border: 30 6% 16%;
+    --input: 30 6% 16%;
+    --ring: 42 85% 62%;
   }
 }
 

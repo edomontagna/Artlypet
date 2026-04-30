@@ -33,14 +33,9 @@ const Navbar = () => {
   );
 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window !== "undefined") {
-      const stored = safeGetItem("artlypet-theme");
-      if (stored === "system" || !stored) {
-        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      }
-      return stored as "light" | "dark";
-    }
-    return "light";
+    if (typeof window === "undefined") return "dark";
+    // Source of truth = the class set by the index.html bootstrap script
+    return document.documentElement.classList.contains("dark") ? "dark" : "light";
   });
 
   useEffect(() => {

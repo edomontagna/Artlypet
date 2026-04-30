@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -101,6 +101,30 @@
     <link rel="preload" href="/images/renaissance.webp" as="image" type="image/webp">
 
     <!-- Analytics initialized in React via useAnalytics hook -->
+
+    <!--
+      Theme bootstrap — runs before React mounts to avoid FOUC.
+      Default for first-time visitors is DARK (Goiko-style brand statement).
+      Returning visitors see their stored choice.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('artlypet-theme');
+          var theme;
+          if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+          } else if (stored === 'system') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            // First visit: default to dark for the brand intro
+            theme = 'dark';
+          }
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.classList.toggle('light', theme !== 'dark');
+        } catch (_) { /* localStorage may be blocked in private mode */ }
+      })();
+    </script>
   </head>
 
   <body>
