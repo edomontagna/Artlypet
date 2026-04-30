@@ -40,7 +40,7 @@ const AuthCallback = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
         <Skeleton className="h-10 w-10 rounded-full" />
         <p className="text-sm text-muted-foreground">Completing sign in...</p>

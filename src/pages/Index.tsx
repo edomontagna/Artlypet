@@ -17,7 +17,7 @@ import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
 
 const Index = () => {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-[100dvh]">
       <SEOHead
         title="Artlypet — AI Pet Portraits | Transform Your Pet Into Art"
         description="Transform your pet's photo into stunning AI-generated art portraits. Choose from 12+ art styles including Renaissance, Pop Art, and Watercolor. Free to start."

@@ -1,194 +1,195 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Heart, Sparkles, Globe, Palette } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Heart, Sparkles, Globe, Palette, ArrowUpRight } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+const ease = [0.16, 1, 0.3, 1] as const;
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.65, ease },
 };
 
 const About = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const values = [
-    {
-      icon: Heart,
-      title: t("about.value1Title", "Pet Love"),
-      desc: t("about.value1Desc", "We believe every pet deserves to be immortalised in art. Your companion is family, and family deserves a masterpiece."),
-    },
-    {
-      icon: Sparkles,
-      title: t("about.value2Title", "AI Excellence"),
-      desc: t("about.value2Desc", "Powered by cutting-edge AI from Google Gemini, we blend technology with artistry to create portraits that truly capture your pet's personality."),
-    },
-    {
-      icon: Palette,
-      title: t("about.value3Title", "Artistic Quality"),
-      desc: t("about.value3Desc", "Every style in our collection is carefully curated to produce museum-quality results that you'll be proud to display."),
-    },
-    {
-      icon: Globe,
-      title: t("about.value4Title", "Accessible to All"),
-      desc: t("about.value4Desc", "Available in 5 languages with EU-wide shipping. We're making pet art accessible to everyone, everywhere."),
-    },
+    { icon: Heart,     titleKey: "about.value1Title", titleFallback: "Pet love",         descKey: "about.value1Desc", descFallback: "Every pet is family. Family deserves a piece worth framing." },
+    { icon: Sparkles,  titleKey: "about.value2Title", titleFallback: "AI excellence",    descKey: "about.value2Desc", descFallback: "Built on Google Gemini 3.1, fine-tuned with hand-written prompts per style." },
+    { icon: Palette,   titleKey: "about.value3Title", titleFallback: "Artistic quality", descKey: "about.value3Desc", descFallback: "Every style is curated by hand. No template farm output." },
+    { icon: Globe,     titleKey: "about.value4Title", titleFallback: "EU-first",         descKey: "about.value4Desc", descFallback: "Servers in the EU, GDPR-clean, prints shipped across the union." },
   ];
 
+  // Honest, verifiable stats only — no inflated "10,000+ users" claims.
   const stats = [
-    {
-      value: t("about.stat1Value", "10,000+"),
-      label: t("about.stat1Label", "Portraits Created"),
-    },
-    {
-      value: t("about.stat2Value", "5"),
-      label: t("about.stat2Label", "Languages Supported"),
-    },
-    {
-      value: t("about.stat3Value", "12"),
-      label: t("about.stat3Label", "Art Styles"),
-    },
-    {
-      value: t("about.stat4Value", "30s"),
-      label: t("about.stat4Label", "Average Generation Time"),
-    },
+    { valueKey: "about.stat1Value", value: "12",  unit: "",     label: t("about.stat1Label", "Hand-tuned painting styles") },
+    { valueKey: "about.stat2Value", value: "5",   unit: "",     label: t("about.stat2Label", "Languages out of the box") },
+    { valueKey: "about.stat3Value", value: "47",  unit: "s",    label: t("about.stat3Label", "Average generation time") },
+    { valueKey: "about.stat4Value", value: "2K",  unit: "",     label: t("about.stat4Label", "Print-ready resolution") },
   ];
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="app-ui min-h-[100dvh] bg-background">
       <SEOHead
-        title="About Artlypet | Premium AI Pet Art Creator"
-        description="Learn about Artlypet, the AI-powered pet portrait platform. Powered by Google Gemini AI, we create stunning art from your pet photos in 12+ styles."
+        title="About Artlypet — museum-quality AI pet portraits"
+        description="The team behind Artlypet, the AI pet portrait studio. EU-hosted, GDPR-clean, twelve hand-tuned painting styles, optional canvas print fulfilment."
         canonical="/about"
       />
       <Navbar />
 
-      {/* Hero */}
-      <section className="py-20 px-6 lg:px-8">
-        <div className="container mx-auto text-center max-w-3xl">
-          <motion.div {...fadeInUp}>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-              {t("about.title", "About Artlypet")}
+      {/* HERO — left aligned, anti-center */}
+      <section className="relative pt-20 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-32 -right-32 h-[520px] w-[520px] rounded-full opacity-40 blur-3xl"
+          style={{ background: "radial-gradient(closest-side, hsl(var(--primary) / 0.18), transparent 70%)" }}
+        />
+        <div className="container relative px-5 lg:px-10">
+          <motion.div {...fadeUp} className="max-w-3xl">
+            <span className="sec-label">{t("about.kicker", "About us")}</span>
+            <h1 className="mt-4 font-serif font-bold text-4xl md:text-5xl lg:text-[4.25rem] tracking-tightest leading-[1.02] text-foreground">
+              {t("about.title", "We make pets look like ")}
+              <span className="text-accent-em italic">{t("about.titleAccent", "museum pieces.")}</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-6 text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-[58ch]">
               {t(
                 "about.subtitle",
-                "We're on a mission to celebrate the bond between pets and their owners through the power of art and artificial intelligence."
+                "Artlypet is a small, EU-based studio building the AI pet portrait service we wanted ourselves: instant, beautiful, no subscription trap, and prints that actually look good on a wall.",
               )}
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Mission */}
-      <section className="py-16 px-6 lg:px-8 bg-muted/30">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div {...fadeInUp} className="text-center">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
-              {t("about.missionTitle", "Our Mission")}
-            </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              {t(
-                "about.missionDesc",
-                "Artlypet was born from a simple idea: every pet is a work of art waiting to be revealed. We combine the latest in generative AI with curated artistic styles to transform your favourite pet photos into stunning portraits. Whether it's a regal oil painting or a playful pop art piece, we help you see your companion in a whole new light."
-              )}
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Values */}
-      <section className="py-16 px-6 lg:px-8">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("about.valuesTitle", "What We Stand For")}
-            </h2>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {values.map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-background rounded-3xl p-8 shadow-sm border border-border"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <value.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-serif text-xl font-bold text-foreground mb-3">{value.title}</h3>
-                <p className="text-muted-foreground">{value.desc}</p>
-              </motion.div>
-            ))}
+      {/* MISSION — split column */}
+      <section className="py-20 bg-cream/40">
+        <div className="container px-5 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+            <motion.div {...fadeUp} className="lg:col-span-5">
+              <span className="sec-label">{t("about.missionLabel", "Mission")}</span>
+              <h2 className="mt-4 font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+                {t("about.missionTitle", "Why this exists.")}
+              </h2>
+            </motion.div>
+            <motion.div {...fadeUp} className="lg:col-span-7 self-end">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {t(
+                  "about.missionDesc",
+                  "Pet owners spend more on their animals every year, but the keepsake market is stuck on plastic mugs and fridge magnets. AI changed what's possible — instant, museum-grade portraits at a fair price. We're not the first to try this, but we're the first one in Europe that's hand-tuning every style, hosting in-region, and shipping prints that you'd actually frame.",
+                )}
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-16 px-6 lg:px-8 bg-primary/5">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div {...fadeInUp}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {stats.map((stat, index) => (
+      {/* VALUES — Bento 2-col */}
+      <section className="py-20 lg:py-28">
+        <div className="container px-5 lg:px-10">
+          <motion.div {...fadeUp} className="mb-12 max-w-2xl">
+            <span className="sec-label">{t("about.valuesLabel", "Values")}</span>
+            <h2 className="mt-4 font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+              {t("about.valuesTitle", "What we hold to.")}
+            </h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 max-w-5xl">
+            {values.map((value, i) => {
+              const Icon = value.icon;
+              return (
                 <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: i * 0.07, duration: 0.55, ease }}
+                  className="bento-card p-7 lg:p-8 card-hover"
                 >
-                  <p className="font-serif text-3xl md:text-4xl font-bold text-primary mb-1">
-                    {stat.value}
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/12 text-primary mb-5">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  <h3 className="text-xl font-bold text-foreground tracking-tight mb-2">
+                    {t(value.titleKey, value.titleFallback)}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(value.descKey, value.descFallback)}
                   </p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
                 </motion.div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* STATS — divide-x, mono numerals (skill: cockpit mode for technical numbers) */}
+      <section className="py-20 bg-cream/40">
+        <div className="container px-5 lg:px-10">
+          <motion.div
+            {...fadeUp}
+            className="bento-card divide-y sm:divide-y-0 sm:divide-x divide-border grid grid-cols-2 sm:grid-cols-4 max-w-5xl mx-auto"
+          >
+            {stats.map((stat, i) => (
+              <div key={i} className="p-6 lg:p-8 text-center">
+                <div className="font-mono tabular text-4xl lg:text-5xl font-bold text-foreground tracking-tightest leading-none">
+                  {stat.value}
+                  {stat.unit && <span className="text-base text-muted-foreground font-normal">{stat.unit}</span>}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground leading-tight">{stat.label}</p>
+              </div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Technology */}
-      <section className="py-16 px-6 lg:px-8">
-        <div className="container mx-auto max-w-4xl text-center">
-          <motion.div {...fadeInUp}>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
-              {t("about.techTitle", "Powered by Cutting-Edge AI")}
-            </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-8">
-              {t(
-                "about.techDesc",
-                "We use Google's Gemini AI to generate your portraits. This state-of-the-art model understands both the anatomy of your pet and the nuances of each art style, producing results that feel hand-crafted rather than machine-generated."
-              )}
-            </p>
-          </motion.div>
+      {/* TECHNOLOGY */}
+      <section className="py-20 lg:py-28">
+        <div className="container px-5 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 max-w-5xl mx-auto">
+            <motion.div {...fadeUp} className="lg:col-span-5">
+              <span className="sec-label">{t("about.techLabel", "Under the hood")}</span>
+              <h2 className="mt-4 font-serif font-bold text-3xl md:text-4xl tracking-tightest leading-[1.05] text-foreground">
+                {t("about.techTitle", "What's running this.")}
+              </h2>
+            </motion.div>
+            <motion.div {...fadeUp} className="lg:col-span-7 self-end">
+              <ul className="space-y-3 text-base text-muted-foreground leading-relaxed">
+                <li><span className="text-foreground font-semibold">Google Gemini 3.1 Flash Image Preview</span> — the AI model that paints your pet.</li>
+                <li><span className="text-foreground font-semibold">Supabase</span> — EU-hosted Postgres, storage, auth, edge functions.</li>
+                <li><span className="text-foreground font-semibold">Stripe</span> — payments, EU methods (card, Apple Pay, Google Pay, SEPA).</li>
+                <li><span className="text-foreground font-semibold">Vite + React + Tailwind</span> — the studio you're using right now.</li>
+              </ul>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 lg:px-8 bg-muted/30">
-        <div className="container mx-auto text-center max-w-2xl">
-          <motion.div {...fadeInUp}>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("about.ctaTitle", "Join Thousands of Pet Owners")}
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              {t("about.ctaDesc", "Create a portrait of your pet today and see what the buzz is all about.")}
-            </p>
-            <Button
-              onClick={() => navigate("/signup")}
-              className="rounded-full h-12 px-8 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {t("about.ctaButton", "Get Started for Free")}
-            </Button>
+      <section className="py-24 bg-cream/40">
+        <div className="container px-5 lg:px-10">
+          <motion.div {...fadeUp} className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto items-end">
+            <div className="lg:col-span-7">
+              <h2 className="font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+                {t("about.ctaTitle", "Make one for your pet.")}
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+                {t("about.ctaDesc", "Free signup includes 3 portraits. No card required.")}
+              </p>
+            </div>
+            <div className="lg:col-span-5 lg:flex lg:justify-end">
+              <Link to="/signup" className="rounded-full" tabIndex={-1}>
+                <MagneticButton
+                  className="shimmer-btn rounded-full h-14 px-8 text-base font-semibold shadow-tinted"
+                  strength={0.30}
+                >
+                  <span>{t("about.ctaButton", "Get started")}</span>
+                  <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
+                </MagneticButton>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>

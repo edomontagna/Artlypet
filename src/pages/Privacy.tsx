@@ -1,9 +1,10 @@
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
+import { CONTACT } from "@/lib/site-config";
 
 const Privacy = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-[100dvh] bg-background">
     <SEOHead title="Privacy Policy — Artlypet" description="How Artlypet collects, uses, and protects your personal data. GDPR compliant." canonical="/privacy" />
     <Navbar />
     <main className="container max-w-3xl px-6 lg:px-8 py-16 lg:py-24">
@@ -23,7 +24,7 @@ const Privacy = () => (
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">4. Your Rights (GDPR)</h2>
         <p>As an EU-based service, you have the right to: access your personal data, correct inaccurate data, delete your account and all associated data (right to be forgotten), export your data, and withdraw consent at any time.</p>
-        <p>To exercise these rights, use the account deletion feature in your dashboard settings or contact us at privacy@artlypet.com.</p>
+        <p>To exercise these rights, use the account deletion feature in your dashboard settings or contact us at {CONTACT.privacy}.</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">5. Cookies</h2>
         <p>We use essential cookies for authentication and session management. Analytics cookies (Google Analytics, Meta Pixel) are only activated with your consent.</p>
@@ -32,7 +33,7 @@ const Privacy = () => (
         <p>We use: Supabase (hosting and database, EU region), Stripe (payment processing), Google Gemini API (AI portrait generation), Google Analytics and Meta Pixel (analytics, with consent).</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">7. Contact</h2>
-        <p>For privacy inquiries: privacy@artlypet.com</p>
+        <p>For privacy inquiries: {CONTACT.privacy}</p>
       </div>
     </main>
     <FooterSection />

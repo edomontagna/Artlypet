@@ -16,12 +16,20 @@ export default {
     },
     extend: {
       fontFamily: {
+        // Body + UI default. Cabinet Grotesk replaces Inter (Inter is an "AI design tell").
+        sans: ["'Cabinet Grotesk'", "system-ui", "-apple-system", "sans-serif"],
+        // Editorial/marketing display only — opt-in via `font-serif` or `font-display`.
         serif: ["'Playfair Display'", "Georgia", "serif"],
-        sans: ["'Inter'", "system-ui", "sans-serif"],
+        display: ["'Playfair Display'", "Georgia", "serif"],
+        // Dashboard / numerical contexts.
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
-        "display": ["clamp(3rem, 6vw, 4.5rem)", { lineHeight: "1.1", fontWeight: "700" }],
-        "display-sm": ["clamp(2rem, 4vw, 3rem)", { lineHeight: "1.15", fontWeight: "700" }],
+        "display": ["clamp(2.75rem, 5.5vw, 4.5rem)", { lineHeight: "1", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-sm": ["clamp(2rem, 3.8vw, 3rem)", { lineHeight: "1.05", letterSpacing: "-0.015em", fontWeight: "700" }],
+      },
+      letterSpacing: {
+        "tightest": "-0.04em",
       },
       colors: {
         gold: {
@@ -84,6 +92,19 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "bento": "2.5rem",
+        "bento-sm": "1.75rem",
+      },
+      boxShadow: {
+        // Bento 2.0 diffusion: light, wide, low-opacity.
+        "diffusion": "0 20px 40px -15px rgba(15, 23, 42, 0.06), 0 4px 12px -4px rgba(15, 23, 42, 0.04)",
+        "diffusion-lg": "0 30px 60px -20px rgba(15, 23, 42, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)",
+        // Tinted gold (brand) — for emphasis without neon glow.
+        "gold-tint": "0 16px 32px -12px hsl(42 78% 60% / 0.18), 0 4px 12px -4px hsl(42 78% 60% / 0.10)",
+        // Inner refraction edge for liquid-glass surfaces.
+        "refraction": "inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.04)",
+        // Spotlight border simulation (used with hover gradient).
+        "spotlight": "0 0 0 1px rgba(15, 23, 42, 0.06), 0 12px 32px -8px rgba(15, 23, 42, 0.10)",
       },
       keyframes: {
         "accordion-down": {
@@ -131,6 +152,18 @@ export default {
           "50%": { transform: "translateX(200%)" },
           "100%": { transform: "translateX(-100%)" },
         },
+        "marquee": {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "breath": {
+          "0%, 100%": { opacity: "0.55", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.04)" },
+        },
+        "skeleton-shimmer": {
+          "0%": { backgroundPosition: "-150% 0" },
+          "100%": { backgroundPosition: "250% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -144,6 +177,9 @@ export default {
         "unveil": "unveil 1.2s cubic-bezier(0.16,1,0.3,1) forwards",
         "slide-up": "slide-up 0.4s cubic-bezier(0.16,1,0.3,1) forwards",
         "upload-progress": "upload-progress 1.5s ease-in-out infinite",
+        "marquee": "marquee 32s linear infinite",
+        "breath": "breath 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
+        "skeleton": "skeleton-shimmer 1.6s ease-in-out infinite",
       },
     },
   },

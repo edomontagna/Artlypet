@@ -1,37 +1,40 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { safeGetItem, safeSetItem } from "@/lib/storage";
+import { MagneticButton } from "@/components/ui/magnetic-button";
+
+const ease = [0.16, 1, 0.3, 1] as const;
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [showCta, setShowCta] = useState(false);
   const { t } = useTranslation();
   const { session } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleHashNavigation = useCallback((hash: string) => {
-    if (location.pathname === "/") {
-      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate("/");
-      setTimeout(() => {
+  const handleHashNavigation = useCallback(
+    (hash: string) => {
+      if (location.pathname === "/") {
         document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    }
-  }, [location.pathname, navigate]);
+      } else {
+        navigate("/");
+        setTimeout(() => {
+          document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    },
+    [location.pathname, navigate],
+  );
 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       const stored = safeGetItem("artlypet-theme");
-      // Respect "system" setting from dashboard Settings tab
       if (stored === "system" || !stored) {
         return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
@@ -48,13 +51,13 @@ const Navbar = () => {
     let rafId = 0;
     const handleScroll = () => {
       cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 20);
-        setShowCta(window.scrollY > 600);
-      });
+      rafId = requestAnimationFrame(() => setScrolled(window.scrollY > 24));
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", handleScroll); cancelAnimationFrame(rafId); };
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -62,143 +65,196 @@ const Navbar = () => {
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
     safeSetItem("artlypet-theme", next);
-    if (next === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", next === "dark");
   }, [theme]);
 
+  // Active route -> primary, otherwise muted with subtle dock-style scale on hover
   const navLinkClass = (path: string) =>
-    `text-sm transition-colors duration-300 ${
+    `relative inline-flex items-center text-sm transition-all duration-300 origin-center hover:scale-[1.04] ${
       location.pathname === path
-        ? "text-primary font-semibold"
-        : "text-muted-foreground hover:text-primary"
+        ? "text-foreground font-semibold"
+        : "text-muted-foreground hover:text-foreground"
     }`;
 
   return (
     <>
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-sm"
-          : "bg-transparent"
-      }`}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <div className="container mx-auto flex items-center justify-between h-16 px-6 lg:px-8">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2" aria-label="ArtlyPet home">
-          <img src="/icons/logo.jpg" alt="" className="h-8 w-8 rounded-lg object-contain" aria-hidden="true" />
-          <span className="font-serif text-2xl font-bold text-primary">
-            ArtlyPet
-          </span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link to="/styles" className={navLinkClass("/styles")}>
-            {t("nav.styles", "Styles")}
-          </Link>
-          <Link to="/how-it-works" className={navLinkClass("/how-it-works")}>
-            {t("nav.howItWorks", "How It Works")}
-          </Link>
-          <button
-            onClick={() => handleHashNavigation("pricing")}
-            className={navLinkClass("")}
-          >
-            {t("nav.pricing")}
-          </button>
-          <button
-            onClick={() => handleHashNavigation("faq")}
-            className={navLinkClass("")}
-          >
-            {t("nav.faq", "FAQ")}
-          </button>
-        </div>
-
-        {/* Desktop Right */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button variant="outline" asChild className="rounded-full h-11 px-6 text-sm font-medium border-border hover:border-primary hover:text-primary">
-            <Link to="/login">{t("nav.signIn")}</Link>
-          </Button>
-
-          <AnimatePresence mode="wait">
-            {showCta && !session ? (
-              <motion.div key="sticky-cta" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <Button className="rounded-full shimmer-btn btn-press text-primary-foreground" size="sm" asChild>
-                  <Link to="/signup">{t("nav.getStarted", "Get Started")}</Link>
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div key="default-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <Button asChild className="rounded-full h-11 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
-                  <Link to="/signup">{t("nav.getStarted")}</Link>
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg px-6 py-6 space-y-1">
+      <motion.nav
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 240, damping: 22 }}
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "glass-refraction border-b border-border/60"
+            : "bg-transparent border-b border-transparent"
+        }`}
+        role="navigation"
+        aria-label={t("nav.aria", "Main navigation")}
+      >
+        <div className="container mx-auto flex items-center justify-between h-16 lg:h-[72px] px-6 lg:px-10">
+          {/* Logo */}
           <Link
-            to="/styles"
-            className={`block py-3 ${navLinkClass("/styles")}`}
-            onClick={() => setMobileOpen(false)}
+            to="/"
+            className="group inline-flex items-center gap-2.5"
+            aria-label="Artlypet home"
           >
-            {t("nav.styles", "Styles")}
+            <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+              <img src="/icons/logo.jpg" alt="" className="h-full w-full object-cover" aria-hidden />
+            </span>
+            <span className="font-serif text-xl lg:text-[1.35rem] font-bold text-foreground tracking-tight">
+              Artlypet
+            </span>
           </Link>
-          <Link
-            to="/how-it-works"
-            className={`block py-3 ${navLinkClass("/how-it-works")}`}
-            onClick={() => setMobileOpen(false)}
-          >
-            {t("nav.howItWorks", "How It Works")}
-          </Link>
-          <button
-            onClick={() => { handleHashNavigation("pricing"); setMobileOpen(false); }}
-            className={`block py-3 w-full text-left ${navLinkClass("")}`}
-          >
-            {t("nav.pricing")}
-          </button>
-          <div className="flex flex-col gap-3 pt-3">
-            <Button variant="outline" asChild className="rounded-full h-12 w-full text-sm font-medium border-border">
-              <Link to="/login">{t("nav.signIn")}</Link>
-            </Button>
-            <Button asChild className="rounded-full h-12 w-full text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/signup">{t("nav.getStarted")}</Link>
-            </Button>
-          </div>
-          <div className="border-t border-border mt-3 pt-4 flex items-center justify-between">
-            <LanguageSwitcher />
-            <button
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-              aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+
+          {/* Desktop nav — dock-style with subtle scale on hover */}
+          <div className="hidden md:flex items-center gap-9">
+            <Link to="/styles" className={navLinkClass("/styles")}>
+              {t("nav.styles", "Styles")}
+            </Link>
+            <Link to="/how-it-works" className={navLinkClass("/how-it-works")}>
+              {t("nav.howItWorks", "How it works")}
+            </Link>
+            <button onClick={() => handleHashNavigation("pricing")} className={navLinkClass("")}>
+              {t("nav.pricing", "Pricing")}
+            </button>
+            <Link to="/business" className={navLinkClass("/business")}>
+              {t("nav.business", "For business")}
+            </Link>
+            <button onClick={() => handleHashNavigation("faq")} className={navLinkClass("")}>
+              {t("nav.faq", "FAQ")}
             </button>
           </div>
+
+          {/* Right cluster */}
+          <div className="hidden md:flex items-center gap-2.5">
+            <button
+              onClick={toggleTheme}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all btn-press"
+              aria-label={theme === "light" ? t("nav.darkMode", "Switch to dark") : t("nav.lightMode", "Switch to light")}
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" strokeWidth={1.75} /> : <Sun className="h-4 w-4" strokeWidth={1.75} />}
+            </button>
+
+            {!session && (
+              <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3">
+                {t("nav.signIn", "Sign in")}
+              </Link>
+            )}
+
+            <Link to={session ? "/generate" : "/signup"} className="rounded-full" tabIndex={-1}>
+              <MagneticButton
+                className="rounded-full h-10 px-5 text-sm font-semibold bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-colors"
+                strength={0.28}
+              >
+                <span>{session ? t("nav.openStudio", "Open studio") : t("nav.getStarted", "Get started")}</span>
+                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+              </MagneticButton>
+            </Link>
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-muted transition-colors btn-press"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? t("nav.closeMenu", "Close menu") : t("nav.openMenu", "Open menu")}
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-      )}
-    </motion.nav>
+
+        {/* Mobile sheet */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease }}
+              className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl px-6 py-6"
+            >
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{ visible: { transition: { staggerChildren: 0.04 } } }}
+                className="flex flex-col gap-1"
+              >
+                {[
+                  { to: "/styles", label: t("nav.styles", "Styles") },
+                  { to: "/how-it-works", label: t("nav.howItWorks", "How it works") },
+                  { to: "/business", label: t("nav.business", "For business") },
+                ].map((link) => (
+                  <motion.div
+                    key={link.to}
+                    variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}
+                  >
+                    <Link
+                      to={link.to}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center justify-between py-3.5 text-base font-medium text-foreground border-b border-border/40"
+                    >
+                      <span>{link.label}</span>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+                    </Link>
+                  </motion.div>
+                ))}
+                <motion.button
+                  variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}
+                  onClick={() => {
+                    handleHashNavigation("pricing");
+                    setMobileOpen(false);
+                  }}
+                  className="flex items-center justify-between py-3.5 text-base font-medium text-foreground border-b border-border/40 w-full text-left"
+                >
+                  <span>{t("nav.pricing", "Pricing")}</span>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+                </motion.button>
+                <motion.button
+                  variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}
+                  onClick={() => {
+                    handleHashNavigation("faq");
+                    setMobileOpen(false);
+                  }}
+                  className="flex items-center justify-between py-3.5 text-base font-medium text-foreground border-b border-border/40 w-full text-left"
+                >
+                  <span>{t("nav.faq", "FAQ")}</span>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+                </motion.button>
+              </motion.div>
+
+              <div className="mt-6 flex flex-col gap-2.5">
+                {!session && (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="inline-flex items-center justify-center rounded-full h-12 border border-border text-sm font-medium text-foreground btn-press"
+                  >
+                    {t("nav.signIn", "Sign in")}
+                  </Link>
+                )}
+                <Link
+                  to={session ? "/generate" : "/signup"}
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-full h-12 bg-foreground text-background text-sm font-semibold btn-press"
+                >
+                  <span>{session ? t("nav.openStudio", "Open studio") : t("nav.getStarted", "Get started")}</span>
+                  <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
+                </Link>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between">
+                <LanguageSwitcher />
+                <button
+                  onClick={toggleTheme}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                  aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+                >
+                  {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
     </>
   );
 };

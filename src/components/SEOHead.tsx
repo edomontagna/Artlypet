@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { SITE_URL } from "@/lib/site-config";
 
-const SITE_URL = "https://artlypet.com";
 const SUPPORTED_LANGUAGES = ["en", "it", "de", "fr", "es"];
 
 const DEFAULT_TITLE = "Artlypet — AI Pet Portraits";

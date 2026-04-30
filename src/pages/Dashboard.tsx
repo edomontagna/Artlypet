@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Upload, History, Settings, Crown, Sparkles, Image as ImageIcon, AlertCircle } from "lucide-react";
+import { LogOut, Upload, History, Settings, Crown, Coins, ImageIcon, AlertCircle, ArrowUpRight, Package } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useCreditBalance } from "@/hooks/useCredits";
@@ -11,17 +10,18 @@ import { useGenerations, useInfiniteGenerations } from "@/hooks/useGenerations";
 import { CreditPurchaseModal } from "@/components/CreditPurchaseModal";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 import { getServedImage, purchaseHdImage } from "@/services/generations";
 import { deleteAccount } from "@/services/account";
 import { useTranslation } from "react-i18next";
-import { PREMIUM_PRICE } from "@/lib/constants";
-import { trackPurchase } from "@/hooks/useAnalytics";
+import { PREMIUM_PRICE, HD_UNLOCK_PRICE } from "@/lib/constants";
+import { trackPurchase, trackInitiateCheckout } from "@/hooks/useAnalytics";
 import { PortraitLightbox } from "@/components/PortraitLightbox";
 import { safeGetItem, safeSetItem } from "@/lib/storage";
 import { DashboardTab } from "@/components/dashboard/DashboardTab";
 import { HistoryTab } from "@/components/dashboard/HistoryTab";
+import { OrdersTab } from "@/components/dashboard/OrdersTab";
 import { SettingsTab } from "@/components/dashboard/SettingsTab";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const VALID_TABS = ["dashboard", "history", "settings"] as const;
+  const VALID_TABS = ["dashboard", "history", "orders", "settings"] as const;
   type TabId = typeof VALID_TABS[number];
   const tabParam = searchParams.get("tab");
   const activeTab: TabId = VALID_TABS.includes(tabParam as TabId) ? (tabParam as TabId) : "dashboard";
@@ -57,7 +57,6 @@ const Dashboard = () => {
     isError: infiniteError,
   } = useInfiniteGenerations();
   const allGenerations = infiniteData?.pages.flat() ?? [];
-  const queryClient = useQueryClient();
   const hasError = profileError || creditsError || generationsError || infiniteError;
   const updateProfile = useUpdateProfile();
 
@@ -86,14 +85,17 @@ const Dashboard = () => {
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const displayName = profile?.display_name || user?.email?.split("@")[0] || "User";
 
-  // Payment success confetti
+  // Payment success confetti + analytics — distinguishes Premium vs HD unlock so the funnel is accurate
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("payment") === "success" || params.get("hd_unlock") === "success") {
+    const isPremiumSuccess = params.get("payment") === "success";
+    const isHdSuccess = params.get("hd_unlock") === "success";
+    if (isPremiumSuccess || isHdSuccess) {
       import("canvas-confetti").then((confetti) => {
         confetti.default({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ["#d4956a", "#c17d52", "#e8b896"] });
       }).catch(() => { /* confetti is decorative, safe to ignore */ });
-      trackPurchase(PREMIUM_PRICE, "premium");
+      if (isPremiumSuccess) trackPurchase(PREMIUM_PRICE, "premium");
+      if (isHdSuccess) trackPurchase(HD_UNLOCK_PRICE, "hd_unlock");
       safeSetItem("credits-updated", Date.now().toString());
     }
     if (params.get("payment") === "cancelled") {
@@ -101,7 +103,6 @@ const Dashboard = () => {
     }
   }, [t]);
 
-  // Auto-open upgrade modal from URL params
   useEffect(() => {
     if (searchParams.get("upgrade") === "true") setCreditModalOpen(true);
   }, [searchParams]);
@@ -128,11 +129,12 @@ const Dashboard = () => {
   };
 
   const handleUnlockHd = async (generationId: string) => {
+    trackInitiateCheckout(HD_UNLOCK_PRICE, "hd_unlock");
     try {
       const { url } = await purchaseHdImage(generationId);
       if (url) window.location.href = url;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to start HD unlock");
+      toast.error(err instanceof Error ? err.message : t("dashboard.hdUnlockFailed", "Failed to start HD unlock"));
     }
   };
 
@@ -148,94 +150,155 @@ const Dashboard = () => {
         setTimeout(() => a.remove(), 100);
       }
     } catch {
-      toast.error("Failed to download image");
+      toast.error(t("dashboard.downloadFailed", "Failed to download image"));
     }
   };
 
   const tabs = [
     { id: "dashboard" as const, label: t("dashboard.tabDashboard", "Dashboard"), icon: Upload },
     { id: "history" as const, label: t("dashboard.tabHistory", "History"), icon: History },
+    { id: "orders" as const, label: t("dashboard.tabOrders", "Orders"), icon: Package },
     { id: "settings" as const, label: t("dashboard.tabSettings", "Settings"), icon: Settings },
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+    <div className="app-ui min-h-[100dvh] bg-cream/30 dark:bg-background flex">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-foreground focus:text-background focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
         Skip to content
       </a>
 
-      {/* Left sidebar */}
-      <aside className="hidden lg:flex w-56 bg-card border-r border-border flex-col">
-        <div className="p-4 border-b border-border">
-          <Link to="/" className="font-serif text-xl font-bold text-primary">Artlypet</Link>
+      {/* LEFT SIDEBAR — navy, refined */}
+      <aside className="hidden lg:flex w-60 bg-sidebar text-sidebar-foreground flex-col">
+        <div className="p-5 border-b border-sidebar-border">
+          <Link to="/" className="inline-flex items-center gap-2.5 group">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-accent overflow-hidden">
+              <img src="/icons/logo.jpg" alt="" className="h-full w-full object-cover" aria-hidden />
+            </span>
+            <span className="font-serif text-xl font-bold text-sidebar-foreground">Artlypet</span>
+          </Link>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left w-full ${
-                activeTab === tab.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-              aria-current={activeTab === tab.id ? "page" : undefined}
-            >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          ))}
+
+        <nav className="flex-1 p-4 space-y-1" aria-label="Dashboard navigation">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`group relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all w-full text-left ${
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-foreground"
+                    : "text-sidebar-foreground/55 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                }`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {/* Active rail */}
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-sidebar-primary" aria-hidden />
+                )}
+                <tab.icon className="h-4 w-4" strokeWidth={1.75} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </nav>
-        <div className="p-4 border-t border-border">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
+
+        {/* Credit pill — sidebar bottom */}
+        <div className="p-4 border-t border-sidebar-border space-y-3">
+          <div className="rounded-2xl bg-sidebar-accent/50 border border-sidebar-border px-4 py-3.5">
+            <div className="text-[10px] font-semibold tracking-[0.18em] uppercase text-sidebar-foreground/50 mb-1">
+              {t("dashboard.creditBalance", "Credit balance")}
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <Coins className="h-3.5 w-3.5 text-sidebar-primary self-center" strokeWidth={2} />
+              <span className="font-mono tabular text-2xl font-semibold text-sidebar-foreground">
+                {creditsLoading ? <Skeleton className="h-5 w-10 inline-block align-middle" /> : creditBalance ?? 0}
+              </span>
+            </div>
+            {!isPremium && (
+              <button
+                onClick={() => setCreditModalOpen(true)}
+                className="mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-full h-8 bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold btn-press"
+              >
+                <Crown className="h-3 w-3" strokeWidth={2} />
+                <span>{t("dashboard.goPremiumShort", "Go Premium")}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Account row */}
+          <div className="flex items-center gap-2.5 px-1">
+            <div className="h-9 w-9 rounded-full bg-sidebar-primary/15 text-sidebar-primary flex items-center justify-center font-mono tabular text-xs font-bold flex-shrink-0">
               {displayName[0]?.toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="text-sm font-medium truncate text-foreground">{displayName}</p>
-                {isPremium && <Crown className="h-3 w-3 text-primary flex-shrink-0" />}
+                <p className="text-[13px] font-semibold truncate text-sidebar-foreground">{displayName}</p>
+                {isPremium && <Crown className="h-3 w-3 text-sidebar-primary flex-shrink-0" strokeWidth={2} />}
               </div>
-              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              <p className="text-[11px] text-sidebar-foreground/50 truncate">{user?.email}</p>
             </div>
+            <button
+              onClick={handleLogout}
+              aria-label={t("dashboard.signOut", "Sign out")}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-sidebar-foreground/55 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} />
+            </button>
           </div>
-          <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground rounded-lg hover:bg-muted" onClick={handleLogout}>
-            <LogOut className="h-4 w-4" />
-            {t("dashboard.signOut", "Sign Out")}
-          </Button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col">
-        <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8">
-          <h1 className="font-serif text-xl font-bold text-primary lg:hidden">Artlypet</h1>
-          <div className="flex items-center gap-3 ml-auto">
-            {isPremium && (
-              <span className="rounded-full bg-primary/10 text-primary px-3 py-1 flex items-center gap-1 text-xs font-medium">
-                <Crown className="h-3.5 w-3.5" /> Premium
-              </span>
-            )}
-            <div className="flex items-center gap-1.5 text-sm">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-medium text-foreground">
-                {creditsLoading ? <Skeleton className="h-4 w-8 inline-block" /> : creditBalance ?? 0} {t("dashboard.credits", "credits")}
-              </span>
-            </div>
-            <Button variant="outline" size="sm" className="rounded-full gap-2 border-primary/30 text-primary hover:bg-primary/5" asChild>
-              <Link to="/generate">
-                <ImageIcon className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t("dashboard.createPortrait", "Create Portrait")}</span>
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col min-w-0">
+
+        {/* Top header — glass refraction sticky */}
+        <header className="sticky top-0 z-30 h-16 lg:h-[68px] glass-refraction border-b border-border/60">
+          <div className="h-full flex items-center justify-between px-5 lg:px-10">
+            <h1 className="font-serif text-lg font-bold text-foreground lg:hidden">Artlypet</h1>
+
+            <div className="flex items-center gap-2.5 ml-auto">
+              {isPremium && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary/12 text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-wider">
+                  <Crown className="h-3 w-3" strokeWidth={2} /> {t("dashboard.premium", "Premium")}
+                </span>
+              )}
+
+              {/* Credit pill — mobile only (desktop has it in sidebar) */}
+              <div className="lg:hidden inline-flex items-center gap-2 rounded-full border border-border bg-card/70 backdrop-blur px-3 py-1.5">
+                <Coins className="h-3.5 w-3.5 text-primary" strokeWidth={2} />
+                <span className="font-mono tabular text-sm font-semibold text-foreground">
+                  {creditsLoading ? <Skeleton className="h-3.5 w-6 inline-block align-middle" /> : creditBalance ?? 0}
+                </span>
+              </div>
+
+              <Link to="/generate" className="rounded-full" tabIndex={-1}>
+                <MagneticButton
+                  className="rounded-full h-10 px-5 text-sm font-semibold bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-colors"
+                  strength={0.28}
+                >
+                  <ImageIcon className="h-3.5 w-3.5" strokeWidth={2} />
+                  <span className="hidden sm:inline">{t("dashboard.createPortrait", "Create portrait")}</span>
+                  <span className="sm:hidden">{t("dashboard.create", "Create")}</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+                </MagneticButton>
               </Link>
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Sign out" className="lg:hidden rounded-full">
-              <LogOut className="h-4 w-4" />
-            </Button>
+
+              <button
+                onClick={handleLogout}
+                aria-label={t("dashboard.signOut", "Sign out")}
+                className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <LogOut className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+            </div>
           </div>
         </header>
 
-        <div id="main-content" className="flex-1 p-6 lg:p-10 overflow-auto">
+        <div id="main-content" className="flex-1 px-5 lg:px-10 py-7 lg:py-10 overflow-auto pb-20 lg:pb-10">
           {hasError && (
-            <div role="alert" className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+            <div role="alert" className="mb-7 rounded-2xl bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" strokeWidth={1.75} />
               <p className="text-sm text-destructive">{t("dashboard.loadError", "Something went wrong loading your data. Please try refreshing the page.")}</p>
             </div>
           )}
@@ -271,6 +334,7 @@ const Dashboard = () => {
                 isPremium={isPremium}
               />
             )}
+            {activeTab === "orders" && <OrdersTab />}
             {activeTab === "settings" && (
               <SettingsTab
                 profile={profile}
@@ -287,21 +351,24 @@ const Dashboard = () => {
           </AnimatePresence>
         </div>
 
-        {/* Mobile bottom nav */}
-        <nav className="lg:hidden border-t border-border bg-card flex" aria-label="Dashboard navigation">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-3 font-medium transition-colors ${
-                activeTab === tab.id ? "text-primary" : "text-muted-foreground"
-              }`}
-              aria-current={activeTab === tab.id ? "page" : undefined}
-            >
-              <tab.icon className="h-5 w-5" />
-              <span className="text-[10px]">{tab.label}</span>
-            </button>
-          ))}
+        {/* Mobile bottom nav — fixed, glass refraction */}
+        <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 glass-refraction border-t border-border/60 flex" aria-label="Dashboard navigation">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <tab.icon className="h-5 w-5" strokeWidth={1.75} />
+                <span className="text-[10px] font-medium">{tab.label}</span>
+              </button>
+            );
+          })}
         </nav>
       </div>
 

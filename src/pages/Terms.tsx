@@ -1,9 +1,10 @@
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
+import { CONTACT } from "@/lib/site-config";
 
 const Terms = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-[100dvh] bg-background">
     <SEOHead title="Terms of Service — Artlypet" description="Terms of service for using the Artlypet AI pet portrait platform." canonical="/terms" />
     <Navbar />
     <main className="container max-w-3xl px-6 lg:px-8 py-16 lg:py-24">
@@ -37,7 +38,7 @@ const Terms = () => (
         <p>These terms are governed by EU law. Any disputes will be resolved in the courts of the service provider's jurisdiction within the EU.</p>
 
         <h2 className="font-serif text-2xl font-semibold text-foreground mt-8">9. Contact</h2>
-        <p>For questions about these terms: legal@artlypet.com</p>
+        <p>For questions about these terms: {CONTACT.legal}</p>
       </div>
     </main>
     <FooterSection />

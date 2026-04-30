@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import i18n from "@/i18n";
+import { CONTACT } from "@/lib/site-config";
 
 interface Props {
   children: ReactNode;
@@ -40,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
         `Error: ${errorMessage}\nURL: ${window.location.href}\nTime: ${new Date().toISOString()}`
       );
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="min-h-[100dvh] flex items-center justify-center bg-background px-4">
           <div className="text-center max-w-md">
             <h1 className="font-serif text-4xl font-bold text-foreground mb-2">
               {i18n.t("error.title", "Something went wrong")}
@@ -59,7 +60,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 {i18n.t("error.backHome", "Back to Home")}
               </Button>
               <Button variant="outline" className="rounded-full" asChild>
-                <a href={`mailto:support@artlypet.com?subject=Bug Report&body=${mailtoBody}`}>
+                <a href={`mailto:${CONTACT.support}?subject=Bug Report&body=${mailtoBody}`}>
                   {i18n.t("error.report", "Report this error")}
                 </a>
               </Button>

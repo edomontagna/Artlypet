@@ -1,40 +1,56 @@
-import { memo, useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { memo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { useStyles } from "@/hooks/useStyles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlurImage } from "@/components/BlurImage";
-import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const fallbackStyles = [
-  { id: "1", name: "Oil Painting", description: "Rich textures & golden tones", preview_url: "/images/oil-painting.jpg" },
-  { id: "2", name: "Watercolor", description: "Soft washes & gentle blending", preview_url: "/images/watercolor.webp" },
-  { id: "3", name: "Pop Art", description: "Bold colors & graphic energy", preview_url: "/images/pop-art.webp" },
-  { id: "4", name: "Renaissance", description: "Noble bearing & dramatic light", preview_url: "/images/renaissance.webp" },
-  { id: "5", name: "Art Nouveau", description: "Flowing lines & organic forms", preview_url: "/images/art-nouveau.webp" },
-  { id: "6", name: "Impressionist", description: "Dappled light & visible strokes", preview_url: "/images/impressionist.webp" },
+  { id: "1", name: "Renaissance",   description: "Noble bearing, dramatic chiaroscuro",     preview_url: "/images/renaissance.webp" },
+  { id: "2", name: "Watercolor",    description: "Soft pigment washes, paper grain",        preview_url: "/images/watercolor.webp" },
+  { id: "3", name: "Pop Art",       description: "Flat colour, halftone weight",            preview_url: "/images/pop-art.webp" },
+  { id: "4", name: "Art Nouveau",   description: "Sinuous line, ornament",                  preview_url: "/images/art-nouveau.webp" },
+  { id: "5", name: "Impressionist", description: "Dappled light, broken stroke",            preview_url: "/images/impressionist.webp" },
+  { id: "6", name: "Oil Painting",  description: "Rich texture, gilded undertones",         preview_url: "/images/oil-painting.jpg" },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+// Asymmetric Bento layout — 12 col grid, 3 row tracks on desktop.
+// Pattern (ascii):  [ 1   1  | 2 ]
+//                   [ 1   1  | 3 ]
+//                   [ 4 | 5  | 6 ]
+const cellClassFor = (i: number): string => {
+  switch (i) {
+    case 0: return "lg:col-span-7 lg:row-span-2 aspect-[5/4] lg:aspect-auto";
+    case 1: return "lg:col-span-5 aspect-[4/3] lg:aspect-[5/4]";
+    case 2: return "lg:col-span-5 aspect-[4/3] lg:aspect-[5/4]";
+    case 3: return "lg:col-span-4 aspect-[4/5]";
+    case 4: return "lg:col-span-4 aspect-[4/5]";
+    case 5: return "lg:col-span-4 aspect-[4/5]";
+    default: return "lg:col-span-4 aspect-[4/5]";
+  }
+};
+
+// Cursor-aware tilt — uses requestAnimationFrame, no React state per skill rules
 const tiltRafMap = new WeakMap<HTMLDivElement, number>();
 const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
   const target = e.currentTarget;
-  const clientX = e.clientX;
-  const clientY = e.clientY;
+  const cx = e.clientX, cy = e.clientY;
   const prev = tiltRafMap.get(target);
   if (prev) cancelAnimationFrame(prev);
   tiltRafMap.set(target, requestAnimationFrame(() => {
-    const rect = target.getBoundingClientRect();
-    const x = (clientX - rect.left) / rect.width - 0.5;
-    const y = (clientY - rect.top) / rect.height - 0.5;
-    target.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+    const r = target.getBoundingClientRect();
+    const x = (cx - r.left) / r.width - 0.5;
+    const y = (cy - r.top) / r.height - 0.5;
+    target.style.transform = `perspective(900px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) scale(1.015)`;
   }));
 };
 const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
-  e.currentTarget.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+  e.currentTarget.style.transform = "perspective(900px) rotateY(0) rotateX(0) scale(1)";
 };
 
 const GallerySection = memo(() => {
@@ -42,153 +58,129 @@ const GallerySection = memo(() => {
   const { session } = useAuth();
   const navigate = useNavigate();
   const { data: dbStyles, isLoading } = useStyles();
-  const styles = dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles;
+  const styles = (dbStyles && dbStyles.length > 0 ? dbStyles : fallbackStyles).slice(0, 6);
 
   return (
-    <section id="gallery" className="py-16 lg:py-24 bg-background" aria-labelledby="gallery-heading">
-      <div className="container px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
+    <section
+      id="gallery"
+      className="relative py-24 lg:py-36 bg-background overflow-hidden"
+      aria-labelledby="gallery-heading"
+    >
+      <div className="container relative px-6 lg:px-10">
+        {/* Header — split: title left, kicker right (anti-center) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 lg:mb-20">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4">
-              {t("gallery.label", "The Collection")}
-            </span>
-          </motion.div>
-          <motion.h2
-            id="gallery-heading"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, ease }}
-            className="font-serif font-bold text-4xl md:text-5xl tracking-tight text-foreground mb-5"
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease }}
+            className="lg:col-span-7"
           >
-            {t("gallery.title")}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="max-w-xl mx-auto text-lg text-muted-foreground leading-relaxed"
+            <span className="sec-label">{t("gallery.label", "The collection")}</span>
+            <h2
+              id="gallery-heading"
+              className="mt-4 font-serif font-bold text-4xl md:text-5xl lg:text-6xl tracking-tightest leading-[1.02] text-foreground"
+            >
+              {t("gallery.title", "Twelve styles. One pet. ")}
+              <span className="text-accent-em italic">{t("gallery.titleAccent", "infinite portraits.")}</span>
+            </h2>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.15, ease }}
+            className="lg:col-span-4 lg:col-start-9 self-end"
           >
-            {t("gallery.subtitle")}
-          </motion.p>
+            <p className="text-base text-muted-foreground leading-relaxed max-w-[40ch]">
+              {t("gallery.subtitle", "Each style is a hand-tuned prompt with characteristic palette, brush logic, and composition rules. No two portraits land the same.")}
+            </p>
+          </motion.div>
         </div>
 
-        {/* Grid */}
+        {/* Bento grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 auto-rows-[280px] gap-5 lg:gap-6">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} className={`rounded-[1.75rem] ${cellClassFor(i)}`} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-5xl mx-auto">
-            {styles.slice(0, 6).map((item, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 auto-rows-[280px] lg:auto-rows-[260px] gap-5 lg:gap-6">
+            {styles.map((item, i) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.7, ease }}
-                className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300"
-                role="link"
-                tabIndex={0}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.06, duration: 0.6, ease }}
                 onClick={() => navigate(session ? "/generate" : "/signup")}
                 onKeyDown={(e) => { if (e.key === "Enter") navigate(session ? "/generate" : "/signup"); }}
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
-                style={{ transition: 'transform 0.3s ease-out' }}
+                role="link"
+                tabIndex={0}
+                style={{ transition: "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)" }}
+                className={`group relative overflow-hidden rounded-[1.75rem] cursor-pointer bento-card ${cellClassFor(i)}`}
               >
-                {/* Badges */}
-                {i === 0 && (
-                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
-                    {t("gallery.forGifts", "Perfect for Gifts")}
-                  </span>
-                )}
-                {i === 1 && (
-                  <span className="absolute top-3 left-3 z-10 bg-card/90 text-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm">
-                    {t("gallery.romantic", "Dreamy & Romantic")}
-                  </span>
-                )}
-                {i === 4 && (
-                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
-                    {t("gallery.new", "New")}
-                  </span>
-                )}
-                {/* Before & After badge on first 3 cards */}
-                {i < 3 && (
-                  <span className="absolute top-3 right-3 z-10 bg-white/90 dark:bg-card/90 text-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm">
-                    {t("gallery.transformationBadge", "Before & After")}
-                  </span>
-                )}
-
-                {/* Image */}
                 {item.preview_url ? (
-                  <>
-                    <BlurImage
-                      src={item.preview_url}
-                      alt={`${item.name} pet portrait`}
-                      className="absolute inset-0 w-full h-full"
-                    />
-                    {/* Before/After hover effect on first 3 cards */}
-                    {i < 3 && (
-                      <div className="absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ clipPath: "inset(0 50% 0 0)" }}>
-                        <img
-                          src={item.preview_url}
-                          alt="Original"
-                          className="absolute inset-0 w-full h-full object-cover grayscale brightness-110 contrast-90 saturate-50"
-                          draggable={false}
-                        />
-                        <div className="absolute inset-y-0 left-1/2 w-px bg-white/80 z-10" />
-                      </div>
-                    )}
-                  </>
+                  <BlurImage
+                    src={item.preview_url}
+                    alt={`${item.name} pet portrait — Artlypet`}
+                    className="absolute inset-0 h-full w-full"
+                  />
                 ) : (
-                  <div className="absolute inset-0 bg-secondary/10" />
+                  <div className="absolute inset-0 bg-muted" />
                 )}
 
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                {/* Subtle bottom gradient — just enough to anchor the text */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent pointer-events-none" />
 
-                {/* Content at bottom */}
-                <div className="absolute inset-x-0 bottom-0 p-5 z-10">
-                  <h3 className="font-serif font-bold text-xl text-white mb-1">
+                {/* Top-right index pill */}
+                <div className="absolute top-4 right-4 glass-refraction rounded-full px-2.5 py-1">
+                  <span className="font-mono tabular text-[11px] font-semibold text-foreground">
+                    {String(i + 1).padStart(2, "0")} / {String(styles.length).padStart(2, "0")}
+                  </span>
+                </div>
+
+                {/* Bottom — name + description + CTA arrow */}
+                <div className="absolute inset-x-5 bottom-5 z-10">
+                  <div className={`font-serif font-bold text-white leading-tight ${i === 0 ? "text-3xl lg:text-4xl" : "text-xl lg:text-2xl"}`}>
                     {t(`gallery.style${i + 1}Name`, item.name)}
-                  </h3>
+                  </div>
                   {item.description && (
-                    <p className="text-sm text-white/90 font-sans opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                    <p className={`mt-1.5 text-white/85 leading-snug ${i === 0 ? "text-sm lg:text-base max-w-[40ch]" : "text-xs lg:text-sm"}`}>
                       {t(`gallery.style${i + 1}Desc`, item.description)}
                     </p>
                   )}
-                  <span className="inline-block mt-2 text-sm font-semibold text-white hover:bg-black/20 rounded-full px-3 py-1 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
-                    {t("gallery.tryCta", "Create this look — Free")} &rarr;
-                  </span>
+                  <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur px-3 py-1 text-xs font-medium text-white opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                    <span>{t("gallery.tryCta", "Create this look")}</span>
+                    <ArrowUpRight className="h-3 w-3" strokeWidth={2.25} />
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
         )}
 
-        {/* Dedicated Before/After Slider showcase */}
+        {/* Footer — link to all styles, asymmetric */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.6, ease }}
-          className="max-w-sm md:max-w-md mx-auto mt-16"
+          transition={{ duration: 0.5, ease }}
+          className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
-          <BeforeAfterSlider
-            beforeUrl="/images/oil-painting.jpg"
-            afterUrl="/images/renaissance.webp"
-          />
-          <p className="text-center text-sm text-muted-foreground mt-3">
-            {t("gallery.sliderCaption", "Drag to see the transformation")}
+          <p className="text-sm text-muted-foreground">
+            {t("gallery.allStylesHint", "These are 6 of 12. Six more are waiting inside.")}
           </p>
+          <Link
+            to="/styles"
+            className="group inline-flex items-center gap-2 rounded-full border border-border hover:border-primary px-5 py-2.5 text-sm font-medium text-foreground hover:text-primary transition-colors btn-press"
+          >
+            <span>{t("gallery.viewAll", "Browse all 12 styles")}</span>
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.25} />
+          </Link>
         </motion.div>
       </div>
     </section>

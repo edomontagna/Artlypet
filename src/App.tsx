@@ -23,7 +23,6 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
-const Demo = lazy(() => import("./pages/Demo"));
 const BusinessPlan = lazy(() => import("./pages/BusinessPlan"));
 const StylesGallery = lazy(() => import("./pages/StylesGallery"));
 const StyleDetail = lazy(() => import("./pages/StyleDetail"));
@@ -36,7 +35,6 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const SharePortrait = lazy(() => import("./pages/SharePortrait"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Accessibility = lazy(() => import("./pages/Accessibility"));
-const CommunityGallery = lazy(() => import("./pages/CommunityGallery"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -78,6 +76,8 @@ const AnimatedRoutes = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.18, ease: "easeInOut" }}
       >
+        {/* Per-route boundary — keyed by pathname so a crash on /generate doesn't poison /dashboard */}
+        <ErrorBoundary key={location.pathname}>
         <Routes location={location}>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
@@ -88,7 +88,6 @@ const AnimatedRoutes = () => {
           <Route path="/terms" element={<Terms />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/accessibility" element={<Accessibility />} />
-          <Route path="/demo" element={<Demo />} />
           <Route path="/business" element={<BusinessPlan />} />
           <Route path="/styles" element={<StylesGallery />} />
           <Route path="/styles/:slug" element={<StyleDetail />} />
@@ -99,7 +98,6 @@ const AnimatedRoutes = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/share/:generationId" element={<SharePortrait />} />
-          <Route path="/gallery" element={<CommunityGallery />} />
           <Route
             path="/dashboard"
             element={
@@ -118,13 +116,14 @@ const AnimatedRoutes = () => {
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </ErrorBoundary>
       </motion.div>
     </AnimatePresence>
   );
 };
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
+  <div className="min-h-[100dvh] flex items-center justify-center bg-background">
     <div className="flex flex-col items-center gap-4">
       <Skeleton className="h-10 w-10 rounded-full" />
       <Skeleton className="h-4 w-32" />
@@ -154,7 +153,12 @@ const App = () => {
         <TooltipProvider>
           <MotionConfig reducedMotion="user">
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
               <ScrollToTop />
               <CookieBanner />
               <Suspense fallback={<PageLoader />}>

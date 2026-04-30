@@ -9,8 +9,7 @@ import { SEOHead } from "@/components/SEOHead";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { getShareData } from "@/services/generations";
-
-const SITE_URL = "https://artlypet.com";
+import { SITE_URL } from "@/lib/site-config";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
@@ -54,7 +53,7 @@ const SharePortrait = () => {
           canonical={`/share/${generationId || ""}`}
         />
         <Navbar />
-        <main className="min-h-screen flex items-center justify-center bg-cream/30 px-4">
+        <main className="min-h-[100dvh] flex items-center justify-center bg-cream/30 px-4">
           <motion.div className="text-center max-w-md space-y-6" {...fadeInUp}>
             <PawPrint className="h-16 w-16 text-gold/40 mx-auto" />
             <h1 className="font-serif text-2xl font-bold text-navy">
@@ -87,7 +86,7 @@ const SharePortrait = () => {
         ogImage={ogImage}
       />
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-b from-cream/40 via-background to-cream/20">
+      <main className="min-h-[100dvh] bg-gradient-to-b from-cream/40 via-background to-cream/20">
         {/* Hero section */}
         <section className="pt-24 pb-16 px-4">
           <div className="max-w-4xl mx-auto">

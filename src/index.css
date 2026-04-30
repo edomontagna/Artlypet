@@ -2,90 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  ARTLYPET DESIGN FOUNDATION
+  - Body/UI: Cabinet Grotesk (Fontshare). Inter banned.
+  - Display: Playfair Display (editorial — landing/marketing only).
+  - Mono: JetBrains Mono (numerals/technical UI).
+  - Accent: gold (single source of truth — light & dark mode).
+  - Anti-AI-tells: no neon glow, no pure black, no oversaturated accents, no centered-only heroes.
+*/
+
 @layer base {
   :root {
+    /* Surfaces — warm off-white, never pure white */
     --background: 40 33% 98%;
-    --foreground: 40 4% 16%;
+    --foreground: 220 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 40 4% 16%;
+    --card-foreground: 220 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 40 4% 16%;
+    --popover-foreground: 220 25% 12%;
 
-    --primary: 148 32% 36%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary = gold (brand accent unified with --gold; saturation pulled to 72% per skill <80% rule) */
+    --primary: 42 72% 52%;
+    --primary-foreground: 220 40% 13%;
 
-    --secondary: 135 10% 56%;
+    /* Secondary = muted sage green (kept for occasional eco/free-tier signals) */
+    --secondary: 148 22% 42%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 40 14% 94%;
-    --muted-foreground: 0 0% 38%;
+    --muted-foreground: 220 8% 38%;
 
     --accent: 40 20% 90%;
-    --accent-foreground: 40 4% 16%;
+    --accent-foreground: 220 25% 12%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 358 70% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 148 32% 36%;
+    --border: 220 14% 90%;
+    --input: 220 14% 88%;
+    --ring: 42 72% 52%;
 
-    --gold: 42 78% 60%;
+    /* Brand tokens — mirror primary on purpose (single accent discipline) */
+    --gold: 42 72% 52%;
     --gold-foreground: 220 40% 13%;
     --navy: 220 40% 13%;
     --navy-foreground: 0 0% 100%;
     --cream: 40 33% 95%;
-    --cream-foreground: 40 4% 16%;
+    --cream-foreground: 220 25% 12%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --sidebar-background: 40 4% 16%;
-    --sidebar-foreground: 40 33% 98%;
-    --sidebar-primary: 148 32% 36%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 4% 22%;
-    --sidebar-accent-foreground: 40 33% 98%;
-    --sidebar-border: 40 4% 22%;
-    --sidebar-ring: 148 32% 36%;
+    /* Sidebar (dashboard left rail) — uses navy for contrast against cream surface */
+    --sidebar-background: 220 30% 11%;
+    --sidebar-foreground: 40 33% 96%;
+    --sidebar-primary: 42 72% 52%;
+    --sidebar-primary-foreground: 220 40% 13%;
+    --sidebar-accent: 220 30% 16%;
+    --sidebar-accent-foreground: 40 33% 96%;
+    --sidebar-border: 220 30% 18%;
+    --sidebar-ring: 42 72% 52%;
   }
 
   .dark {
-    --background: 40 3% 10%;
-    --foreground: 36 20% 94%;
+    /* Off-black, never pure #000 */
+    --background: 220 18% 7%;
+    --foreground: 40 24% 94%;
 
-    --card: 40 3% 14%;
-    --card-foreground: 36 20% 94%;
+    --card: 220 16% 11%;
+    --card-foreground: 40 24% 94%;
 
-    --popover: 40 3% 14%;
-    --popover-foreground: 36 20% 94%;
+    --popover: 220 16% 11%;
+    --popover-foreground: 40 24% 94%;
 
-    --primary: 48 80% 65%;
-    --primary-foreground: 0 0% 10%;
+    --primary: 42 80% 62%;
+    --primary-foreground: 220 40% 9%;
 
-    --secondary: 135 14% 68%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 148 18% 56%;
+    --secondary-foreground: 220 40% 9%;
 
-    --muted: 40 4% 16%;
-    --muted-foreground: 0 0% 68%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 40 12% 70%;
 
-    --accent: 40 4% 20%;
-    --accent-foreground: 36 20% 94%;
+    --accent: 220 14% 16%;
+    --accent-foreground: 40 24% 94%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 358 65% 56%;
     --destructive-foreground: 0 0% 100%;
 
-    --gold: 48 80% 65%;
-    --gold-foreground: 0 0% 10%;
-    --navy: 220 30% 20%;
-    --navy-foreground: 36 20% 94%;
-    --cream: 40 6% 16%;
-    --cream-foreground: 36 20% 94%;
+    --gold: 42 80% 62%;
+    --gold-foreground: 220 40% 9%;
+    --navy: 220 40% 16%;
+    --navy-foreground: 40 24% 94%;
+    --cream: 220 14% 14%;
+    --cream-foreground: 40 24% 94%;
 
-    --border: 40 4% 16%;
-    --input: 40 4% 16%;
-    --ring: 48 88% 58%;
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 42 80% 62%;
   }
 }
 
@@ -97,14 +112,59 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    line-height: 1.75;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv11";
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Global focus-visible ring for all interactive elements */
+  /*
+    Editorial display — Playfair (only used on landing / marketing).
+    Headings on technical UI (Dashboard, Generate, Auth) opt out via `.app-ui` wrapper.
+  */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  /*
+    Skill rule: serif BANNED for Dashboard / Software UIs.
+    Wrap any non-marketing page in <div class="app-ui"> to force sans on headings.
+  */
+  .app-ui h1,
+  .app-ui h2,
+  .app-ui h3,
+  .app-ui h4,
+  .app-ui h5,
+  .app-ui h6 {
+    font-family: 'Cabinet Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  /* Tabular numerals everywhere numbers matter */
+  .tabular,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.22);
+    color: hsl(var(--foreground));
+  }
+
+  /* Single, refined focus ring — replaces the per-element outline duplication */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   a:focus-visible,
   button:focus-visible,
   [role="button"]:focus-visible,
@@ -112,145 +172,218 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-sm;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-    text-wrap: balance;
-  }
-
-  ::selection {
-    background: hsl(var(--primary) / 0.2);
-    color: hsl(var(--primary));
-  }
-
-  :focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 }
 
 @layer utilities {
-  /* Legacy compatibility — map old classes to new design */
+  /*
+    LIQUID GLASS — true frosted refraction (1px inner border + inset highlight),
+    not generic backdrop-blur. Use on overlays, modals, sticky chrome.
+  */
+  .glass-refraction {
+    background: hsl(var(--card) / 0.65);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.55);
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.10),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.04),
+      0 8px 24px -12px hsl(220 30% 10% / 0.10);
+  }
+
+  /* Bento 2.0 surface — pure white card on warm bg, diffusion shadow, generous radius */
+  .bento-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border) / 0.65);
+    border-radius: 1.75rem;
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.6) inset,
+      0 20px 40px -15px hsl(220 30% 10% / 0.06),
+      0 4px 12px -4px hsl(220 30% 10% / 0.04);
+  }
+
+  .bento-card-lg {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border) / 0.65);
+    border-radius: 2.5rem;
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.6) inset,
+      0 30px 60px -20px hsl(220 30% 10% / 0.10),
+      0 8px 24px -8px hsl(220 30% 10% / 0.06);
+  }
+
+  /* Spotlight border (cursor-aware highlight applied via inline gradient on hover) */
+  .spotlight-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, hsl(var(--border) / 0.8), hsl(var(--border) / 0.2) 30%, hsl(var(--primary) / 0.4) 50%, hsl(var(--border) / 0.2) 70%, hsl(var(--border) / 0.8));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .spotlight-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Tactile press feedback — replaces the simple scale */
+  .btn-press {
+    transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+  }
+  .btn-press:active {
+    transform: translateY(1px) scale(0.985);
+  }
+
+  /* Premium CTA shimmer — uses gold not generic gradient */
+  .shimmer-btn {
+    background:
+      linear-gradient(
+        110deg,
+        hsl(var(--primary)) 0%,
+        hsl(var(--primary)) 38%,
+        hsl(42 90% 70%) 50%,
+        hsl(var(--primary)) 62%,
+        hsl(var(--primary)) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 2.4s ease-in-out infinite;
+    color: hsl(var(--primary-foreground));
+    will-change: background-position;
+  }
+
+  /* Tinted shadow — the only allowed elevation pattern (no neon glow) */
+  .shadow-tinted {
+    box-shadow:
+      0 16px 32px -12px hsl(var(--primary) / 0.18),
+      0 4px 12px -4px hsl(var(--primary) / 0.08);
+  }
+
+  /* Card hover lift — subtle tinted shadow on raise */
+  .card-hover {
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 240ms ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 22px 44px -16px hsl(var(--primary) / 0.16),
+      0 6px 18px -8px hsl(220 30% 10% / 0.06);
+  }
+
+  /* Section labels (small caps eyebrow) */
+  .sec-label {
+    @apply text-[11px] font-semibold tracking-[0.18em] uppercase text-primary;
+  }
+
+  /* Editorial italic emphasis (used inside Playfair display titles) */
+  .text-accent-em {
+    font-style: italic;
+    color: hsl(var(--primary));
+    font-feature-settings: "swsh", "salt";
+  }
+
+  /* Legacy alias — keeps old class names compiling, mapped to new tokens */
   .text-gradient-gold {
     @apply text-primary;
   }
-
   .shadow-luxury {
-    @apply shadow-md;
+    box-shadow: 0 12px 28px -10px hsl(220 30% 10% / 0.08);
   }
-
   .shadow-luxury-lg {
-    @apply shadow-xl;
+    box-shadow: 0 24px 48px -16px hsl(220 30% 10% / 0.12);
   }
-
   .logo-accent {
-    @apply text-primary;
+    color: hsl(var(--primary));
     font-style: normal;
   }
-
-  .sec-label {
-    @apply text-xs font-medium tracking-widest uppercase text-primary;
-  }
-
-  .text-accent-em {
-    @apply text-primary italic;
-  }
-
-  /* Button press feedback */
-  .btn-press {
-    transition: transform 0.1s ease;
-  }
-  .btn-press:active {
-    transform: scale(0.97);
-  }
-
-  /* Shimmer gradient for CTAs */
-  .shimmer-btn {
-    background: linear-gradient(
-      110deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--primary)) 40%,
-      hsl(var(--primary) / 0.7) 50%,
-      hsl(var(--primary)) 60%,
-      hsl(var(--primary)) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 2s ease-in-out infinite;
-  }
-
-  /* Glassmorphism */
-  .glass {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: hsl(var(--card) / 0.7);
-    border: 1px solid hsl(var(--border) / 0.3);
-  }
-
-  /* Glow shadow for emphasis */
+  /* Old neon glow — explicitly demoted to the tinted variant (skill bans neon) */
   .shadow-glow {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.25), 0 4px 12px hsl(var(--primary) / 0.1);
+    box-shadow:
+      0 16px 32px -12px hsl(var(--primary) / 0.18),
+      0 4px 12px -4px hsl(var(--primary) / 0.08);
   }
 
-  /* Card hover lift */
-  .card-hover {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px hsl(var(--primary) / 0.08);
+  .streak-glow {
+    text-shadow: 0 0 8px hsl(var(--primary) / 0.35);
   }
 
-  /* Portrait overlay actions */
+  /* Hover overlay for portrait actions */
   .portrait-actions {
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 200ms ease;
   }
   .group:hover .portrait-actions {
     opacity: 1;
   }
 
-  /* Streak flame glow */
-  .streak-glow {
-    text-shadow: 0 0 8px hsl(var(--primary) / 0.4);
+  /* Hidden scrollbar utility */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /*
+    Noise texture — fixed-position, pointer-events-none.
+    Skill rule: NEVER on scrolling containers (kills GPU on mobile).
+  */
+  .grain-overlay::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Hide scrollbar for pill rows */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* Noise texture overlay */
+  /* Replaces .bg-noise on scrolling containers — same texture, same constraints */
   .bg-noise::after {
     content: '';
     position: absolute;
     inset: 0;
-    opacity: 0.06;
     pointer-events: none;
+    opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Marquee container — used for kinetic text/logo bands */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+  }
+  .marquee-pause:hover .marquee-track {
+    animation-play-state: paused;
   }
 }
 
-/* Skeleton shimmer override */
+/* Skeleton shimmer — subtle, layout-matching */
 @layer components {
   [data-slot="skeleton"] {
     background: linear-gradient(
-      90deg,
+      100deg,
       hsl(var(--muted)) 0%,
-      hsl(var(--muted) / 0.5) 50%,
+      hsl(var(--muted) / 0.55) 50%,
       hsl(var(--muted)) 100%
     );
-    background-size: 200% 100%;
-    animation: shimmer 1.8s ease-in-out infinite;
+    background-size: 220% 100%;
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+    border-radius: 0.75rem;
   }
 }
 
-/* Accessibility — reduce motion for users who prefer it */
+/* Reduced motion — kill all infinite loops and slow transitions */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

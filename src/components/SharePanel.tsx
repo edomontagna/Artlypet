@@ -2,8 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Share2, Copy, MessageCircle } from "lucide-react";
-
-const SITE_URL = "https://artlypet.com";
+import { SITE_URL } from "@/lib/site-config";
 
 interface SharePanelProps {
   imageUrl: string;

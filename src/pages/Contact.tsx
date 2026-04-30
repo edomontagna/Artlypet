@@ -25,6 +25,7 @@ import {
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
+import { CONTACT } from "@/lib/site-config";
 
 const createContactSchema = (t: (key: string, fallback: string) => string) =>
   z.object({
@@ -62,7 +63,7 @@ const Contact = () => {
   });
 
   const onSubmit = (data: ContactForm) => {
-    const mailtoLink = `mailto:info@artlypet.com?subject=${encodeURIComponent(
+    const mailtoLink = `mailto:${CONTACT.info}?subject=${encodeURIComponent(
       data.subject + ": " + data.name
     )}&body=${encodeURIComponent(
       `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
@@ -93,7 +94,7 @@ const Contact = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-[100dvh] bg-background">
       <SEOHead
         title="Contact Artlypet | Support & Business Inquiries"
         description="Get in touch with the Artlypet team. Contact us for support, business inquiries, or feedback about our AI pet portrait service."
@@ -232,10 +233,10 @@ const Contact = () => {
                           {t("contact.emailLabel", "Email")}
                         </p>
                         <a
-                          href="mailto:info@artlypet.com"
+                          href={`mailto:${CONTACT.info}`}
                           className="text-primary hover:underline"
                         >
-                          info@artlypet.com
+                          {CONTACT.info}
                         </a>
                       </div>
                     </div>

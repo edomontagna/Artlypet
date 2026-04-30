@@ -86,15 +86,25 @@ vi.mock("@/components/CreationTheater", () => ({
 }));
 
 vi.mock("framer-motion", () => {
+  const motionValueStub = () => ({
+    set: () => {},
+    get: () => 0,
+    on: () => () => {},
+    onChange: () => () => {},
+  });
   const actual = {
     motion: new Proxy({}, {
       get: (_target, prop) => {
-        // Return a forwardRef component that renders the HTML element
+        // Return a component that renders the HTML element
         return ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) =>
           createElement(prop as string, props, children);
       },
     }),
     AnimatePresence: ({ children }: { children: ReactNode }) => createElement("div", null, children),
+    useMotionValue: motionValueStub,
+    useSpring: motionValueStub,
+    useTransform: motionValueStub,
+    useScroll: () => ({ scrollYProgress: motionValueStub() }),
   };
   return actual;
 });

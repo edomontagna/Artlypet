@@ -10,8 +10,7 @@ import { Sparkles, Star, ArrowRight, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
-
-const SITE_URL = "https://artlypet.com";
+import { SITE_URL } from "@/lib/site-config";
 
 const styleDescriptions: Record<string, { descKey: string; tagsKey: string }> = {
   "oil-painting": { descKey: "styleDetail.oilDesc", tagsKey: "styleDetail.oilTags" },
@@ -82,7 +81,7 @@ const StyleDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-[100dvh] bg-background">
         <Navbar />
         <div className="container px-6 lg:px-8 py-16 max-w-5xl">
           <Skeleton className="h-10 w-64 mb-4" />
@@ -95,7 +94,7 @@ const StyleDetail = () => {
 
   if (!style) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-[100dvh] bg-background">
         <Navbar />
         <div className="container px-6 lg:px-8 py-24 text-center">
           <h1 className="font-serif text-4xl font-bold text-foreground mb-4">
@@ -114,7 +113,7 @@ const StyleDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <SEOHead
         title={`${style.name} Pet Portraits | Artlypet`}
         description={styleDescription}
