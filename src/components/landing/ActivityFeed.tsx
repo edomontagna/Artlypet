@@ -23,11 +23,23 @@ export const ActivityFeed = () => {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(() => sessionStorage.getItem("artlypet_activity_dismissed") === "true");
 
+  // Only surface after the user has clearly engaged past the hero — no chrome-clash on first paint.
+  const [pastHero, setPastHero] = useState(false);
   useEffect(() => {
     if (dismissed) return;
+    const check = () => {
+      if (window.scrollY > window.innerHeight * 0.6) setPastHero(true);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
+  }, [dismissed]);
 
-    // Show first notification after 5 seconds
-    const showTimer = setTimeout(() => setVisible(true), 5000);
+  useEffect(() => {
+    if (dismissed || !pastHero) return;
+
+    // Brief delay after the hero exit so the toast doesn't compete with the next section
+    const showTimer = setTimeout(() => setVisible(true), 900);
 
     // Cycle through activities
     const cycleTimer = setInterval(() => {
@@ -42,7 +54,7 @@ export const ActivityFeed = () => {
       clearTimeout(showTimer);
       clearInterval(cycleTimer);
     };
-  }, [dismissed]);
+  }, [dismissed, pastHero]);
 
   const handleDismiss = () => {
     setDismissed(true);

@@ -103,16 +103,16 @@ const Navbar = () => {
           {/* Desktop nav — dock-style with subtle scale on hover */}
           <div className="hidden md:flex items-center gap-9">
             <Link to="/styles" className={navLinkClass("/styles")}>
-              {t("nav.styles", "Styles")}
+              {t("nav.styles", "Stili")}
             </Link>
             <Link to="/how-it-works" className={navLinkClass("/how-it-works")}>
-              {t("nav.howItWorks", "How it works")}
+              {t("nav.howItWorks", "Come funziona")}
             </Link>
             <button onClick={() => handleHashNavigation("pricing")} className={navLinkClass("")}>
-              {t("nav.pricing", "Pricing")}
+              {t("nav.pricing", "Prezzi")}
             </button>
             <Link to="/business" className={navLinkClass("/business")}>
-              {t("nav.business", "For business")}
+              {t("nav.business", "Per aziende")}
             </Link>
             <button onClick={() => handleHashNavigation("faq")} className={navLinkClass("")}>
               {t("nav.faq", "FAQ")}

@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles } from "lucide-react";
+import { X, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { PROMO_END_DATE, REGULAR_PRICE, PREMIUM_PRICE } from "@/lib/constants";
 
 const getTimeLeft = (endDate: string) => {
@@ -40,36 +39,45 @@ export const PromoBanner = () => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y: -60, opacity: 0 }}
+        initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -60, opacity: 0 }}
-        transition={{ type: "spring", damping: 20, stiffness: 300 }}
-        className="bg-gold text-gold-foreground relative z-40"
+        exit={{ y: -40, opacity: 0 }}
+        transition={{ type: "spring", damping: 22, stiffness: 280 }}
+        className="relative z-40 bg-foreground text-background border-b border-foreground/10"
+        role="region"
+        aria-label="Promo"
       >
-        <div className="container px-4 py-2.5 flex items-center justify-center gap-3 text-sm">
-          <Sparkles className="h-4 w-4 flex-shrink-0 animate-pulse-gold" />
-          <span className="font-medium">
-            {t("promo.banner", "Launch offer: €{{price}} instead of €{{regular}} — ends in", {
+        <div className="container px-5 lg:px-10 py-2 flex items-center justify-center gap-3 text-xs sm:text-sm">
+          <span className="relative inline-flex h-1.5 w-1.5 shrink-0">
+            <span className="absolute inset-0 rounded-full bg-primary animate-breath" />
+            <span className="relative h-1.5 w-1.5 rounded-full bg-primary" />
+          </span>
+
+          <span className="text-background/85 truncate">
+            {t("promo.banner", "Offerta lancio: €{{price}} invece di €{{regular}} — termina tra", {
               price: PREMIUM_PRICE,
               regular: REGULAR_PRICE,
             })}
           </span>
-          <span className="font-bold tabular-nums">
-            {timeLeft.days}{t("promo.days", "d")} {timeLeft.hours}{t("promo.hours", "h")} {timeLeft.minutes}{t("promo.minutes", "m")}
+
+          <span className="font-mono tabular text-background font-semibold whitespace-nowrap">
+            {timeLeft.days}{t("promo.days", "g")} {timeLeft.hours}{t("promo.hours", "h")} {timeLeft.minutes}{t("promo.minutes", "m")}
           </span>
-          <Button
-            asChild
-            size="sm"
-            className="h-7 rounded-full px-4 text-xs font-semibold bg-gold-foreground text-gold hover:bg-gold-foreground/90"
+
+          <Link
+            to="/signup"
+            className="hidden sm:inline-flex items-center gap-1 text-primary hover:underline font-semibold"
           >
-            <Link to="/signup">{t("promo.cta", "Claim Now")}</Link>
-          </Button>
+            <span>{t("promo.cta", "Approfittane")}</span>
+            <ArrowUpRight className="h-3 w-3" strokeWidth={2.25} />
+          </Link>
+
           <button
             onClick={handleDismiss}
-            className="absolute right-3 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
-            aria-label="Dismiss"
+            className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-full text-background/60 hover:text-background hover:bg-background/10 transition-colors"
+            aria-label={t("promo.dismiss", "Chiudi")}
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" strokeWidth={1.75} />
           </button>
         </div>
       </motion.div>
