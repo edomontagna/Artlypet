@@ -82,14 +82,14 @@ export const ActivityFeed = () => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-foreground truncate">
-              {t("activity.justCreated", "{{name}} from {{city}} just created a {{style}} portrait", {
+              {t("activity.justCreated", "{{name}} da {{city}} ha appena creato un ritratto {{style}}", {
                 name: activity.name,
                 city: t(activity.cityKey, activity.cityKey.split(".").pop()),
                 style: t(activity.style, activity.style.split(".").pop()),
               })}
             </p>
             <p className="text-[10px] text-muted-foreground">
-              {t("activity.minutesAgo", "{{count}} min ago", { count: minutesAgo })}
+              {t("activity.minutesAgo", "{{count}} min fa", { count: minutesAgo })}
             </p>
           </div>
           <button

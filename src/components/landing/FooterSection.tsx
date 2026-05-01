@@ -51,11 +51,17 @@ const FooterSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end pb-16 lg:pb-20 border-b border-white/10">
           <div className="lg:col-span-8">
             <div className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-4">
-              {t("footer.kicker", "Last call before you scroll back up")}
+              {t("footer.kicker", "Ultima chiamata prima di scrollare su")}
             </div>
-            <h3 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tightest leading-[1.02] text-white">
-              {t("footer.ctaTitle", "Your pet, immortalised. ")}
-              <span className="text-primary italic">{t("footer.ctaTitleAccent", "In about a minute.")}</span>
+            <h3
+              className="font-bold tracking-tightest leading-[1.02] text-white"
+              style={{
+                fontFamily: "'Cabinet Grotesk', system-ui, sans-serif",
+                fontSize: "clamp(2.25rem, 5vw, 4rem)",
+              }}
+            >
+              {t("footer.ctaTitle", "Il tuo cane, in cornice. ")}
+              <span className="text-primary">{t("footer.ctaTitleAccent", "In meno di un minuto.")}</span>
             </h3>
           </div>
           <div className="lg:col-span-4 flex justify-start lg:justify-end">
@@ -64,7 +70,7 @@ const FooterSection = () => {
                 className="rounded-full h-14 px-8 text-base font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
                 strength={0.32}
               >
-                <span>{t("nav.getStarted", "Get started")}</span>
+                <span>{t("nav.getStarted", "Inizia gratis")}</span>
                 <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
               </MagneticButton>
             </Link>
@@ -83,7 +89,7 @@ const FooterSection = () => {
             <p className="text-sm text-white/60 leading-relaxed max-w-[42ch]">
               {t(
                 "footer.description",
-                "AI-rendered portraits of your pet, in twelve hand-tuned painting styles. EU-hosted, GDPR-clean, ready to print on canvas.",
+                "Ritratti AI del tuo animale, in dodici stili di pittura dipinti a mano. Server in EU, GDPR-clean, pronti per la stampa su tela.",
               )}
             </p>
 
@@ -111,36 +117,36 @@ const FooterSection = () => {
           <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10">
             <div>
               <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
-                {t("footer.product", "Product")}
+                {t("footer.product", "Prodotto")}
               </div>
               <nav className="flex flex-col gap-3.5">
-                <Link to="/styles" className={link}>{t("nav.styles", "Styles")}</Link>
-                <a href="/#pricing" className={link}>{t("nav.pricing", "Pricing")}</a>
-                <Link to="/prints" className={link}>{t("nav.prints", "Canvas prints")}</Link>
-                <Link to="/how-it-works" className={link}>{t("nav.howItWorks", "How it works")}</Link>
-                <Link to="/business" className={link}>{t("footer.business", "For businesses")}</Link>
+                <Link to="/styles" className={link}>{t("nav.styles", "Stili")}</Link>
+                <a href="/#pricing" className={link}>{t("nav.pricing", "Prezzi")}</a>
+                <Link to="/prints" className={link}>{t("nav.prints", "Stampe su tela")}</Link>
+                <Link to="/how-it-works" className={link}>{t("nav.howItWorks", "Come funziona")}</Link>
+                <Link to="/business" className={link}>{t("footer.business", "Per aziende")}</Link>
               </nav>
             </div>
 
             <div>
               <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
-                {t("footer.company", "Company")}
+                {t("footer.company", "Azienda")}
               </div>
               <nav className="flex flex-col gap-3.5">
-                <Link to="/about" className={link}>{t("nav.about", "About")}</Link>
-                <Link to="/contact" className={link}>{t("nav.contact", "Contact")}</Link>
+                <Link to="/about" className={link}>{t("nav.about", "Chi siamo")}</Link>
+                <Link to="/contact" className={link}>{t("nav.contact", "Contatti")}</Link>
                 <Link to="/blog" className={link}>{t("nav.blog", "Blog")}</Link>
               </nav>
             </div>
 
             <div>
               <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
-                {t("footer.legal", "Legal")}
+                {t("footer.legal", "Legale")}
               </div>
               <nav className="flex flex-col gap-3.5">
                 <Link to="/privacy" className={link}>{t("footer.privacy", "Privacy")}</Link>
-                <Link to="/terms" className={link}>{t("footer.terms", "Terms")}</Link>
-                <Link to="/accessibility" className={link}>{t("footer.accessibility", "Accessibility")}</Link>
+                <Link to="/terms" className={link}>{t("footer.terms", "Termini")}</Link>
+                <Link to="/accessibility" className={link}>{t("footer.accessibility", "Accessibilità")}</Link>
               </nav>
             </div>
           </div>
@@ -149,10 +155,10 @@ const FooterSection = () => {
         {/* Bottom row */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-white/40 font-mono tabular">
-            © {new Date().getFullYear()} Artlypet · {t("footer.allRights", "All rights reserved.")}
+            © {new Date().getFullYear()} Artlypet · {t("footer.allRights", "Tutti i diritti riservati.")}
           </p>
           <p className="text-xs text-white/40">
-            {t("footer.locationLine", "Crafted in Italy · EU-hosted · GDPR-clean")}
+            {t("footer.locationLine", "Made in Italy · Server in EU · GDPR-clean")}
           </p>
         </div>
       </div>
