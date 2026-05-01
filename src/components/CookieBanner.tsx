@@ -39,11 +39,7 @@ export const CookieBanner = () => {
   const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
-    if (!getConsent()) {
-      // Slight delay so the banner doesn't flash before page is settled
-      const t = setTimeout(() => setVisible(true), 700);
-      return () => clearTimeout(t);
-    }
+    if (!getConsent()) setVisible(true);
   }, []);
 
   const saveConsent = (consent: CookieConsent) => {
@@ -66,7 +62,7 @@ export const CookieBanner = () => {
           transition={{ type: "spring", stiffness: 220, damping: 26 }}
           role="dialog"
           aria-label={t("cookie.title", "Cookie")}
-          className="fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] sm:w-auto sm:max-w-sm"
+          className="fixed bottom-20 sm:bottom-4 right-4 z-50 w-[calc(100%-2rem)] sm:w-auto sm:max-w-sm"
         >
           <div className="relative rounded-2xl bg-card/95 backdrop-blur-xl border border-border shadow-diffusion-lg p-4 pr-9">
             {/* Dismiss = essential only */}

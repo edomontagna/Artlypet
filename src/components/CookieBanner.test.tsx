@@ -2,79 +2,90 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { CookieBanner, getConsent } from "./CookieBanner";
 
-// Mock i18n
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, fallback: string) => fallback || key,
   }),
 }));
 
-// Mock storage
 const mockStorage: Record<string, string> = {};
 vi.mock("@/lib/storage", () => ({
   safeGetItem: (key: string) => mockStorage[key] || null,
   safeSetItem: (key: string, value: string) => { mockStorage[key] = value; },
 }));
 
-// Mock react-router-dom Link
 vi.mock("react-router-dom", () => ({
   Link: ({ children, to, ...props }: { children: React.ReactNode; to: string; className?: string }) =>
     <a href={to} {...props}>{children}</a>,
 }));
 
+// Pass-through framer-motion: render motion.X as <X> and AnimatePresence as fragment.
+vi.mock("framer-motion", () => ({
+  motion: new Proxy(
+    {},
+    {
+      get: (_t, prop) =>
+        ({ children, ...rest }: { children?: React.ReactNode; [k: string]: unknown }) => {
+          // Drop framer-only props that React would flag.
+          const cleanRest = { ...rest } as Record<string, unknown>;
+          delete cleanRest.initial;
+          delete cleanRest.animate;
+          delete cleanRest.exit;
+          delete cleanRest.transition;
+          delete cleanRest.whileHover;
+          delete cleanRest.whileTap;
+          const Tag = (typeof prop === "string" ? prop : "div") as keyof JSX.IntrinsicElements;
+          return <Tag {...(cleanRest as React.HTMLAttributes<HTMLElement>)}>{children}</Tag>;
+        },
+    },
+  ),
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 describe("CookieBanner", () => {
   beforeEach(() => {
-    Object.keys(mockStorage).forEach(k => delete mockStorage[k]);
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
     vi.spyOn(window, "dispatchEvent").mockImplementation(() => true);
   });
 
   it("renders when no consent stored", () => {
     render(<CookieBanner />);
-    expect(screen.getByText("We use cookies")).toBeInTheDocument();
+    expect(screen.getByText(/Usiamo cookie/i)).toBeInTheDocument();
   });
 
   it("does not render when consent exists", () => {
     mockStorage["artlypet-cookie-consent"] = JSON.stringify({ essential: true, analytics: false, marketing: false });
     render(<CookieBanner />);
-    expect(screen.queryByText("We use cookies")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Usiamo cookie/i)).not.toBeInTheDocument();
   });
 
-  it("Accept All sets all consent to true", () => {
+  it("Accetta sets all consent to true", () => {
     render(<CookieBanner />);
-    fireEvent.click(screen.getByText("Accept All"));
+    fireEvent.click(screen.getByText("Accetta"));
     const stored = JSON.parse(mockStorage["artlypet-cookie-consent"]);
     expect(stored).toEqual({ essential: true, analytics: true, marketing: true });
   });
 
-  it("Essential Only button (before customize) sets analytics/marketing false", () => {
+  it("close (X) stores essential-only consent (GDPR-safe dismiss)", () => {
     render(<CookieBanner />);
-    fireEvent.click(screen.getByText("Essential Only"));
-    // First click opens customize panel (button text changes), but default text is "Essential Only"
-    // Since showCustomize is false, clicking calls setShowCustomize(true)
-    // The text changes to "Save Preferences" when customize is shown
-    // So we need to verify the panel appears
-    expect(screen.getByText("Analytics (Google Analytics)")).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText("Chiudi"));
+    const stored = JSON.parse(mockStorage["artlypet-cookie-consent"]);
+    expect(stored).toEqual({ essential: true, analytics: false, marketing: false });
   });
 
-  it("customize preferences default checkboxes to false (GDPR)", () => {
+  it("Personalizza opens granular preferences with analytics/marketing defaulted false (GDPR)", () => {
     render(<CookieBanner />);
-    // Open customize panel
-    fireEvent.click(screen.getByText("Essential Only"));
-
+    fireEvent.click(screen.getByText("Personalizza"));
     const analyticsCheckbox = screen.getByRole("checkbox", { name: /analytics/i });
     const marketingCheckbox = screen.getByRole("checkbox", { name: /marketing/i });
-
     expect(analyticsCheckbox).not.toBeChecked();
     expect(marketingCheckbox).not.toBeChecked();
   });
 
-  it("save preferences with defaults saves analytics=false, marketing=false", () => {
+  it("Salva preferenze with defaults saves analytics=false, marketing=false", () => {
     render(<CookieBanner />);
-    // Open customize panel
-    fireEvent.click(screen.getByText("Essential Only"));
-    // Save defaults (both false)
-    fireEvent.click(screen.getByText("Save Preferences"));
-
+    fireEvent.click(screen.getByText("Personalizza"));
+    fireEvent.click(screen.getByText("Salva preferenze"));
     const stored = JSON.parse(mockStorage["artlypet-cookie-consent"]);
     expect(stored).toEqual({ essential: true, analytics: false, marketing: false });
   });
@@ -82,7 +93,7 @@ describe("CookieBanner", () => {
 
 describe("getConsent", () => {
   beforeEach(() => {
-    Object.keys(mockStorage).forEach(k => delete mockStorage[k]);
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
   });
 
   it("returns null when no consent", () => {
