@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { safeGetItem, safeSetItem } from "@/lib/storage";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+import { BrandMark } from "@/components/ui/brand-mark";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -86,18 +87,9 @@ const Navbar = () => {
         aria-label={t("nav.aria", "Main navigation")}
       >
         <div className="container mx-auto flex items-center justify-between h-16 lg:h-[72px] px-6 lg:px-10">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="group inline-flex items-center gap-2.5"
-            aria-label="Artlypet home"
-          >
-            <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
-              <img src="/icons/logo.jpg" alt="" className="h-full w-full object-cover" aria-hidden />
-            </span>
-            <span className="font-serif text-xl lg:text-[1.35rem] font-bold text-foreground tracking-tight">
-              Artlypet
-            </span>
+          {/* Logo — SVG inline so it reads on any theme */}
+          <Link to="/" aria-label="Artlypet home">
+            <BrandMark />
           </Link>
 
           {/* Desktop nav — dock-style with subtle scale on hover */}

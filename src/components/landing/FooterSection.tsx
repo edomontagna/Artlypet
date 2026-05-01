@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowUpRight, Instagram, Twitter, Facebook } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+import { BrandMark } from "@/components/ui/brand-mark";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
@@ -75,11 +76,8 @@ const FooterSection = () => {
 
           {/* Brand block (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <Link to="/" className="inline-flex items-center gap-2 group" aria-label="Artlypet home">
-              <img src="/icons/logo.jpg" alt="" className="h-9 w-9 rounded-lg object-cover" aria-hidden />
-              <span className="font-serif text-2xl font-bold text-white">
-                Artlypet
-              </span>
+            <Link to="/" aria-label="Artlypet home" className="text-white">
+              <BrandMark />
             </Link>
 
             <p className="text-sm text-white/60 leading-relaxed max-w-[42ch]">

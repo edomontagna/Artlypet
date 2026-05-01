@@ -22,6 +22,7 @@ import { HistoryTab } from "@/components/dashboard/HistoryTab";
 import { OrdersTab } from "@/components/dashboard/OrdersTab";
 import { SettingsTab } from "@/components/dashboard/SettingsTab";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+import { BrandMark } from "@/components/ui/brand-mark";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -170,11 +171,8 @@ const Dashboard = () => {
       {/* LEFT SIDEBAR — navy, refined */}
       <aside className="hidden lg:flex w-60 bg-sidebar text-sidebar-foreground flex-col">
         <div className="p-5 border-b border-sidebar-border">
-          <Link to="/" className="inline-flex items-center gap-2.5 group">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-accent overflow-hidden">
-              <img src="/icons/logo.jpg" alt="" className="h-full w-full object-cover" aria-hidden />
-            </span>
-            <span className="font-serif text-xl font-bold text-sidebar-foreground">Artlypet</span>
+          <Link to="/" aria-label="Artlypet home" className="text-sidebar-foreground">
+            <BrandMark />
           </Link>
         </div>
 
