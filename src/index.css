@@ -73,7 +73,7 @@
     --background: 30 8% 5%;            /* warm near-black, slight brown-grey undertone */
     --foreground: 40 28% 96%;          /* warm white, not sterile */
 
-    --card: 30 8% 9%;                  /* surface — barely lifted from bg */
+    --card: 30 8% 11%;                 /* surface — clearly lifted from bg for visual hierarchy */
     --card-foreground: 40 28% 96%;
 
     --popover: 30 9% 11%;

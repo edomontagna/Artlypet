@@ -1,6 +1,5 @@
 import { useState, memo } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Check, Shield, ArrowUpRight } from "lucide-react";
 import {
@@ -20,34 +19,28 @@ import { MagneticButton } from "@/components/ui/magnetic-button";
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const PricingSection = memo(() => {
-  const { t } = useTranslation();
   const { user } = useAuth();
   const { data: profile } = useProfile();
   const isPremium = profile?.plan_type === "premium" || profile?.plan_type === "business";
   const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
 
   const premiumFeatures = [
-    t("pricing.features.premiumCredits", "{{credits}} credits — about 15 portraits", { credits: PREMIUM_CREDITS }),
-    t("pricing.features.fullHd", "Full HD downloads, no watermark"),
-    t("pricing.features.allStyles", "All 12 painting styles included"),
-    t("pricing.features.discountedPrints", "Canvas prints at €{{p}} (saving €{{save}})", {
-      p: PRINT_PRICE_PREMIUM,
-      save: (PRINT_PRICE_FREE - PRINT_PRICE_PREMIUM).toFixed(2),
-    }),
-    t("pricing.features.noExpiry", "Credits never expire"),
+    `${PREMIUM_CREDITS} crediti — circa 15 ritratti`,
+    "Full HD, niente filigrana",
+    "Tutti i 12 stili dipinti a mano",
+    `Stampe canvas a €${PRINT_PRICE_PREMIUM} (risparmi €${(PRINT_PRICE_FREE - PRINT_PRICE_PREMIUM).toFixed(2)})`,
+    "I crediti non scadono mai",
   ];
 
   const freeFeatures = [
-    t("pricing.features.freeCredits", "{{credits}} credits on signup ≈ 3 portraits", { credits: SIGNUP_CREDITS }),
-    t("pricing.features.singleCost", "Single portrait: {{cost}} credits", { cost: CREDIT_COST_SINGLE }),
-    t("pricing.features.mixCost", "You + pet portrait: {{cost}} credits", { cost: CREDIT_COST_MIX }),
-    t("pricing.features.watermark", "Watermarked previews"),
+    `${SIGNUP_CREDITS} crediti all'iscrizione ≈ 3 ritratti`,
+    `Singolo: ${CREDIT_COST_SINGLE} crediti`,
+    `Tu + il tuo cane insieme: ${CREDIT_COST_MIX} crediti`,
+    "Anteprime con filigrana",
   ];
 
   const premiumCtaLink = user ? (isPremium ? "/generate" : "#") : "/signup";
-  const premiumCta = user && isPremium
-    ? t("pricing.startCreating", "Start Creating")
-    : t("pricing.goPremium", "Go Premium");
+  const premiumCta = user && isPremium ? "Apri lo studio" : "Vai Premium";
 
   return (
     <section
@@ -55,95 +48,100 @@ const PricingSection = memo(() => {
       className="relative py-24 lg:py-36 bg-background overflow-hidden"
       aria-labelledby="pricing-heading"
     >
-      {/* Soft warm wash behind the Premium card */}
+      {/* Warm wash behind premium card */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-32 left-1/4 h-[480px] w-[480px] rounded-full opacity-40 blur-3xl"
-        style={{ background: "radial-gradient(closest-side, hsl(var(--primary) / 0.16), transparent 70%)" }}
+        className="pointer-events-none absolute top-32 left-1/4 h-[480px] w-[480px] rounded-full opacity-30 blur-3xl"
+        style={{ background: "radial-gradient(closest-side, hsl(var(--primary) / 0.20), transparent 70%)" }}
       />
 
-      <div className="container relative px-6 lg:px-10">
-        {/* Header — left-aligned, the kicker is on the right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-14 lg:mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease }}
-            className="lg:col-span-7"
-          >
-            <span className="sec-label">{t("pricing.label", "Pricing")}</span>
-            <h2
+      <div className="container relative px-5 lg:px-10">
+        {/* Header */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 lg:mb-16">
+          <div className="lg:col-span-7">
+            <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-primary">
+              · Prezzi
+            </span>
+            <motion.h2
               id="pricing-heading"
-              className="mt-4 font-serif font-bold text-4xl md:text-5xl lg:text-6xl tracking-tightest leading-[1.02] text-foreground"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, ease }}
+              className="mt-4 font-bold tracking-tightest leading-[1.02] text-foreground"
+              style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif", fontSize: "clamp(2rem, 5.5vw, 4.25rem)" }}
             >
-              {t("pricing.title", "Pay once. Keep the portraits ")}
-              <span className="text-accent-em italic">{t("pricing.titleAccent", "forever.")}</span>
-            </h2>
-          </motion.div>
-          <motion.div
+              Un pagamento. <span className="text-primary">Per sempre.</span>
+            </motion.h2>
+          </div>
+          <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, delay: 0.15, ease }}
-            className="lg:col-span-4 lg:col-start-9 self-end"
+            className="lg:col-span-4 lg:col-start-9 self-end text-base text-muted-foreground leading-relaxed max-w-[42ch]"
           >
-            <p className="text-base text-muted-foreground leading-relaxed max-w-[40ch]">
-              {t("pricing.subtitle", "No subscription. No hidden charges. Try free, upgrade once if you love it.")}
-            </p>
-          </motion.div>
+            Niente abbonamenti, niente trappole. Provi gratis. Se ti piace, paghi una volta sola.
+          </motion.p>
         </div>
 
-        {/* Asymmetric pricing — Premium dominant (8 cols), Free secondary (4 cols) */}
+        {/* Asymmetric pricing — Premium dominant 8 cols + Free secondary 4 cols */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 max-w-6xl mx-auto">
 
-          {/* PREMIUM — large, spotlight border, gold tint */}
+          {/* PREMIUM */}
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
-            className="lg:col-span-8 relative spotlight-border bento-card-lg overflow-hidden"
+            className="lg:col-span-8 relative bg-card border border-primary/30 rounded-[2rem] overflow-hidden shadow-tinted"
           >
-            {/* Top-right pill — popular */}
-            <div className="absolute top-6 right-6 z-10 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1.5 text-[11px] font-semibold tracking-wider uppercase">
+            {/* Top gold accent line */}
+            <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+
+            {/* Most chosen pill */}
+            <div className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inset-0 rounded-full bg-primary animate-breath" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="absolute inset-0 rounded-full bg-primary-foreground animate-breath" />
+                <span className="relative h-1.5 w-1.5 rounded-full bg-primary-foreground" />
               </span>
-              {t("pricing.popular", "Most chosen")}
+              Il più scelto
             </div>
 
-            <div className="p-8 lg:p-12 relative">
+            <div className="p-8 lg:p-12">
               <div className="flex items-baseline gap-3 mb-6">
-                <span className="sec-label">{t("pricing.premium", "Premium")}</span>
-                <span className="text-xs font-mono text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
+                <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-primary">Premium</span>
+                <span className="text-xs font-mono text-muted-foreground">una volta sola</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                {/* Left: price + headline */}
                 <div className="md:col-span-5">
-                  <h3 className="font-serif text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-[1.05] mb-4">
-                    {t("pricing.premiumDesc", "Full HD, no watermark, every style.")}
+                  <h3
+                    className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-[1.05] mb-5"
+                    style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif" }}
+                  >
+                    Tutti gli stili. HD. Niente filigrana.
                   </h3>
                   <div className="flex items-baseline gap-1.5 mb-2">
-                    <span className="font-serif font-bold text-foreground text-6xl lg:text-7xl tracking-tightest">
+                    <span
+                      className="font-bold text-foreground text-6xl lg:text-7xl tracking-tightest leading-none"
+                      style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif" }}
+                    >
                       €{PREMIUM_PRICE}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {t("pricing.premiumPerPortrait", "Roughly €1 per portrait — works out cheaper than buying singles.")}
+                    Circa €1 a ritratto. Ti conviene rispetto a comprarli singoli.
                   </p>
                 </div>
 
-                {/* Right: features */}
                 <ul className="md:col-span-7 space-y-3" role="list">
                   {premiumFeatures.map((f) => (
                     <li key={f} className="flex items-start gap-3">
-                      <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/15 shrink-0">
+                      <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 shrink-0">
                         <Check className="h-3 w-3 text-primary" strokeWidth={3} />
                       </span>
-                      <span className="text-sm text-foreground/80 leading-relaxed">{f}</span>
+                      <span className="text-sm text-foreground/85 leading-relaxed">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -154,7 +152,7 @@ const PricingSection = memo(() => {
                 {user && premiumCtaLink === "#" ? (
                   <MagneticButton
                     onClick={() => setPurchaseModalOpen(true)}
-                    className="shimmer-btn rounded-full h-14 px-8 text-base font-semibold shadow-tinted"
+                    className="h-14 px-9 rounded-full text-base font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
                     strength={0.30}
                   >
                     <span>{premiumCta}</span>
@@ -163,7 +161,7 @@ const PricingSection = memo(() => {
                 ) : (
                   <Link to={premiumCtaLink} className="rounded-full" tabIndex={-1}>
                     <MagneticButton
-                      className="shimmer-btn rounded-full h-14 px-8 text-base font-semibold shadow-tinted"
+                      className="h-14 px-9 rounded-full text-base font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
                       strength={0.30}
                     >
                       <span>{premiumCta}</span>
@@ -173,41 +171,45 @@ const PricingSection = memo(() => {
                 )}
                 <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                   <Shield className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                  <span>{t("pricing.guarantee", "30-day money-back guarantee")}</span>
+                  <span>Soddisfatti o rimborsati a 30 giorni</span>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* FREE — narrow column, restrained */}
+          {/* FREE */}
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, delay: 0.1, ease }}
-            className="lg:col-span-4 bento-card flex flex-col p-7 lg:p-8"
+            className="lg:col-span-4 bg-card border border-border rounded-[2rem] flex flex-col p-8 lg:p-9"
           >
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="sec-label">{t("pricing.free", "Free")}</span>
-            </div>
+            <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">Free</span>
 
-            <h3 className="font-serif text-2xl lg:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4">
-              {t("pricing.freeDesc", "Try before you commit.")}
+            <h3
+              className="mt-4 text-2xl lg:text-3xl font-bold text-foreground tracking-tight leading-tight mb-5"
+              style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif" }}
+            >
+              Provi prima di decidere.
             </h3>
 
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="font-serif font-bold text-foreground text-5xl tracking-tightest">€0</span>
+              <span
+                className="font-bold text-foreground text-5xl tracking-tightest leading-none"
+                style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif" }}
+              >
+                €0
+              </span>
             </div>
-            <p className="text-xs text-muted-foreground mb-6">
-              {t("pricing.freeNoCard", "No card required")}
-            </p>
+            <p className="text-xs text-muted-foreground mb-6">Niente carta richiesta</p>
 
             <div className="h-px bg-border mb-5" />
 
             <ul className="space-y-2.5 mb-7" role="list">
               {freeFeatures.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed">
-                  <Check className="h-3.5 w-3.5 mt-0.5 text-secondary shrink-0" strokeWidth={2.5} />
+                  <Check className="h-3.5 w-3.5 mt-0.5 text-primary shrink-0" strokeWidth={2.5} />
                   <span>{f}</span>
                 </li>
               ))}
@@ -215,46 +217,43 @@ const PricingSection = memo(() => {
 
             <Link
               to={user ? "/generate" : "/signup"}
-              className="mt-auto group inline-flex items-center justify-center gap-2 rounded-full h-12 border border-border hover:border-primary px-6 text-sm font-medium text-foreground hover:text-primary transition-colors btn-press"
+              className="mt-auto group inline-flex items-center justify-center gap-2 rounded-full h-12 border border-border hover:border-primary px-6 text-sm font-semibold text-foreground hover:text-primary transition-colors btn-press"
             >
-              <span>{user ? t("pricing.startCreating", "Start creating") : t("pricing.getStartedFree", "Get started free")}</span>
+              <span>{user ? "Apri lo studio" : "Inizia gratis"}</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.25} />
             </Link>
           </motion.div>
         </div>
 
-        {/* Print pricing band — separate revenue stream, transparent up-front */}
+        {/* Print pricing band */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease }}
-          className="mt-10 max-w-6xl mx-auto rounded-[1.75rem] border border-dashed border-border px-6 sm:px-10 py-7 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10"
+          className="mt-8 max-w-6xl mx-auto rounded-[1.75rem] border border-dashed border-border px-6 sm:px-10 py-7 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10"
         >
           <div className="flex-1">
-            <div className="sec-label mb-1.5">{t("pricing.printsLabel", "Printed on canvas")}</div>
+            <div className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-primary mb-1.5">· Stampa su tela</div>
             <p className="text-foreground text-base leading-relaxed">
-              {t(
-                "pricing.printsCopy",
-                "Want a real one on the wall? Museum-grade canvas, hand-stretched, shipped across the EU.",
-              )}
+              Lo vuoi vero, sul muro? Tela museale, intelaiata a mano, spedita in 48h in tutta Italia.
             </p>
           </div>
           <div className="flex items-baseline gap-6">
             <div>
-              <div className="font-mono tabular text-2xl font-semibold text-foreground">€{PRINT_PRICE_FREE}</div>
-              <div className="text-xs text-muted-foreground">{t("pricing.freeTier", "Free tier")}</div>
+              <div className="font-mono tabular text-2xl font-semibold text-muted-foreground">€{PRINT_PRICE_FREE}</div>
+              <div className="text-xs text-muted-foreground">Free</div>
             </div>
             <div className="h-10 w-px bg-border" />
             <div>
               <div className="font-mono tabular text-2xl font-semibold text-primary">€{PRINT_PRICE_PREMIUM}</div>
-              <div className="text-xs text-muted-foreground">{t("pricing.premiumTier", "Premium tier")}</div>
+              <div className="text-xs text-muted-foreground">Premium</div>
             </div>
           </div>
         </motion.div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          {t("pricing.vatIncluded", "All prices include VAT where applicable.")}
+          Tutti i prezzi includono IVA dove applicabile.
         </p>
       </div>
 
