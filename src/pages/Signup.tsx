@@ -140,7 +140,7 @@ const Signup = () => {
         <header className="flex items-center justify-between max-w-md w-full mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-            <span>{t("auth.backHome", "Back home")}</span>
+            <span>{t("auth.backHome", "Alla home")}</span>
           </Link>
           <span className="font-serif text-lg font-bold text-foreground">Artlypet</span>
         </header>
@@ -156,12 +156,12 @@ const Signup = () => {
             )}
 
             <div className="mb-8">
-              <span className="sec-label">{t("auth.signupKicker", "Free signup")}</span>
+              <span className="sec-label">{t("auth.signupKicker", "Iscrizione gratuita")}</span>
               <h1 className="mt-3 text-3xl lg:text-4xl font-bold tracking-tightest leading-tight text-foreground">
-                {t("auth.createAccount", "Create your account")}
+                {t("auth.createAccount", "Crea il tuo account")}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {t("auth.createAccountDesc", "3 portraits included — no card required.")}
+                {t("auth.createAccountDesc", "3 ritratti inclusi — niente carta richiesta.")}
               </p>
             </div>
 
@@ -335,7 +335,7 @@ const Signup = () => {
       </div>
 
       {/* RIGHT — Showcase */}
-      <AuthShowcase pillText={t("auth.signupPill", "3 free portraits, no card")} />
+      <AuthShowcase pillText={t("auth.signupPill", "3 ritratti gratis, niente carta")} />
     </div>
   );
 };

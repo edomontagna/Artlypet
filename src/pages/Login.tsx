@@ -116,7 +116,7 @@ const Login = () => {
         <header className="flex items-center justify-between max-w-md w-full mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-            <span>{t("auth.backHome", "Back home")}</span>
+            <span>{t("auth.backHome", "Alla home")}</span>
           </Link>
           <span className="font-serif text-lg font-bold text-foreground">Artlypet</span>
         </header>
@@ -124,12 +124,12 @@ const Login = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-md">
             <div className="mb-9">
-              <span className="sec-label">{t("auth.welcomeKicker", "Welcome back")}</span>
+              <span className="sec-label">{t("auth.welcomeKicker", "Bentornato")}</span>
               <h1 className="mt-3 text-3xl lg:text-4xl font-bold tracking-tightest leading-tight text-foreground">
-                {t("auth.welcomeBack", "Sign in to your studio")}
+                {t("auth.welcomeBack", "Entra nel tuo studio")}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {t("auth.signInDesc", "Pick up where you left off — your portraits are waiting.")}
+                {t("auth.signInDesc", "Riprendi da dove avevi lasciato — i tuoi ritratti ti aspettano.")}
               </p>
             </div>
 
@@ -254,7 +254,7 @@ const Login = () => {
       </div>
 
       {/* RIGHT — Showcase (lg+) */}
-      <AuthShowcase pillText={t("auth.welcomeKicker", "Welcome back")} />
+      <AuthShowcase pillText={t("auth.welcomeKicker", "Bentornato")} />
     </div>
   );
 };

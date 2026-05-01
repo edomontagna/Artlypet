@@ -47,7 +47,7 @@ const ForgotPassword = () => {
         <header className="flex items-center justify-between max-w-md w-full mx-auto">
           <Link to="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-            <span>{t("auth.backToSignIn", "Back to sign in")}</span>
+            <span>{t("auth.backToSignIn", "Torna al login")}</span>
           </Link>
           <span className="font-serif text-lg font-bold text-foreground">Artlypet</span>
         </header>
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
                   className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-primary transition-colors"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-                  <span>{t("auth.backToSignIn", "Back to sign in")}</span>
+                  <span>{t("auth.backToSignIn", "Torna al login")}</span>
                 </Link>
               </div>
             ) : (
@@ -134,7 +134,7 @@ const ForgotPassword = () => {
         </div>
       </div>
 
-      <AuthShowcase pillText={t("auth.resetPill", "Quick recovery")} />
+      <AuthShowcase pillText={t("auth.resetPill", "Recupero veloce")} />
     </div>
   );
 };
