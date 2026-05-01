@@ -12,6 +12,7 @@ import FooterSection from "@/components/landing/FooterSection";
 import { PromoBanner } from "@/components/PromoBanner";
 import { ActivityFeed } from "@/components/landing/ActivityFeed";
 import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
+import { CursorSpotlight } from "@/components/ui/cursor-spotlight";
 
 const Index = () => {
   return (
@@ -44,6 +45,7 @@ const Index = () => {
       <FooterSection />
       <ActivityFeed />
       <MobileStickyBar />
+      <CursorSpotlight />
     </main>
   );
 };

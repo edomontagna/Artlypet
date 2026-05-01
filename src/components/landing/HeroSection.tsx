@@ -1,7 +1,8 @@
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useTransform,
   useMotionValue,
@@ -15,9 +16,19 @@ import { usePortraitCount } from "@/hooks/usePortraitCount";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+const ROTATION_INTERVAL_MS = 5000;
 
-// Char-by-char split text — Italian-aware (Array.from() splits unicode correctly).
-// Stagger feels alive without being twee. Single play on mount.
+// 6 styles cycling through. Renaissance leads (icona del brand) and returns to first slot.
+const heroStyles = [
+  { src: "/images/renaissance.webp",  name: "Renaissance",   accent: "Royal oil, gilded frame" },
+  { src: "/images/watercolor.webp",   name: "Watercolor",    accent: "Soft pigment washes" },
+  { src: "/images/oil-painting.jpg",  name: "Oil Painting",  accent: "Rich texture, warm tones" },
+  { src: "/images/art-nouveau.webp",  name: "Art Nouveau",   accent: "Sinuous line, ornament" },
+  { src: "/images/pop-art.webp",      name: "Pop Art",       accent: "Flat color, halftone weight" },
+  { src: "/images/impressionist.webp", name: "Impressionist", accent: "Broken stroke, dappled light" },
+];
+
+// Italian-aware split text — handles è, à, ò correctly via Array.from()
 const SplitText = ({
   text,
   delay = 0,
@@ -48,7 +59,7 @@ const SplitText = ({
           }}
           style={{ display: "inline-block", whiteSpace: "pre" }}
         >
-          {char === " " ? " " : char}
+          {char === " " ? " " : char}
         </motion.span>
       ))}
     </span>
@@ -61,10 +72,20 @@ const HeroSection = memo(() => {
   const hasRealCount = typeof portraitCount === "number" && portraitCount > 0;
 
   const sectionRef = useRef<HTMLElement>(null);
-  const portraitRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
-  // PARALLAX — image scrolls at 0.5x while user scrolls past hero.
+  // AUTO-ROTATING HERO PORTRAIT — Goiko Kevin Bacon mechanic. Each slot ~5s with crossfade.
+  const [activeIdx, setActiveIdx] = useState(0);
+  useEffect(() => {
+    if (reduceMotion) return;
+    const id = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % heroStyles.length);
+    }, ROTATION_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [reduceMotion]);
+  const active = heroStyles[activeIdx];
+
+  // PARALLAX
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
@@ -72,7 +93,7 @@ const HeroSection = memo(() => {
   const portraitY = useTransform(scrollYProgress, [0, 1], reduceMotion ? ["0%", "0%"] : ["0%", "30%"]);
   const portraitScale = useTransform(scrollYProgress, [0, 1], reduceMotion ? [1, 1] : [1.0, 1.08]);
 
-  // CURSOR TILT 3D — image rotates slightly toward the cursor.
+  // CURSOR TILT 3D
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
   const rotX = useSpring(useTransform(tiltY, [-50, 50], [4, -4]), { stiffness: 150, damping: 20 });
@@ -97,9 +118,8 @@ const HeroSection = memo(() => {
       className="relative min-h-[100dvh] w-full overflow-hidden bg-background"
       aria-labelledby="hero-heading"
     >
-      {/* PARALLAX + TILT layer */}
+      {/* PARALLAX + TILT layer with auto-rotating portrait crossfade */}
       <motion.div
-        ref={portraitRef}
         className="absolute inset-0"
         style={{
           y: portraitY,
@@ -111,20 +131,26 @@ const HeroSection = memo(() => {
           willChange: "transform",
         }}
       >
-        <img
-          src="/images/renaissance.webp"
-          alt="Ritratto Renaissance di un cane — Artlypet"
-          className="h-full w-full object-cover"
-          style={{ objectPosition: "center 30%" }}
-          loading="eager"
-          fetchPriority="high"
-          draggable={false}
-        />
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={active.src}
+            src={active.src}
+            alt={`Ritratto ${active.name} di un cane — Artlypet`}
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: "center 30%" }}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+            loading="eager"
+            fetchPriority="high"
+            draggable={false}
+          />
+        </AnimatePresence>
       </motion.div>
 
-      {/* OVERLAYS — stacked above the parallaxing image so text stays readable */}
+      {/* OVERLAYS */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Top wash */}
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 h-44"
@@ -133,7 +159,6 @@ const HeroSection = memo(() => {
               "linear-gradient(180deg, hsl(var(--background) / 0.75) 0%, hsl(var(--background) / 0.30) 60%, transparent 100%)",
           }}
         />
-        {/* Bottom wash */}
         <div
           aria-hidden
           className="absolute inset-x-0 bottom-0 h-[58%]"
@@ -142,7 +167,6 @@ const HeroSection = memo(() => {
               "linear-gradient(180deg, transparent 0%, hsl(var(--background) / 0.55) 35%, hsl(var(--background) / 0.95) 78%, hsl(var(--background)) 100%)",
           }}
         />
-        {/* Local spotlight under bottom-left text */}
         <div
           aria-hidden
           className="absolute inset-0"
@@ -153,11 +177,11 @@ const HeroSection = memo(() => {
         />
       </div>
 
-      {/* CONTENT — pointer events restored on the actual content */}
+      {/* CONTENT */}
       <div className="relative z-10 flex min-h-[100dvh] flex-col">
         <div className="h-16 lg:h-[72px] flex-shrink-0" aria-hidden />
 
-        {/* TOP-RIGHT pill */}
+        {/* TOP-RIGHT pill — updates with active style */}
         <div className="px-5 lg:px-10 mt-4 flex justify-end">
           <motion.div
             initial={{ opacity: 0, y: -8 }}
@@ -169,9 +193,18 @@ const HeroSection = memo(() => {
               <span className="absolute inset-0 rounded-full bg-primary animate-breath" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            <span className="font-mono tabular text-[10px] font-semibold tracking-[0.18em] uppercase">
-              Stile in mostra · Renaissance
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={active.name}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.35 }}
+                className="font-mono tabular text-[10px] font-semibold tracking-[0.18em] uppercase"
+              >
+                Stile in mostra · {active.name}
+              </motion.span>
+            </AnimatePresence>
           </motion.div>
         </div>
 
@@ -180,7 +213,6 @@ const HeroSection = memo(() => {
         {/* MAIN BLOCK */}
         <div className="container px-5 lg:px-10 pb-8 lg:pb-12">
           <div className="max-w-4xl">
-            {/* Headline — char-by-char SplitText reveal */}
             <h1
               id="hero-heading"
               className="font-bold tracking-tightest leading-[0.96] text-foreground"
@@ -247,15 +279,15 @@ const HeroSection = memo(() => {
           </div>
         </div>
 
-        {/* HORIZONTAL STATS STRIP — counter-up on first view */}
+        {/* HORIZONTAL STATS STRIP — counter-up + style dots indicator */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2.3, duration: 0.7, ease }}
           className="border-t border-foreground/10 backdrop-blur-md bg-background/40"
         >
-          <div className="container px-5 lg:px-10 py-4 lg:py-5">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <div className="container px-5 lg:px-10 py-4 lg:py-5 flex items-center justify-between gap-6 flex-wrap">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 flex-1 min-w-0">
               {hasRealCount ? (
                 <StatCellCounter targetNumber={portraitCount!} label="ritratti creati" pulse />
               ) : (
@@ -264,6 +296,22 @@ const HeroSection = memo(() => {
               <StatCellCounter targetNumber={60} prefix="~" suffix="s" label="tempo medio" />
               <StatCellCounter targetNumber={48} suffix="h" label="stampa & spedizione" />
               <StatCellStatic value="EU" label="server & GDPR-clean" />
+            </div>
+
+            {/* Style dots — indicate which slot is currently in mostra */}
+            <div className="hidden md:flex items-center gap-2 shrink-0">
+              {heroStyles.map((s, i) => (
+                <button
+                  key={s.name}
+                  type="button"
+                  onClick={() => setActiveIdx(i)}
+                  className={`h-1.5 rounded-full transition-all duration-400 ${
+                    i === activeIdx ? "bg-primary w-8" : "bg-foreground/25 w-1.5 hover:bg-foreground/45"
+                  }`}
+                  aria-label={`Mostra stile ${s.name}`}
+                  aria-current={i === activeIdx}
+                />
+              ))}
             </div>
           </div>
         </motion.div>
