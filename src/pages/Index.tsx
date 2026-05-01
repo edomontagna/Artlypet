@@ -1,10 +1,8 @@
 import Navbar from "@/components/landing/Navbar";
 import { SEOHead } from "@/components/SEOHead";
 import HeroSection from "@/components/landing/HeroSection";
-import VideoSection from "@/components/landing/VideoSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import GallerySection from "@/components/landing/GallerySection";
-import PressSection from "@/components/landing/PressSection";
 import PrintShopSection from "@/components/landing/PrintShopSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import PricingSection from "@/components/landing/PricingSection";
@@ -36,8 +34,6 @@ const Index = () => {
       <Navbar />
       <div id="main-content" />
       <HeroSection />
-      <PressSection />
-      <VideoSection />
       <HowItWorksSection />
       <GallerySection />
       <PrintShopSection />
