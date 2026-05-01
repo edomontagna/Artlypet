@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { safeGetItem, safeSetItem } from "@/lib/storage";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { BrandMark } from "@/components/ui/brand-mark";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -148,6 +149,9 @@ const Navbar = () => {
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+
+        {/* Gold scroll progress strip — always at the very bottom edge */}
+        <ScrollProgress />
 
         {/* Mobile sheet */}
         <AnimatePresence>
