@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {
@@ -6,335 +6,286 @@ import {
   Palette,
   Sparkles,
   Download,
-  CheckCircle,
-  XCircle,
+  Check,
+  X,
   Camera,
   Sun,
   Focus,
+  ArrowUpRight,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import { SEOHead } from "@/components/SEOHead";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+const ease = [0.16, 1, 0.3, 1] as const;
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.65, ease },
 };
 
 const HowItWorksPage = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const photoTips = [
-    {
-      icon: Sun,
-      label: t("howItWorksPage.tipLight", "Good lighting"),
-      desc: t("howItWorksPage.tipLightDesc", "Natural daylight works best. Avoid harsh shadows or flash."),
-    },
-    {
-      icon: Focus,
-      label: t("howItWorksPage.tipFocus", "Clear focus"),
-      desc: t("howItWorksPage.tipFocusDesc", "Make sure your pet's face is sharp and in focus."),
-    },
-    {
-      icon: Camera,
-      label: t("howItWorksPage.tipAngle", "Good angle"),
-      desc: t("howItWorksPage.tipAngleDesc", "Eye-level or slightly above. Front-facing shots work best."),
-    },
+    { icon: Sun,    titleKey: "howItWorksPage.tipLight",  titleFallback: "Good lighting", descKey: "howItWorksPage.tipLightDesc",  descFallback: "Natural daylight wins. Avoid harsh shadows or direct flash." },
+    { icon: Focus,  titleKey: "howItWorksPage.tipFocus",  titleFallback: "Sharp focus",   descKey: "howItWorksPage.tipFocusDesc",  descFallback: "The pet's face needs to be tack-sharp. Blur kills the detail." },
+    { icon: Camera, titleKey: "howItWorksPage.tipAngle",  titleFallback: "Eye level",     descKey: "howItWorksPage.tipAngleDesc",  descFallback: "Front-facing, eye-level or slightly above. Reads as a portrait." },
   ];
 
   const dos = [
-    t("howItWorksPage.do1", "Well-lit, clear photo of your pet"),
+    t("howItWorksPage.do1", "Well-lit, high-resolution photo"),
     t("howItWorksPage.do2", "Pet looking towards the camera"),
-    t("howItWorksPage.do3", "Simple or uncluttered background"),
+    t("howItWorksPage.do3", "Simple or clean background"),
+    t("howItWorksPage.do4", "JPG or PNG, under 10 MB"),
   ];
-
   const donts = [
-    t("howItWorksPage.dont1", "Blurry or dark photos"),
-    t("howItWorksPage.dont2", "Multiple pets in one photo"),
+    t("howItWorksPage.dont1", "Blurry, dark or pixelated photos"),
+    t("howItWorksPage.dont2", "Multiple pets in one shot"),
     t("howItWorksPage.dont3", "Pet facing away from camera"),
+    t("howItWorksPage.dont4", "Heavy filters already applied"),
   ];
 
   const popularStyles = [
-    {
-      name: t("howItWorksPage.styleRoyal", "Royal Portrait"),
-      desc: t("howItWorksPage.styleRoyalDesc", "Regal, majestic portraits inspired by Renaissance masters."),
-    },
-    {
-      name: t("howItWorksPage.styleWatercolor", "Watercolour"),
-      desc: t("howItWorksPage.styleWatercolourDesc", "Soft, flowing colours with delicate brush strokes."),
-    },
-    {
-      name: t("howItWorksPage.styleOil", "Oil Painting"),
-      desc: t("howItWorksPage.styleOilDesc", "Rich, textured portraits in the classic oil painting tradition."),
-    },
-    {
-      name: t("howItWorksPage.stylePopArt", "Pop Art"),
-      desc: t("howItWorksPage.stylePopArtDesc", "Bold, vibrant colours inspired by Warhol and Lichtenstein."),
-    },
+    { nameKey: "howItWorksPage.styleRoyal",      nameFallback: "Renaissance",    descKey: "howItWorksPage.styleRoyalDesc",      descFallback: "Royal oil, gilded frame, baroque drama." },
+    { nameKey: "howItWorksPage.styleWatercolor", nameFallback: "Watercolour",    descKey: "howItWorksPage.styleWatercolourDesc", descFallback: "Soft pigment washes, paper grain." },
+    { nameKey: "howItWorksPage.styleOil",        nameFallback: "Oil painting",   descKey: "howItWorksPage.styleOilDesc",        descFallback: "Rich texture, warm undertones." },
+    { nameKey: "howItWorksPage.stylePopArt",     nameFallback: "Pop Art",        descKey: "howItWorksPage.stylePopArtDesc",     descFallback: "Flat colour, halftone weight." },
+  ];
+
+  const steps = [
+    { num: "01", icon: Upload,   titleKey: "howItWorksPage.step1Title", titleFallback: "Upload your photo",   descKey: "howItWorksPage.step1Desc", descFallback: "Drag-and-drop or pick from your library. Most phone shots from the past year work great.", time: "10s" },
+    { num: "02", icon: Palette,  titleKey: "howItWorksPage.step2Title", titleFallback: "Choose your style",   descKey: "howItWorksPage.step2Desc", descFallback: "Twelve hand-tuned styles. Each has a distinct palette, brush logic and composition.", time: "5s" },
+    { num: "03", icon: Sparkles, titleKey: "howItWorksPage.step3Title", titleFallback: "AI paints the portrait", descKey: "howItWorksPage.step3Desc", descFallback: "Google Gemini generates a 2K portrait. Watermarked preview for free, HD on unlock.", time: "~30s" },
+    { num: "04", icon: Download, titleKey: "howItWorksPage.step4Title", titleFallback: "Download or print",   descKey: "howItWorksPage.step4Desc", descFallback: "Full-resolution download, share link, or order a museum-grade canvas shipped EU-wide.", time: "Instant" },
   ];
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="app-ui min-h-[100dvh] bg-background">
       <SEOHead
-        title="How AI Pet Portraits Work | 3 Easy Steps | Artlypet"
-        description="Create AI pet portraits in 3 easy steps: upload your pet's photo, choose an art style, and download your masterpiece. Learn tips for the best results."
+        title="How Artlypet works — three minutes from photo to museum-grade portrait"
+        description="See exactly how Artlypet turns a pet photo into an artistic portrait. Photo tips, art-style guide, AI specs, and how to print on canvas."
         canonical="/how-it-works"
       />
       <Navbar />
 
-      {/* Hero */}
-      <section className="py-20 px-6 lg:px-8">
-        <div className="container mx-auto text-center max-w-3xl">
-          <motion.div {...fadeInUp}>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-              {t("howItWorksPage.title", "How It Works")}
+      {/* HERO */}
+      <section className="relative pt-20 pb-16 lg:pt-28 lg:pb-20 overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-32 -right-32 h-[480px] w-[480px] rounded-full opacity-40 blur-3xl"
+          style={{ background: "radial-gradient(closest-side, hsl(var(--primary) / 0.16), transparent 70%)" }}
+        />
+        <div className="container relative px-5 lg:px-10">
+          <motion.div {...fadeUp} className="max-w-3xl">
+            <span className="sec-label">{t("howItWorksPage.kicker", "How it works")}</span>
+            <h1 className="mt-4 font-serif font-bold text-4xl md:text-5xl lg:text-[4rem] tracking-tightest leading-[1.02] text-foreground">
+              {t("howItWorksPage.title", "Photo in, portrait out. ")}
+              <span className="text-accent-em italic">{t("howItWorksPage.titleAccent", "About a minute.")}</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
-              {t(
-                "howItWorksPage.subtitle",
-                "From photo to masterpiece in three simple steps. Here's everything you need to know."
-              )}
+            <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-[58ch]">
+              {t("howItWorksPage.subtitle", "Four steps end-to-end, plus a quick guide on which photos work best so you don't waste a credit.")}
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Step 1: Upload */}
-      <section className="py-16 px-6 lg:px-8 bg-muted/30">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div {...fadeInUp} className="flex flex-col lg:flex-row items-start gap-12">
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Upload className="h-6 w-6 text-primary" />
-                </div>
-                <span className="text-sm font-medium text-primary uppercase tracking-wider">
-                  {t("howItWorksPage.step1Label", "Step 1")}
-                </span>
-              </div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {t("howItWorksPage.step1Title", "Upload Your Photo")}
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                {t(
-                  "howItWorksPage.step1Desc",
-                  "Start by uploading a clear, well-lit photo of your pet. The better the photo, the more stunning the result."
-                )}
-              </p>
-
-              {/* Photo tips */}
-              <div className="grid gap-4">
-                {photoTips.map((tip) => (
-                  <div key={tip.label} className="flex items-start gap-4 bg-background rounded-2xl p-4 shadow-sm">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <tip.icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">{tip.label}</p>
-                      <p className="text-sm text-muted-foreground">{tip.desc}</p>
+      {/* STEPS — vertical timeline (anti-3-card) */}
+      <section className="py-20 bg-cream/40">
+        <div className="container px-5 lg:px-10">
+          <ol className="space-y-14 lg:space-y-16 max-w-5xl mx-auto">
+            {steps.map((step, i) => {
+              const Icon = step.icon;
+              const isReversed = i % 2 === 1;
+              return (
+                <motion.li
+                  key={step.num}
+                  {...fadeUp}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+                >
+                  <div className={`lg:col-span-5 ${isReversed ? "lg:col-start-8" : ""}`}>
+                    <div className="bento-card-lg p-8 lg:p-10 flex flex-col items-start">
+                      <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-4">
+                        {t("howItWorksPage.stepLabel", "Step {{num}}", { num: i + 1 })}
+                      </span>
+                      <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/12 text-primary mb-5">
+                        <Icon className="h-6 w-6" strokeWidth={1.75} />
+                      </span>
+                      <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="absolute inset-0 rounded-full bg-primary animate-breath" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                        </span>
+                        <span className="font-mono tabular text-xs font-semibold text-foreground">{step.time}</span>
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div className={`lg:col-span-6 ${isReversed ? "lg:col-start-1 lg:row-start-1" : "lg:col-start-7"}`}>
+                    <h2 className="font-serif text-2xl lg:text-3xl font-bold text-foreground tracking-tight leading-tight mb-3">
+                      {t(step.titleKey, step.titleFallback)}
+                    </h2>
+                    <p className="text-base text-muted-foreground leading-relaxed max-w-[48ch]">
+                      {t(step.descKey, step.descFallback)}
+                    </p>
+                  </div>
+                </motion.li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
+      {/* PHOTO TIPS — Bento */}
+      <section className="py-20 lg:py-28">
+        <div className="container px-5 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12 max-w-6xl mx-auto">
+            <motion.div {...fadeUp} className="lg:col-span-7">
+              <span className="sec-label">{t("howItWorksPage.photoLabel", "What to upload")}</span>
+              <h2 className="mt-4 font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+                {t("howItWorksPage.photoTitle", "The photo decides the result.")}
+              </h2>
+              <p className="mt-5 text-base text-muted-foreground leading-relaxed max-w-[55ch]">
+                {t("howItWorksPage.photoSub", "Three signals matter most: light, focus, angle. Get those right and any of the twelve styles hit.")}
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto">
+            {/* Photo tips column */}
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {photoTips.map((tip, i) => {
+                const Icon = tip.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ delay: i * 0.07, duration: 0.5, ease }}
+                    className="bento-card p-5 card-hover"
+                  >
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary mb-3">
+                      <Icon className="h-4 w-4" strokeWidth={1.75} />
+                    </span>
+                    <div className="text-sm font-bold text-foreground tracking-tight">
+                      {t(tip.titleKey, tip.titleFallback)}
+                    </div>
+                    <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                      {t(tip.descKey, tip.descFallback)}
+                    </p>
+                  </motion.div>
+                );
+              })}
             </div>
 
-            {/* Do / Don't */}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-background rounded-2xl p-6 shadow-sm border border-green-200 dark:border-green-900">
-                <h3 className="font-serif text-lg font-bold text-green-700 dark:text-green-400 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  {t("howItWorksPage.do", "Do")}
-                </h3>
-                <ul className="space-y-3">
+            {/* Do / Don't divide */}
+            <motion.div
+              {...fadeUp}
+              className="lg:col-span-5 bento-card divide-y divide-border"
+            >
+              <div className="p-6">
+                <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-primary mb-3 inline-flex items-center gap-1.5">
+                  <Check className="h-3 w-3" strokeWidth={3} /> {t("howItWorksPage.do", "Do")}
+                </div>
+                <ul className="space-y-2">
                   {dos.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                      {item}
+                    <li key={item} className="flex items-start gap-2 text-sm text-foreground/80 leading-relaxed">
+                      <Check className="h-3.5 w-3.5 mt-1 text-primary shrink-0" strokeWidth={2.5} />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="bg-background rounded-2xl p-6 shadow-sm border border-red-200 dark:border-red-900">
-                <h3 className="font-serif text-lg font-bold text-red-700 dark:text-red-400 mb-4 flex items-center gap-2">
-                  <XCircle className="h-5 w-5" />
-                  {t("howItWorksPage.dont", "Don't")}
-                </h3>
-                <ul className="space-y-3">
+              <div className="p-6">
+                <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-destructive mb-3 inline-flex items-center gap-1.5">
+                  <X className="h-3 w-3" strokeWidth={3} /> {t("howItWorksPage.dont", "Don't")}
+                </div>
+                <ul className="space-y-2">
                   {donts.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <XCircle className="h-4 w-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-                      {item}
+                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground leading-relaxed">
+                      <X className="h-3.5 w-3.5 mt-1 text-destructive shrink-0" strokeWidth={2.5} />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Step 2: Choose Style */}
-      <section className="py-16 px-6 lg:px-8">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div {...fadeInUp}>
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Palette className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-primary uppercase tracking-wider">
-                {t("howItWorksPage.step2Label", "Step 2")}
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("howItWorksPage.step2Title", "Choose Your Style")}
-            </h2>
-            <p className="text-muted-foreground mb-10 max-w-2xl">
-              {t(
-                "howItWorksPage.step2Desc",
-                "Browse our collection of 12 carefully curated art styles. From classical oil paintings to modern pop art, there's a style for every pet."
-              )}
-            </p>
+      {/* POPULAR STYLES — light teaser, link to /styles */}
+      <section className="py-20 bg-cream/40">
+        <div className="container px-5 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-10">
+            <motion.div {...fadeUp} className="lg:col-span-7">
+              <span className="sec-label">{t("howItWorksPage.stylesLabel", "Pick a style")}</span>
+              <h2 className="mt-4 font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+                {t("howItWorksPage.stylesTitle", "Four of the twelve.")}
+              </h2>
+            </motion.div>
+            <motion.p {...fadeUp} className="lg:col-span-5 self-end text-base text-muted-foreground leading-relaxed">
+              {t("howItWorksPage.stylesSub", "These are the four most popular openings. The other eight are inside.")}
+            </motion.p>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {popularStyles.map((style, index) => (
-                <motion.div
-                  key={style.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="bg-muted/30 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <h3 className="font-serif text-lg font-bold text-foreground mb-2">{style.name}</h3>
-                  <p className="text-sm text-muted-foreground">{style.desc}</p>
-                </motion.div>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+            {popularStyles.map((style, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.06, duration: 0.5, ease }}
+                className="bento-card p-6 card-hover"
+              >
+                <h3 className="text-lg font-bold text-foreground tracking-tight mb-1.5">
+                  {t(style.nameKey, style.nameFallback)}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(style.descKey, style.descFallback)}
+                </p>
+              </motion.div>
+            ))}
+          </div>
 
-            <p className="text-sm text-muted-foreground mt-6">
-              {t("howItWorksPage.moreStyles", "...and 8 more styles to explore!")}{" "}
-              <a href="/styles" className="text-primary hover:underline">
-                {t("howItWorksPage.viewAll", "View all styles")}
-              </a>
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Step 3: AI Creates */}
-      <section className="py-16 px-6 lg:px-8 bg-muted/30">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div {...fadeInUp}>
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-primary uppercase tracking-wider">
-                {t("howItWorksPage.step3Label", "Step 3")}
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("howItWorksPage.step3Title", "AI Creates Your Portrait")}
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              {t(
-                "howItWorksPage.step3Desc",
-                "Our cutting-edge AI analyses your photo and applies the chosen art style with remarkable precision. The result? A museum-quality portrait in 30 to 60 seconds."
-              )}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: t("howItWorksPage.aiFeature1", "Lightning Fast"),
-                  desc: t("howItWorksPage.aiFeature1Desc", "Your portrait is generated in 30-60 seconds using state-of-the-art AI."),
-                },
-                {
-                  title: t("howItWorksPage.aiFeature2", "Museum Quality"),
-                  desc: t("howItWorksPage.aiFeature2Desc", "2K resolution output suitable for printing on large canvases."),
-                },
-                {
-                  title: t("howItWorksPage.aiFeature3", "Unique Every Time"),
-                  desc: t("howItWorksPage.aiFeature3Desc", "Every portrait is one of a kind, just like your pet."),
-                },
-              ].map((feature) => (
-                <div key={feature.title} className="bg-background rounded-2xl p-6 shadow-sm">
-                  <h3 className="font-serif text-lg font-bold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Step 4: Download */}
-      <section className="py-16 px-6 lg:px-8">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div {...fadeInUp}>
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Download className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-primary uppercase tracking-wider">
-                {t("howItWorksPage.step4Label", "Step 4")}
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("howItWorksPage.step4Title", "Download, Print, or Gift")}
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              {t(
-                "howItWorksPage.step4Desc",
-                "Once your portrait is ready, you have options. Download the digital file, order a museum-quality canvas print, or share it as the perfect gift."
-              )}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: t("howItWorksPage.option1", "Digital Download"),
-                  desc: t("howItWorksPage.option1Desc", "High-resolution file ready for social media, wallpapers, or printing at home."),
-                },
-                {
-                  title: t("howItWorksPage.option2", "Canvas Print"),
-                  desc: t("howItWorksPage.option2Desc", "Premium museum-quality canvas delivered to your door across the EU."),
-                },
-                {
-                  title: t("howItWorksPage.option3", "Perfect Gift"),
-                  desc: t("howItWorksPage.option3Desc", "A unique, personalised gift that any pet lover will treasure forever."),
-                },
-              ].map((option) => (
-                <div key={option.title} className="bg-muted/30 rounded-2xl p-6 shadow-sm">
-                  <h3 className="font-serif text-lg font-bold text-foreground mb-2">{option.title}</h3>
-                  <p className="text-sm text-muted-foreground">{option.desc}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          <div className="mt-8 text-center">
+            <Link
+              to="/styles"
+              className="inline-flex items-center gap-2 rounded-full border border-border hover:border-primary px-5 py-2.5 text-sm font-medium text-foreground hover:text-primary transition-colors btn-press"
+            >
+              <span>{t("howItWorksPage.viewAll", "Browse all 12 styles")}</span>
+              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 lg:px-8 bg-primary/5">
-        <div className="container mx-auto text-center max-w-2xl">
-          <motion.div {...fadeInUp}>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("howItWorksPage.ctaTitle", "Ready to Create?")}
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              {t("howItWorksPage.ctaDesc", "Create your first portrait for free. No credit card required.")}
-            </p>
-            <Button
-              onClick={() => navigate("/signup")}
-              className="rounded-full h-12 px-8 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {t("howItWorksPage.ctaButton", "Create Your First Portrait Free")}
-            </Button>
+      <section className="py-24">
+        <div className="container px-5 lg:px-10">
+          <motion.div {...fadeUp} className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto items-end">
+            <div className="lg:col-span-7">
+              <h2 className="font-serif font-bold text-3xl md:text-4xl lg:text-5xl tracking-tightest leading-[1.05] text-foreground">
+                {t("howItWorksPage.ctaTitle", "Ready when you are.")}
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+                {t("howItWorksPage.ctaDesc", "Free signup includes 3 portraits. No card needed.")}
+              </p>
+            </div>
+            <div className="lg:col-span-5 lg:flex lg:justify-end">
+              <Link to="/signup" className="rounded-full" tabIndex={-1}>
+                <MagneticButton
+                  className="shimmer-btn rounded-full h-14 px-8 text-base font-semibold shadow-tinted"
+                  strength={0.30}
+                >
+                  <span>{t("howItWorksPage.ctaButton", "Make your first portrait")}</span>
+                  <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
+                </MagneticButton>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>

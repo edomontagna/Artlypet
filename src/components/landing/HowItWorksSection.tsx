@@ -1,110 +1,96 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Upload, Palette, Download, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Upload, Palette, Download, ArrowUpRight, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const steps = [
-  { icon: Upload, titleKey: "howItWorks.step1Title", descKey: "howItWorks.step1Desc", time: "10 sec", gradient: "from-primary/20 to-primary/5", num: "01" },
-  { icon: Palette, titleKey: "howItWorks.step2Title", descKey: "howItWorks.step2Desc", time: "30 sec", gradient: "from-secondary/20 to-secondary/5", num: "02" },
-  { icon: Download, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc", time: "Instant", gradient: "from-primary/20 to-secondary/5", num: "03" },
-];
+import { MagneticButton } from "@/components/ui/magnetic-button";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+const steps = [
+  { num: "01", icon: Upload,   title: "Carichi una foto",          desc: "Anche dal telefono. Una qualsiasi.", time: "10s" },
+  { num: "02", icon: Palette,  title: "Scegli uno stile",          desc: "Renaissance, oil, watercolor… 12.",  time: "5s"  },
+  { num: "03", icon: Download, title: "Hai il tuo quadro",         desc: "Pronto da scaricare o stampare.",    time: "~45s" },
+];
 
 const HowItWorksSection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-16 lg:py-24 bg-muted/30">
-      <div className="container px-6 lg:px-8">
+    <section className="relative py-24 lg:py-36 bg-background overflow-hidden">
+      <div className="container relative px-5 lg:px-10">
         {/* Header */}
-        <div className="text-center mb-16 lg:mb-20">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <span className="inline-block bg-primary/10 text-primary rounded-full px-4 py-1.5 text-xs font-medium mb-4">
-              {t("howItWorks.label", "The Process")}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 lg:mb-16">
+          <div className="lg:col-span-7">
+            <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-primary">
+              · Come funziona
             </span>
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, ease }}
-            className="font-serif font-bold text-4xl md:text-5xl tracking-tight text-foreground mb-4"
-          >
-            {t("howItWorks.title").split(" ").map((word, i, arr) =>
-              i === arr.length - 1 ? (
-                <em key={i} className="italic text-primary">{word}</em>
-              ) : (
-                <span key={i}>{word} </span>
-              )
-            )}
-          </motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, ease }}
+              className="mt-4 font-bold tracking-tightest leading-[1.02] text-foreground"
+              style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif", fontSize: "clamp(2rem, 5.5vw, 4.25rem)" }}
+            >
+              {t("howItWorks.title", "Tre mosse. Un capolavoro.")}
+            </motion.h2>
+          </div>
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, ease }}
-            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.15, ease }}
+            className="lg:col-span-4 lg:col-start-9 self-end text-base text-muted-foreground leading-relaxed max-w-[42ch]"
           >
-            {t("howItWorks.subtitle", "Three simple steps to transform your pet into a masterpiece")}
+            Niente registri infiniti, niente modulo da compilare. Foto in, ritratto fuori. La parte difficile la fa l'AI.
           </motion.p>
         </div>
 
-        {/* Steps */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Connecting line (desktop only) */}
-          <div className="hidden md:block absolute top-24 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        {/* STEPS — horizontal flow with arrows between, anti-3-equal-card */}
+        <div className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
             {steps.map((step, i) => {
               const Icon = step.icon;
               return (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 40 }}
+                  key={step.num}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15, duration: 0.6, ease }}
-                  className="group relative"
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: i * 0.08, duration: 0.55, ease }}
+                  className="relative bg-card border border-border rounded-[1.75rem] p-7 lg:p-8 card-hover"
                 >
-                  {/* Card */}
-                  <div className="relative bg-card rounded-2xl border border-border/50 p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
-                    {/* Step number */}
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                      {step.num}
-                    </div>
-
-                    {/* Icon */}
-                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="h-9 w-9 text-primary" />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-serif font-bold text-xl text-foreground mb-3">
-                      {t(step.titleKey)}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      {t(step.descKey)}
-                    </p>
-
-                    {/* Time badge */}
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 rounded-full px-3 py-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                      {step.time}
+                  <div className="flex items-start justify-between mb-7">
+                    <span className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
+                      Step {step.num}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inset-0 rounded-full bg-primary animate-breath" />
+                        <span className="relative h-1.5 w-1.5 rounded-full bg-primary" />
+                      </span>
+                      <span className="font-mono tabular text-[10px] font-semibold text-foreground">{step.time}</span>
                     </span>
                   </div>
 
-                  {/* Arrow between cards (desktop, not on last) */}
-                  {i < 2 && (
-                    <div className="hidden md:flex absolute -right-6 top-24 z-10 w-12 h-12 items-center justify-center">
-                      <ArrowRight className="h-5 w-5 text-primary/40" />
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary mb-5">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+
+                  <h3
+                    className="text-2xl lg:text-[1.6rem] font-bold text-foreground tracking-tight leading-tight mb-2"
+                    style={{ fontFamily: "'Cabinet Grotesk', system-ui, sans-serif" }}
+                  >
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {step.desc}
+                  </p>
+
+                  {/* Arrow between cards (desktop) */}
+                  {i < steps.length - 1 && (
+                    <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 h-6 w-6 items-center justify-center rounded-full bg-background border border-border text-muted-foreground">
+                      <ArrowRight className="h-3 w-3" strokeWidth={2} />
                     </div>
                   )}
                 </motion.div>
@@ -115,16 +101,22 @@ const HowItWorksSection = () => {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="text-center mt-16"
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease }}
+          className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-5"
         >
-          <Button asChild className="shimmer-btn btn-press rounded-full h-12 px-8 text-base font-medium text-primary-foreground shadow-md">
-            <Link to="/signup">{t("howItWorks.cta", "Start Creating — It's Free")}</Link>
-          </Button>
-          <p className="mt-3 text-sm text-muted-foreground">{t("howItWorks.ctaSub", "Ready in under 1 minute · No card needed")}</p>
+          <Link to="/signup" className="rounded-full" tabIndex={-1}>
+            <MagneticButton
+              className="h-14 px-9 rounded-full text-base font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
+              strength={0.30}
+            >
+              <span>Inizia gratis</span>
+              <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
+            </MagneticButton>
+          </Link>
+          <p className="text-sm text-muted-foreground">3 ritratti inclusi · Nessuna carta</p>
         </motion.div>
       </div>
     </section>

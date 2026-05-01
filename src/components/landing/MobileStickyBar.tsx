@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Sparkles } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { PREMIUM_PRICE } from "@/lib/constants";
 
 export const MobileStickyBar = () => {
@@ -17,17 +16,13 @@ export const MobileStickyBar = () => {
       setShow(false);
       return;
     }
-
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      // Show after hero section (~600px), hide near pricing section
       const pricingEl = document.getElementById("pricing");
       const pricingTop = pricingEl?.getBoundingClientRect().top ?? Infinity;
       const pricingVisible = pricingTop < window.innerHeight && pricingTop > 0;
-
       setShow(scrollY > 600 && !pricingVisible);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMobile]);
@@ -42,21 +37,22 @@ export const MobileStickyBar = () => {
           animate={{ y: 0 }}
           exit={{ y: 100 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t border-border px-4 py-3 flex items-center justify-between gap-3"
+          className="fixed bottom-0 left-0 right-0 z-40 glass-refraction border-t border-border px-4 py-3 flex items-center justify-between gap-3"
         >
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-bold text-foreground">&euro;{PREMIUM_PRICE}</span>
-              <span className="text-[10px] text-muted-foreground">{t("pricing.oneTime", "one-time")}</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-mono tabular text-base font-bold text-foreground">€{PREMIUM_PRICE}</span>
+              <span className="text-[10px] text-muted-foreground">{t("pricing.oneTime", "una volta sola")}</span>
             </div>
-            <p className="text-[10px] text-muted-foreground">{t("mobileCta.subtitle", "Free to start")}</p>
+            <p className="text-[10px] text-muted-foreground">{t("mobileCta.subtitle", "Inizia gratis")}</p>
           </div>
-          <Button className="shimmer-btn btn-press rounded-full h-10 px-5 text-sm font-medium text-primary-foreground shadow-glow gap-1.5" asChild>
-            <Link to="/signup">
-              <Sparkles className="h-3.5 w-3.5" />
-              {t("mobileCta.title", "Transform Your Pet")}
-            </Link>
-          </Button>
+          <Link
+            to="/signup"
+            className="inline-flex items-center gap-1.5 rounded-full h-11 px-5 text-sm font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
+          >
+            <span>{t("mobileCta.title", "Crea il ritratto")}</span>
+            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+          </Link>
         </motion.div>
       )}
     </AnimatePresence>

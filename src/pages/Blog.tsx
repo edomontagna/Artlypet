@@ -11,7 +11,7 @@ const Blog = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <SEOHead
         title="Pet Portrait Inspiration & Tips | Artlypet Blog"
         description="Discover guides, tips, and inspiration for AI pet portraits. Learn how to take the perfect pet photo, choose art styles, and create stunning pet masterpieces."

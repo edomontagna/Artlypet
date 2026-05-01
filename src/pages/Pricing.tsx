@@ -9,7 +9,7 @@ const Pricing = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <SEOHead
         title={t("pricing.pageTitle", "Pricing — Artlypet")}
         description={t("pricing.pageDesc", "Simple, transparent pricing. Start free with 3 portraits, upgrade to Premium for full HD and no watermarks.")}

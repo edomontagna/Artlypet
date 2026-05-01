@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SITE_URL } from "@/lib/site-config";
 
 interface CreationTheaterProps {
   previewUrl: string | null;
@@ -81,7 +82,7 @@ export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete =
       setFactIndex((prev) => (prev + 1) % funFacts.length);
     }, 8000);
     return () => clearInterval(interval);
-  }, []);
+  }, [funFacts.length]);
 
   const stageLabel = getStageLabel(progress, t);
 
@@ -171,17 +172,17 @@ export const CreationTheater = ({ previewUrl, styleName, startTime, isComplete =
         <p className="text-xs text-muted-foreground mb-2">{t("creation.shareExcitement", "Share your excitement while you wait!")}</p>
         <div className="flex items-center justify-center gap-2">
           <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 hover:bg-green-50 hover:text-green-600 dark:hover:bg-green-950 dark:hover:text-green-400" asChild>
-            <a href={`https://wa.me/?text=${encodeURIComponent(t("share.caption", "My pet just became a work of art! Create yours free") + " https://artlypet.com")}`} target="_blank" rel="noopener noreferrer" title="WhatsApp">
+            <a href={`https://wa.me/?text=${encodeURIComponent(`${t("share.caption", "My pet just became a work of art! Create yours free")} ${SITE_URL}`)}`} target="_blank" rel="noopener noreferrer" title="WhatsApp">
               <MessageCircle className="h-4 w-4" />
             </a>
           </Button>
           <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800" asChild>
-            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t("share.caption", "My pet just became a work of art! Create yours free"))}&url=${encodeURIComponent("https://artlypet.com")}`} target="_blank" rel="noopener noreferrer" title="X">
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t("share.caption", "My pet just became a work of art! Create yours free"))}&url=${encodeURIComponent(SITE_URL)}`} target="_blank" rel="noopener noreferrer" title="X">
               <span className="text-sm font-bold">𝕏</span>
             </a>
           </Button>
           <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950" asChild>
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://artlypet.com")}`} target="_blank" rel="noopener noreferrer" title="Facebook">
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`} target="_blank" rel="noopener noreferrer" title="Facebook">
               <span className="text-sm font-bold">f</span>
             </a>
           </Button>

@@ -93,7 +93,7 @@ const PrintQuality = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-[100dvh] bg-background">
       <SEOHead
         title="Museum-Quality Pet Portrait Prints | Canvas Delivery EU | Artlypet"
         description="Order museum-quality canvas prints of your AI pet portraits. Premium materials, vibrant colours, EU-wide delivery. Turn your digital masterpiece into wall art."

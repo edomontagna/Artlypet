@@ -8,7 +8,7 @@ const Accessibility = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <SEOHead title={t("accessibility.title", "Accessibility Statement")} description={t("accessibility.commitment", "Artlypet is committed to ensuring digital accessibility for people with disabilities.")} canonical="/accessibility" />
       <Navbar />
       <main className="container max-w-3xl px-4 py-16">

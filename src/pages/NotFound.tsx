@@ -18,7 +18,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
       <SEOHead
         title="Page Not Found | Artlypet"
         description="The page you're looking for doesn't exist or has been moved. Return to Artlypet to create AI pet portraits."

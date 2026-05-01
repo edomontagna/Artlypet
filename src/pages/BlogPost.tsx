@@ -10,8 +10,7 @@ import Navbar from "@/components/landing/Navbar";
 import FooterSection from "@/components/landing/FooterSection";
 import DOMPurify from "dompurify";
 import { blogPosts } from "@/data/blogPosts";
-
-const SITE_URL = "https://artlypet.com";
+import { SITE_URL } from "@/lib/site-config";
 
 const BlogPost = () => {
   const { t } = useTranslation();
@@ -81,7 +80,7 @@ const BlogPost = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-[100dvh] bg-background">
         <Navbar />
         <div className="container px-6 lg:px-8 py-24 text-center">
           <h1 className="font-serif text-4xl font-bold text-foreground mb-4">{t("blog.notFound", "Article Not Found")}</h1>
@@ -98,7 +97,7 @@ const BlogPost = () => {
   const contentKey = `blog.${post.slug.replace(/-/g, "_")}_content`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <SEOHead
         title={`${postTitle} | Artlypet Blog`}
         description={postExcerpt}

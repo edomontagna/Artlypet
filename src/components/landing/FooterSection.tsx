@@ -1,143 +1,164 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, Instagram, Twitter, Facebook } from "lucide-react";
+import { ArrowUpRight, Instagram, Twitter, Facebook } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Button } from "@/components/ui/button";
+import { MagneticButton } from "@/components/ui/magnetic-button";
+import { BrandMark } from "@/components/ui/brand-mark";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
     <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
   </svg>
 );
 
 const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com/artlypet", label: "Instagram" },
-  { icon: Twitter, href: "https://x.com/artlypet", label: "X (Twitter)" },
-  { icon: Facebook, href: "https://facebook.com/artlypet", label: "Facebook" },
-  { icon: TikTokIcon, href: "https://tiktok.com/@artlypet", label: "TikTok" },
+  { Icon: Instagram, href: "https://instagram.com/artlypet", label: "Instagram" },
+  { Icon: Twitter,   href: "https://x.com/artlypet",         label: "X (Twitter)" },
+  { Icon: Facebook,  href: "https://facebook.com/artlypet",  label: "Facebook" },
+  { Icon: TikTokIcon, href: "https://tiktok.com/@artlypet",  label: "TikTok" },
 ];
 
 const FooterSection = () => {
   const { t } = useTranslation();
 
-  const linkClass =
-    "text-sm text-muted-foreground hover:text-primary transition-colors duration-200";
+  const link = "text-sm text-muted-foreground hover:text-foreground transition-colors duration-200";
+
+  // Marquee tape — 12 styles, repeated for seamless loop
+  const styleTape = [
+    "Renaissance", "Watercolor", "Pop Art", "Art Nouveau", "Impressionist", "Oil Painting",
+    "Anime Hero", "Victorian Noble", "The General", "Minimalist Line", "Cyberpunk", "Cubist",
+  ];
 
   return (
-    <footer
-      className="py-16 lg:py-20 border-t border-border bg-background"
-      role="contentinfo"
-    >
-      <div className="container px-6 lg:px-8">
-        <div className="mb-12 pb-12 border-b border-border">
-          <div className="max-w-md mx-auto text-center">
-            <h3 className="font-serif text-xl font-bold text-foreground mb-2">{t("footer.ctaTitle", "Ready to Transform Your Pet?")}</h3>
-            <p className="text-sm text-muted-foreground mb-4">{t("footer.ctaDesc", "Create stunning AI portraits of your pet in seconds. Free to start.")}</p>
-            <Button asChild className="btn-press rounded-full h-10 px-6 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/signup">
-                {t("nav.getStarted", "Get Started")} <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
+    <footer className="relative bg-navy text-navy-foreground overflow-hidden" role="contentinfo">
+      {/* Kinetic marquee — 12 styles streaming horizontally */}
+      <div className="border-b border-white/10 marquee-pause overflow-hidden py-7" aria-hidden>
+        <div className="marquee-track gap-12 whitespace-nowrap">
+          {[...styleTape, ...styleTape].map((s, i) => (
+            <span
+              key={i}
+              className="font-serif italic text-3xl md:text-4xl lg:text-5xl text-white/30 hover:text-primary transition-colors duration-300"
+            >
+              {s} <span className="text-primary/40 mx-3">·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="container px-6 lg:px-10 py-20 lg:py-24">
+
+        {/* Top — large CTA block, asymmetric */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end pb-16 lg:pb-20 border-b border-white/10">
+          <div className="lg:col-span-8">
+            <div className="font-mono tabular text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-4">
+              {t("footer.kicker", "Ultima chiamata prima di scrollare su")}
+            </div>
+            <h3
+              className="font-bold tracking-tightest leading-[1.02] text-white"
+              style={{
+                fontFamily: "'Cabinet Grotesk', system-ui, sans-serif",
+                fontSize: "clamp(2.25rem, 5vw, 4rem)",
+              }}
+            >
+              {t("footer.ctaTitle", "Il tuo cane, in cornice. ")}
+              <span className="text-primary">{t("footer.ctaTitleAccent", "In meno di un minuto.")}</span>
+            </h3>
+          </div>
+          <div className="lg:col-span-4 flex justify-start lg:justify-end">
+            <Link to="/signup" className="rounded-full" tabIndex={-1}>
+              <MagneticButton
+                className="rounded-full h-14 px-8 text-base font-semibold bg-primary text-primary-foreground shadow-tinted btn-press"
+                strength={0.32}
+              >
+                <span>{t("nav.getStarted", "Inizia gratis")}</span>
+                <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} />
+              </MagneticButton>
+            </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-8">
-          {/* Column 1: Brand + Company */}
-          <div className="space-y-4">
-            <Link
-              to="/"
-              className="font-serif text-xl font-bold text-primary"
-            >
-              ArtlyPet
+        {/* Mid — asymmetric link grid: brand 5/12 + columns 7/12 */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 pt-16 lg:pt-20">
+
+          {/* Brand block (5 cols) */}
+          <div className="lg:col-span-5 space-y-6">
+            <Link to="/" aria-label="Artlypet home" className="text-white">
+              <BrandMark />
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+
+            <p className="text-sm text-white/60 leading-relaxed max-w-[42ch]">
               {t(
                 "footer.description",
-                "Luxury AI pet portraits crafted with cutting-edge technology and artistic excellence."
+                "Ritratti AI del tuo animale, in dodici stili di pittura dipinti a mano. Server in EU, GDPR-clean, pronti per la stampa su tela.",
               )}
             </p>
-            <nav className="flex flex-col gap-2">
-              <Link to="/about" className={linkClass}>
-                {t("nav.about", "About")}
-              </Link>
-              <Link to="/contact" className={linkClass}>
-                {t("nav.contact", "Contact")}
-              </Link>
-              <Link to="/blog" className={linkClass}>
-                {t("nav.blog", "Blog")}
-              </Link>
-              <Link to="/business" className={linkClass}>
-                {t("footer.business", "For Businesses")}
-              </Link>
-            </nav>
-            <LanguageSwitcher variant="outline" />
-            <div className="flex items-center gap-3">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
+
+            <div className="flex items-center gap-3 pt-2">
+              {socialLinks.map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-muted-foreground hover:text-primary transition-colors duration-200"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/60 hover:text-primary hover:border-primary/50 transition-colors btn-press"
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
+
+            <div className="pt-2">
+              <LanguageSwitcher variant="outline" />
+            </div>
           </div>
 
-          {/* Column 2: Product */}
-          <div>
-            <h3 className="font-serif text-sm font-bold text-foreground mb-4">
-              {t("footer.product", "Product")}
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <Link to="/styles" className={linkClass}>
-                {t("nav.styles", "Styles")}
-              </Link>
-              <a href="/#pricing" className={linkClass}>
-                {t("nav.pricing")}
-              </a>
-              <Link to="/prints" className={linkClass}>
-                {t("nav.prints", "Prints")}
-              </Link>
-              <Link to="/how-it-works" className={linkClass}>
-                {t("nav.howItWorks", "How It Works")}
-              </Link>
-              <Link to="/gallery" className={linkClass}>
-                {t("nav.gallery", "Gallery")}
-              </Link>
-              <Link to="/demo" className={linkClass}>
-                {t("footer.demo", "Try Demo")}
-              </Link>
-            </nav>
-          </div>
+          {/* Right — 3 stacked compact columns within 7/12 */}
+          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10">
+            <div>
+              <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
+                {t("footer.product", "Prodotto")}
+              </div>
+              <nav className="flex flex-col gap-3.5">
+                <Link to="/styles" className={link}>{t("nav.styles", "Stili")}</Link>
+                <a href="/#pricing" className={link}>{t("nav.pricing", "Prezzi")}</a>
+                <Link to="/prints" className={link}>{t("nav.prints", "Stampe su tela")}</Link>
+                <Link to="/how-it-works" className={link}>{t("nav.howItWorks", "Come funziona")}</Link>
+                <Link to="/business" className={link}>{t("footer.business", "Per aziende")}</Link>
+              </nav>
+            </div>
 
-          {/* Column 3: Legal */}
-          <div>
-            <h3 className="font-serif text-sm font-bold text-foreground mb-4">
-              {t("footer.legal", "Legal")}
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <Link to="/privacy" className={linkClass}>
-                {t("footer.privacy")}
-              </Link>
-              <Link to="/terms" className={linkClass}>
-                {t("footer.terms")}
-              </Link>
-              <Link to="/accessibility" className={linkClass}>
-                {t("footer.accessibility", "Accessibility")}
-              </Link>
-            </nav>
+            <div>
+              <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
+                {t("footer.company", "Azienda")}
+              </div>
+              <nav className="flex flex-col gap-3.5">
+                <Link to="/about" className={link}>{t("nav.about", "Chi siamo")}</Link>
+                <Link to="/contact" className={link}>{t("nav.contact", "Contatti")}</Link>
+                <Link to="/blog" className={link}>{t("nav.blog", "Blog")}</Link>
+              </nav>
+            </div>
+
+            <div>
+              <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/40 mb-5">
+                {t("footer.legal", "Legale")}
+              </div>
+              <nav className="flex flex-col gap-3.5">
+                <Link to="/privacy" className={link}>{t("footer.privacy", "Privacy")}</Link>
+                <Link to="/terms" className={link}>{t("footer.terms", "Termini")}</Link>
+                <Link to="/accessibility" className={link}>{t("footer.accessibility", "Accessibilità")}</Link>
+              </nav>
+            </div>
           </div>
         </div>
 
         {/* Bottom row */}
-        <div className="mt-12 pt-6 border-t border-border text-center sm:text-left">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Artlypet.{" "}
-            {t("footer.allRights", "All rights reserved.")}
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="text-xs text-white/40 font-mono tabular">
+            © {new Date().getFullYear()} Artlypet · {t("footer.allRights", "Tutti i diritti riservati.")}
+          </p>
+          <p className="text-xs text-white/40">
+            {t("footer.locationLine", "Made in Italy · Server in EU · GDPR-clean")}
           </p>
         </div>
       </div>
